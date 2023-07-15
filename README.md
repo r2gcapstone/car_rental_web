@@ -1,4 +1,4 @@
-#Getting Started
+# Getting Started
 
 Run thee application locally
 
@@ -8,7 +8,7 @@ Run thee application locally
 
 then open http://localhost:3000 with your browser the see the result.
 
-##Others
+## Others
 
 - Run jest tests
 
