@@ -55,7 +55,7 @@ export const SignIn = () => {
           lineHeight='2rem'
           aria-label='signin-description'
         >
-          Please enter your username and password of your admin account.
+          Please enter your email and password of your admin account.
         </Text>
 
         <Box mb='2'>

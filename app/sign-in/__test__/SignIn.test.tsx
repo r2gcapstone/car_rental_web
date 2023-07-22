@@ -10,7 +10,7 @@ describe('<SignIn />', () => {
 
   it('render a proper component', () => {
     expect(screen.getByLabelText('signin-description')).toHaveTextContent(
-      'Please enter your username and password of your admin account.'
+      'Please enter your email and password of your admin account.'
     )
   })
 
