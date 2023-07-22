@@ -7,6 +7,6 @@ describe('<SignIn />', () => {
   })
 
   it('render a proper component', () => {
-    expect(screen.getByLabelText('sign-in')).toBeInTheDocument()
+    expect(screen.getByLabelText('sign-in')).toHaveTextContent('Sign in')
   })
 })
