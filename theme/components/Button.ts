@@ -6,7 +6,8 @@ export const Button: StyleConfig = {
     fontWeight: 'semibold',
     _disabled: {
       opacity: 0.5
-    }
+    },
+    rounded: 'xl'
   },
   sizes: {
     sm: {
@@ -31,7 +32,7 @@ export const Button: StyleConfig = {
         opacity: 0.8
       },
       _active: {
-        bg: 'blue.dark'
+        bg: 'blue.slitedark'
       }
     }
   },
