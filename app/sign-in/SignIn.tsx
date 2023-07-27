@@ -1,4 +1,4 @@
-import { Flex, Icon, Stack, Button, Text, Box } from '@chakra-ui/react'
+import { Flex, Icon, Stack, Button, Text, Box, Center } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { CarMarker, InputField } from 'components'
 import { EmailRegEx } from 'helpers'
@@ -115,6 +115,19 @@ export const SignIn = () => {
         >
           Login
         </Button>
+
+        <Center
+          width='100%'
+          _hover={{
+            textDecor: 'underline'
+          }}
+        >
+          <Link href='/sign-up' style={{ color: 'white' }}>
+            <Text mt='1.88rem' fontSize='1.2rem'>
+              Create an Admin Account
+            </Text>
+          </Link>
+        </Center>
       </Stack>
     </Flex>
   )
