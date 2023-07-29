@@ -9,14 +9,14 @@ interface SignInTypes {
   password: string
 }
 
-export const SignIn = () => {
+export const SignIn: React.FC = () => {
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm<SignInTypes>()
 
-  const onSubmit = (data: SignInTypes) => {
+  const onSubmit = (data: SignInTypes): void => {
     console.log(data)
   }
 

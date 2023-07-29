@@ -1,10 +1,10 @@
 import React from 'react'
 import { DefaultLayout } from 'layouts'
-import { SignUp } from 'app/sign-up/SignUp'
+import { CreateAccount } from 'app/sign-up'
 
 const RegisterAccount: React.FC = () => (
   <DefaultLayout>
-    <SignUp />
+    <CreateAccount />
   </DefaultLayout>
 )
 
