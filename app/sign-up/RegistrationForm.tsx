@@ -175,7 +175,7 @@ export const RegistrationForm: React.FC = () => {
     <Box maxWidth='1200px' height='100%' margin='0 auto' pt='3.25rem'>
       <Flex alignItems='center' gap='1rem'>
         <Icon as={CarMarker} width={125} height={162} />
-        <Text fontSize='1.75rem' width='50rem'>
+        <Text fontSize='1.75rem' width='50rem' aria-label='sign-up-description'>
           Please provide an input to the given fields to create an admin account
         </Text>
       </Flex>
