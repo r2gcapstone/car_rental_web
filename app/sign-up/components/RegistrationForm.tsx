@@ -1,5 +1,3 @@
-import React, { useContext } from 'react'
-import { AuthContext } from 'context'
 import { InputField } from 'components'
 import { Stack, Box, Grid, GridItem, Button } from '@chakra-ui/react'
 import { EmailRegEx } from 'helpers'
@@ -40,7 +38,6 @@ export const RegistrationForm: React.FC = () => {
     formState: { errors }
   } = useForm<SignUpTypes>()
   const { validateStrongPassword, registerUser } = useAccount()
-  const { state } = useContext(AuthContext)
 
   const formValues = watch([
     'email',

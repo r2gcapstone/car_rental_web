@@ -1,7 +1,6 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 import { AuthServices } from 'services/apis'
-import { useContext } from 'react'
-import { AuthContext } from 'context'
+import { useGetRegistration } from 'services/zustandVariables'
 
 interface UseAccountTypes {
   validateStrongPassword: (password: string) => {
@@ -16,7 +15,9 @@ interface UseAccountTypes {
 }
 
 export const useAccount = (): UseAccountTypes => {
-  const { dispatch } = useContext(AuthContext)
+  const updateRegistrationVars = useGetRegistration(
+    (state) => state.updateRegistration
+  )
 
   const validateStrongPassword = (
     password: string
@@ -41,14 +42,12 @@ export const useAccount = (): UseAccountTypes => {
     const { authRegister } = new AuthServices()
     const response = await authRegister(args.email, args.password, args.config)
 
-    dispatch({
-      type: 'ADD',
-      payload: {
-        email: args.email,
+    response &&
+      updateRegistrationVars({
+        email: args?.email,
         authId: response?.authId,
         step: 'uploadImage'
-      }
-    })
+      })
   }
 
   return {
