@@ -1,5 +1,5 @@
 import { render, screen, userEvent, waitScreenUpdate } from 'utils/test.utils'
-import { RegistrationForm } from '../RegistrationForm'
+import { RegistrationForm } from '../components/RegistrationForm'
 
 describe('<RegistrationForm />', () => {
   const user = userEvent.setup()
@@ -9,17 +9,7 @@ describe('<RegistrationForm />', () => {
     await waitScreenUpdate()
   })
 
-  //* TODO test input behavior
-  //* TODO test if field is empty
-  //* TODO test input validation
-
-  test('Render all components', () => {
-    expect(screen.getByLabelText('sign-up-description')).toHaveTextContent(
-      'Please provide an input to the given fields to create an admin account'
-    )
-  })
-
-  test('Display error if email is not correct', async () => {
+  test('Enabled button if all the field is not empty and display valid errors', async () => {
     const email = screen.getByRole('textbox', {
       name: /email/i
     })
@@ -32,12 +22,8 @@ describe('<RegistrationForm />', () => {
     const address = screen.getByRole('textbox', {
       name: /address/i
     })
-    const password = screen.getByRole('textbox', {
-      name: /password/i
-    })
-    const confitmPassword = screen.getByRole('textbox', {
-      name: /confitmPassword/i
-    })
+    const password = screen.getAllByLabelText(/password/i)[0]
+    const confirmPassword = screen.getAllByLabelText(/confirm password/i)[0]
     const buttonSubmit = screen.getByRole('button', {
       name: /submit/i
     })
@@ -47,13 +33,49 @@ describe('<RegistrationForm />', () => {
     await user.type(lastname, 'lastname')
     await user.type(address, 'address')
     await user.type(password, '1234567890aSDFG')
-    await user.type(confitmPassword, '1234567890aSDFG')
-    await user.click(buttonSubmit)
+    await user.type(confirmPassword, '1234567890aSDFG')
 
-    await waitScreenUpdate()
     expect(buttonSubmit).toBeEnabled()
+
+    await user.click(buttonSubmit)
+    await waitScreenUpdate()
+
+    expect(screen.getByText('This email is not valid.')).toBeInTheDocument()
+  })
+
+  test('Show error if password and confirm password does not match', async () => {
+    const email = screen.getByRole('textbox', {
+      name: /email/i
+    })
+    const firstName = screen.getByRole('textbox', {
+      name: /first name/i
+    })
+    const lastname = screen.getByRole('textbox', {
+      name: /last name/i
+    })
+    const address = screen.getByRole('textbox', {
+      name: /address/i
+    })
+    const password = screen.getAllByLabelText(/password/i)[0]
+    const confirmPassword = screen.getAllByLabelText(/confirm password/i)[0]
+    const buttonSubmit = screen.getByRole('button', {
+      name: /submit/i
+    })
+
+    await user.type(email, 'test@email.com')
+    await user.type(firstName, 'firstname')
+    await user.type(lastname, 'lastname')
+    await user.type(address, 'address')
+    await user.type(password, '1234567890aSDFG')
+    await user.type(confirmPassword, '1234567890aS')
+
+    expect(buttonSubmit).toBeEnabled()
+
+    await user.click(buttonSubmit)
+    await waitScreenUpdate()
+
     expect(
-      screen.getAllByText('This email is not valid.')[0]
+      screen.getByText('Your password and confirm password is not match.')
     ).toBeInTheDocument()
   })
 })

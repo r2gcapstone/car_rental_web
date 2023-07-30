@@ -24,11 +24,14 @@ export class AuthServices {
           data: config,
           authId: response?.user?.uid
         })
+
+      return {
+        authId: response?.user?.uid
+      }
     } catch (error) {
-      const newError = new Error()
       swal.fire({
         title: 'ERROR!',
-        text: newError.message,
+        text: 'email already exist.',
         icon: 'error'
       })
     }

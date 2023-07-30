@@ -1,5 +1,7 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 import { AuthServices } from 'services/apis'
+import { useContext } from 'react'
+import { AuthContext } from 'context'
 
 interface UseAccountTypes {
   validateStrongPassword: (password: string) => {
@@ -14,6 +16,8 @@ interface UseAccountTypes {
 }
 
 export const useAccount = (): UseAccountTypes => {
+  const { dispatch } = useContext(AuthContext)
+
   const validateStrongPassword = (
     password: string
   ): { validation: boolean; message: string } => {
@@ -35,7 +39,16 @@ export const useAccount = (): UseAccountTypes => {
     config: FormValues
   }): Promise<void> => {
     const { authRegister } = new AuthServices()
-    await authRegister(args.email, args.password, args.config)
+    const response = await authRegister(args.email, args.password, args.config)
+
+    dispatch({
+      type: 'ADD',
+      payload: {
+        email: args.email,
+        authId: response?.authId,
+        step: 'uploadImage'
+      }
+    })
   }
 
   return {

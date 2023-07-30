@@ -1,15 +1,7 @@
-import React from 'react'
-import { CarMarker, InputField } from 'components'
-import {
-  Stack,
-  Icon,
-  Text,
-  Flex,
-  Box,
-  Grid,
-  GridItem,
-  Button
-} from '@chakra-ui/react'
+import React, { useContext } from 'react'
+import { AuthContext } from 'context'
+import { InputField } from 'components'
+import { Stack, Box, Grid, GridItem, Button } from '@chakra-ui/react'
 import { EmailRegEx } from 'helpers'
 import { useAccount } from 'lib'
 import { useForm } from 'react-hook-form'
@@ -48,6 +40,7 @@ export const RegistrationForm: React.FC = () => {
     formState: { errors }
   } = useForm<SignUpTypes>()
   const { validateStrongPassword, registerUser } = useAccount()
+  const { state } = useContext(AuthContext)
 
   const formValues = watch([
     'email',
@@ -172,66 +165,57 @@ export const RegistrationForm: React.FC = () => {
   ]
 
   return (
-    <Box maxWidth='1200px' height='100%' margin='0 auto' pt='3.25rem'>
-      <Flex alignItems='center' gap='1rem'>
-        <Icon as={CarMarker} width={125} height={162} />
-        <Text fontSize='1.75rem' width='50rem' aria-label='sign-up-description'>
-          Please provide an input to the given fields to create an admin account
-        </Text>
-      </Flex>
+    <Stack as='form' mt='2.56rem' onSubmit={handleSubmit(onSubmit)}>
+      <Grid height='100%' templateColumns='repeat(2, 1fr)' gap='2.63rem'>
+        <GridItem width='100%'>
+          {leftInputFields.map(
+            ({ label, ariaLabel, placeholder, type, name }) => (
+              <Box mt='4' key={label}>
+                <InputField
+                  type={type}
+                  label={label}
+                  placeholder={placeholder}
+                  arial-label={ariaLabel}
+                  height='3rem'
+                  isError={!!errors[name]}
+                  errorMessage={errors[name]?.message}
+                  {...register(name)}
+                />
+              </Box>
+            )
+          )}
+        </GridItem>
+        <GridItem width='100%'>
+          {rightInputField.map(
+            ({ label, ariaLabel, placeholder, type, name }) => (
+              <Box mt='4' key={label}>
+                <InputField
+                  type={type}
+                  label={label}
+                  placeholder={placeholder}
+                  arial-label={ariaLabel}
+                  height='3rem'
+                  isError={!!errors[name]}
+                  errorMessage={errors[name]?.message}
+                  {...register(name)}
+                />
+              </Box>
+            )
+          )}
+        </GridItem>
+      </Grid>
 
-      <Stack as='form' mt='2.56rem' onSubmit={handleSubmit(onSubmit)}>
-        <Grid height='100%' templateColumns='repeat(2, 1fr)' gap='2.63rem'>
-          <GridItem width='100%'>
-            {leftInputFields.map(
-              ({ label, ariaLabel, placeholder, type, name }) => (
-                <Box mt='4' key={label}>
-                  <InputField
-                    type={type}
-                    label={label}
-                    placeholder={placeholder}
-                    arial-label={ariaLabel}
-                    height='3rem'
-                    isError={!!errors[name]}
-                    errorMessage={errors[name]?.message}
-                    {...register(name)}
-                  />
-                </Box>
-              )
-            )}
-          </GridItem>
-          <GridItem width='100%'>
-            {rightInputField.map(
-              ({ label, ariaLabel, placeholder, type, name }) => (
-                <Box mt='4' key={label}>
-                  <InputField
-                    type={type}
-                    label={label}
-                    placeholder={placeholder}
-                    arial-label={ariaLabel}
-                    height='3rem'
-                    isError={!!errors[name]}
-                    errorMessage={errors[name]?.message}
-                    {...register(name)}
-                  />
-                </Box>
-              )
-            )}
-          </GridItem>
-        </Grid>
-
-        <Button
-          role='button'
-          type='submit'
-          mt='8'
-          variant='primary'
-          fontSize='1rem'
-          height='3rem'
-          isDisabled={isDisable}
-        >
-          Submit
-        </Button>
-      </Stack>
-    </Box>
+      <Button
+        role='button'
+        type='submit'
+        mt='8'
+        variant='primary'
+        fontSize='1rem'
+        height='3rem'
+        isDisabled={isDisable}
+      >
+        Submit
+      </Button>
+    </Stack>
   )
 }
