@@ -1,4 +1,8 @@
 export const colors = {
+  dark: {
+    brown: '#2E2E2E',
+    lightBrown: '#A6A6A6'
+  },
   blue: {
     primary: '#0553AF',
     dark: '#27374D',
