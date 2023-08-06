@@ -1,5 +1,5 @@
 import { render, screen, userEvent, waitScreenUpdate } from 'utils/test.utils'
-import { RegistrationForm } from '../components/RegistrationForm'
+import { RegistrationForm } from '../components'
 
 describe('<RegistrationForm />', () => {
   const user = userEvent.setup()

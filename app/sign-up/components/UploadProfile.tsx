@@ -2,20 +2,28 @@ import { useState } from 'react'
 import { useGetRegistration } from 'services/zustandVariables'
 import { shallow } from 'zustand/shallow'
 import { Image, Button, Flex, Text, Input, Box } from '@chakra-ui/react'
+import { useAccount } from 'lib'
 import { ChangeEvent } from 'react'
 
 export const UploadProfile: React.FC = () => {
-  const [state, setState] = useState<{ rawImage: FileList[]; preview: string }>(
-    { rawImage: [], preview: '' }
-  )
+  const { uploadAvatar } = useAccount()
+  const [state, setState] = useState<{ rawImage: File[]; preview: string }>({
+    rawImage: [],
+    preview: ''
+  })
   const response = useGetRegistration((state) => ({ ...state }), shallow)
 
+  const uploadUserAvatar = (): void => {
+    uploadAvatar(response.authId, state.rawImage)
+  }
+
   const onUploadChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const file = e.currentTarget.files as FileList
+    const target = e.currentTarget as HTMLInputElement
+    const file = target.files as unknown as File[]
 
     if (file.length > 0) {
       const objectUrl = URL.createObjectURL(file[0])
-      setState({ rawImage: [file], preview: objectUrl })
+      setState({ rawImage: file, preview: objectUrl })
     }
   }
 
@@ -23,7 +31,8 @@ export const UploadProfile: React.FC = () => {
     response?.updateRegistration({
       email: response?.email,
       authId: response?.authId,
-      step: 'success'
+      step: 'success',
+      loading: false
     })
   }
 
@@ -40,11 +49,19 @@ export const UploadProfile: React.FC = () => {
         height={200}
         objectFit='cover'
         alt='user avatar'
+        aria-label='user-avatar'
         rounded='full'
       />
 
       <Box position='relative'>
-        <Button variant='primary' fontSize='1rem' mt='4' width={200}>
+        <Button
+          type='button'
+          onClick={uploadUserAvatar}
+          variant='primary'
+          fontSize='1rem'
+          mt='4'
+          width={200}
+        >
           {state.preview ? 'set image' : 'Upload image'}
         </Button>
         {!state.preview && (

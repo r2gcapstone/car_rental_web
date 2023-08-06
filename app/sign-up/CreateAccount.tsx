@@ -2,10 +2,14 @@ import { ReactElement } from 'react'
 import { useGetRegistration } from 'services/zustandVariables'
 import { CarMarker } from 'components'
 import { UploadProfile, RegistrationForm, Success } from './components'
-import { Box, Flex, Icon, Text } from '@chakra-ui/react'
+import { Box, Flex, Icon, Text, Spinner, Center } from '@chakra-ui/react'
+import { shallow } from 'zustand/shallow'
 
 export const CreateAccount: React.FC = () => {
-  const stepsVars = useGetRegistration((state) => state.step)
+  const { step: stepsVars, loading: isLoading } = useGetRegistration(
+    (state) => ({ step: state.step, loading: state.loading }),
+    shallow
+  )
 
   const renderStep = (type: string): ReactElement | '' => {
     switch (type) {
@@ -28,6 +32,14 @@ export const CreateAccount: React.FC = () => {
     registrationForm:
       'Please provide an input to the given fields to create an admin account',
     uploadImage: 'Please upload an image for your profile picture'
+  }
+
+  if (isLoading) {
+    return (
+      <Center width='100%' height='100vh'>
+        <Spinner thickness='0.25rem' color='white' size='xl' />
+      </Center>
+    )
   }
 
   return (

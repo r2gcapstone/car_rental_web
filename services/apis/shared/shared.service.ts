@@ -1,5 +1,11 @@
 import swal from 'sweetalert2'
-import { collection, setDoc, DocumentData, doc } from 'firebase/firestore'
+import {
+  collection,
+  setDoc,
+  DocumentData,
+  doc,
+  updateDoc
+} from 'firebase/firestore'
 import { db } from 'services/firebase'
 
 export class SharedServices {
@@ -9,11 +15,35 @@ export class SharedServices {
     authId: string
   }) => {
     try {
-      const customId = collection(db, args.collectionName).id
-      const databaseRef = doc(db, args.collectionName, args.authId || customId)
-      const response = await setDoc(databaseRef, args.data)
+      const { data, collectionName, authId } = args
+
+      const customId = collection(db, collectionName).id
+      const databaseRef = doc(db, collectionName, authId || customId)
+      const response = await setDoc(databaseRef, data)
 
       return response
+    } catch (error) {
+      const newError = new Error()
+      swal.fire({
+        title: 'ERROR!',
+        text: newError.message,
+        icon: 'error'
+      })
+    }
+  }
+
+  public updateDocument = async <FormValue extends DocumentData>(args: {
+    docId: string
+    data: FormValue
+    collectionName: string
+  }) => {
+    try {
+      const { docId, data, collectionName } = args
+
+      const documentRef = doc(db, collectionName, docId)
+      await updateDoc(documentRef, {
+        ...data
+      })
     } catch (error) {
       const newError = new Error()
       swal.fire({

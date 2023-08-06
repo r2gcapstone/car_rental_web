@@ -13,7 +13,13 @@ export const Success: React.FC = () => {
       height='100%'
     >
       <Icon as={CarMarker} width={300} height={300} />
-      <Text mt='4' fontSize='1.8125rem' width={400} textAlign='center'>
+      <Text
+        mt='4'
+        fontSize='1.8125rem'
+        width={400}
+        textAlign='center'
+        aria-label='success-title'
+      >
         You have now an account to R2G’s Administration
       </Text>
       <Button

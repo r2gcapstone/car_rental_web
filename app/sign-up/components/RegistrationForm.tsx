@@ -53,13 +53,13 @@ export const RegistrationForm: React.FC = () => {
   const onSubmit = (data: SignUpTypes): void => {
     const { checkError } = errorHandler(data)
 
-    const { email, password } = data
-
+    const { email, password, firstName, lastName, address } = data
+    const saveToDoc = { firstName, lastName, address, password, email }
     if (!checkError) {
       registerUser({
         email,
         password,
-        config: { ...data, imageUrl: '' }
+        config: { ...saveToDoc, imageUrl: '' }
       })
       reset()
     }
@@ -88,7 +88,7 @@ export const RegistrationForm: React.FC = () => {
     }
 
     if (lastName.length === 50) {
-      setError('firstName', {
+      setError('lastName', {
         message: 'Maximum 50 characters only.'
       })
       isCheckError = true
