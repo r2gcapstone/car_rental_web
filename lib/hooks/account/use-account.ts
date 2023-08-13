@@ -2,6 +2,8 @@
 import { AuthServices } from 'services/apis'
 import { useGetRegistration } from 'services/zustandVariables'
 import { shallow } from 'zustand/shallow'
+import { setCookie, deleteCookie } from 'cookies-next'
+import { useRouter } from 'next/router'
 
 interface UseAccountTypes {
   validateStrongPassword: (password: string) => {
@@ -15,9 +17,13 @@ interface UseAccountTypes {
     config: FormValues
   }) => Promise<void>
   checkLoading: () => void
+  signOut: () => void
+  signIn: (email: string, password: string) => Promise<void>
 }
 
 export const useAccount = (): UseAccountTypes => {
+  const router = useRouter()
+
   const {
     updateRegistration: updateRegistrationVars,
     step,
@@ -79,11 +85,31 @@ export const useAccount = (): UseAccountTypes => {
       })
   }
 
+  const signOut = (): void => {
+    const { signOut } = new AuthServices()
+    signOut()
+    deleteCookie('ADMIN_TOKEN')
+  }
+
+  const signIn = async (email: string, password: string): Promise<void> => {
+    const { signInService } = new AuthServices()
+
+    const response = await signInService(email, password)
+    const userToken = await response?.token
+
+    if (response?.token) {
+      router.push('admin/dashboard')
+      setCookie('ADMIN_TOKEN', userToken || '')
+    }
+  }
+
   return {
     checkLoading,
     uploadAvatar,
     validateStrongPassword,
-    registerUser
+    registerUser,
+    signOut,
+    signIn
   }
 }
 /* eslint-enable unicorn/consistent-function-scoping */

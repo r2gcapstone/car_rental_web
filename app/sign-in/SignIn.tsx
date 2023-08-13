@@ -1,6 +1,7 @@
 import { Flex, Icon, Stack, Button, Text, Box, Center } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { CarMarker, InputField } from 'components'
+import { useAccount } from 'lib'
 import { EmailRegEx } from 'helpers'
 import Link from 'next/link'
 
@@ -10,6 +11,8 @@ interface SignInTypes {
 }
 
 export const SignIn: React.FC = () => {
+  const { signIn } = useAccount()
+
   const {
     register,
     handleSubmit,
@@ -17,7 +20,8 @@ export const SignIn: React.FC = () => {
   } = useForm<SignInTypes>()
 
   const onSubmit = (data: SignInTypes): void => {
-    console.log(data)
+    const { email, password } = data
+    signIn(email, password)
   }
 
   return (
