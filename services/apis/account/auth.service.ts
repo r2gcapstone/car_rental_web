@@ -1,4 +1,7 @@
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+} from 'firebase/auth'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { SharedServices } from '../shared'
 import { auth } from 'services/firebase'
@@ -66,5 +69,24 @@ export class AuthServices {
 
   public signOut = async () => {
     auth.signOut()
+  }
+
+  public signInService = async (email: string, password: string) => {
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password)
+      const token = auth.currentUser?.getIdToken()
+
+      return {
+        response,
+        token
+      }
+    } catch (error) {
+      const newError = error as Error
+      swal.fire({
+        title: 'ERROR!',
+        text: newError.message,
+        icon: 'error'
+      })
+    }
   }
 }
