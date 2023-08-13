@@ -1,6 +1,6 @@
 import React from 'react'
 import { AdminLayout } from 'layouts'
-import { Dashboard } from 'app/dashboard/dashboard'
+import { Dashboard } from 'app/dashboard/Dashboard'
 
 const UserAccount: React.FC = () => (
   <AdminLayout>

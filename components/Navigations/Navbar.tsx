@@ -1,6 +1,5 @@
 import { CarMarker, AccordionDown } from 'components/icons'
 import {
-  Box,
   Icon,
   Text,
   Flex,
@@ -9,9 +8,11 @@ import {
   MenuList,
   MenuItem
 } from '@chakra-ui/react'
+import { useUserCredentials } from 'services/zustandVariables'
 import { useAccount } from 'lib'
 
 export const AdminNavbar: React.FC = () => {
+  const email = useUserCredentials((state) => state.email)
   const { signOut } = useAccount()
 
   return (
@@ -35,9 +36,9 @@ export const AdminNavbar: React.FC = () => {
       <Menu>
         <MenuButton as='button'>
           <Flex alignItems='center' gap='2'>
-            <Box>
+            <Flex flexDirection='column' alignItems='flex-end'>
               <Text fontSize='0.9375rem' aria-label='admin-email'>
-                kanye west
+                {email}
               </Text>
               <Text
                 color='dark.lightBrown'
@@ -46,7 +47,7 @@ export const AdminNavbar: React.FC = () => {
               >
                 Administrator
               </Text>
-            </Box>
+            </Flex>
             <Icon as={AccordionDown} width={4} height={4} />
           </Flex>
         </MenuButton>

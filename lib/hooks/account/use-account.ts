@@ -99,7 +99,10 @@ export const useAccount = (): UseAccountTypes => {
 
     if (response?.token) {
       router.push('admin/dashboard')
-      setCookie('ADMIN_TOKEN', userToken || '')
+      setCookie('ADMIN_TOKEN', {
+        token: userToken || '',
+        email: response.response.user.email
+      })
     }
   }
 
