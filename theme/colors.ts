@@ -3,6 +3,9 @@ export const colors = {
     brown: '#2E2E2E',
     lightBrown: '#A6A6A6'
   },
+  gray: {
+    primary: 'rgba(255, 255, 255, 0.41)'
+  },
   blue: {
     primary: '#0553AF',
     dark: '#27374D',

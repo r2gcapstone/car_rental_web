@@ -4,6 +4,7 @@ import { useGetRegistration } from 'services/zustandVariables'
 import { shallow } from 'zustand/shallow'
 import { setCookie, deleteCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
+import swal from 'sweetalert2'
 
 interface UseAccountTypes {
   validateStrongPassword: (password: string) => {
@@ -89,6 +90,7 @@ export const useAccount = (): UseAccountTypes => {
     const { signOut } = new AuthServices()
     signOut()
     deleteCookie('ADMIN_TOKEN')
+    router.push('/sign-in')
   }
 
   const signIn = async (email: string, password: string): Promise<void> => {
@@ -98,6 +100,11 @@ export const useAccount = (): UseAccountTypes => {
     const userToken = await response?.token
 
     if (response?.token) {
+      swal.fire({
+        title: 'Success',
+        text: 'successfully logged in',
+        icon: 'success'
+      })
       router.push('admin/dashboard')
       setCookie('ADMIN_TOKEN', {
         token: userToken || '',
