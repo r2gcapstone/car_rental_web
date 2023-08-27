@@ -7,7 +7,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { Box, Text, Center } from '@chakra-ui/react'
+import { Box, Center, Text } from '@chakra-ui/react'
 import { colors } from 'theme/colors'
 
 const data = [
@@ -46,14 +46,14 @@ export const Barchart: React.FC = () => (
     background={colors.blue.dark}
     borderRadius='0.9375rem'
     width='100%'
-    height='auto'
+    height='70%'
   >
     <Center padding='1rem'>
       <Text color='white.0' fontWeight='bold'>
         Rate of vehicle rented 2022
       </Text>
     </Center>
-    <ResponsiveContainer width='100%' height='100%'>
+    <ResponsiveContainer width='100%' height='80%'>
       <BarChart data={data}>
         <XAxis stroke={colors.white[0]} dataKey='name' />
         <YAxis stroke={colors.white[0]} />
