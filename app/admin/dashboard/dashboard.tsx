@@ -1,9 +1,9 @@
-import { Box } from "@chakra-ui/react";
-import { Barchart } from "./components/Barchat";
+import { Box } from '@chakra-ui/react'
+import { Barchart } from './components/Barchat'
 
 export const Dashboard: React.FC = () => (
-  <Box>
+  <Box width='100%'>
     <Barchart />
     dashboard
   </Box>
-);
+)

@@ -32,7 +32,7 @@ export const Sidebar: React.FC<{
           </Flex>
         ))}
       </Box>
-      <Flex flex='5' mt='4'>
+      <Flex flex='5' mt='4' padding='2'>
         {children}
       </Flex>
     </Flex>
