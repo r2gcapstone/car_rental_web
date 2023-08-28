@@ -14,7 +14,7 @@ export const Sidebar: React.FC<{
   }
 
   return (
-    <Flex height='100%' gap='6'>
+    <Flex height='100%'>
       <Box flex='1' background='blue.dark' cursor='pointer'>
         {links.map(({ path, name, icon }) => (
           <Flex
@@ -32,7 +32,7 @@ export const Sidebar: React.FC<{
           </Flex>
         ))}
       </Box>
-      <Flex flex='5' mt='4' padding='2'>
+      <Flex flex='5' mt='4' mb='8' padding='2' overflowY='scroll'>
         {children}
       </Flex>
     </Flex>

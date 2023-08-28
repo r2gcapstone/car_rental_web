@@ -8,6 +8,7 @@ export const TransactionIcon: React.FC = createIcon({
       key='transaction-icon-1'
       d='M31.3333 5.49994H9.66667C8.74619 5.49994 8 6.05958 8 6.74994V26.7499C8 27.4403 8.74619 27.9999 9.66667 27.9999H31.3333C32.2538 27.9999 33 27.4403 33 26.7499V6.74994C33 6.05958 32.2538 5.49994 31.3333 5.49994Z'
       stroke='white'
+      fill='transparent'
       strokeWidth='4'
       strokeLinejoin='round'
     />,

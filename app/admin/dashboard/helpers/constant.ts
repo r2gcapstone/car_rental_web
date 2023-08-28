@@ -1,3 +1,9 @@
+export interface CardsTypes {
+  title: string
+  total: number
+  icon: React.FC<object>
+}
+
 export const data = [
   {
     name: 'January',
