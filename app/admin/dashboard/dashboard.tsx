@@ -28,7 +28,7 @@ export const Dashboard: React.FC = () => {
   ]
 
   return (
-    <Box width='100%' paddingX='1rem'>
+    <Box width='100%' mt='4' padding='2' paddingX='1rem'>
       <Barchart />
       <Cards details={cardsDetails} />
     </Box>
