@@ -2,11 +2,14 @@ import { create } from 'zustand'
 
 export type Steps = 'registrationForm' | 'uploadImage' | 'success'
 
-interface UseGetRegistrationTypes {
+interface RegistrationTypes {
   email: string
   authId: string
   step: Steps
   loading: boolean
+}
+
+interface UseGetRegistrationTypes extends RegistrationTypes {
   updateRegistration: (args: {
     email: string
     authId: string
@@ -15,11 +18,15 @@ interface UseGetRegistrationTypes {
   }) => void
 }
 
-export const useGetRegistration = create<UseGetRegistrationTypes>((set) => ({
+export const initialState: RegistrationTypes = {
   email: '',
   authId: '',
-  step: 'registrationForm',
-  loading: false,
+  step: 'success',
+  loading: false
+}
+
+export const useGetRegistration = create<UseGetRegistrationTypes>((set) => ({
+  ...initialState,
   updateRegistration: (args: {
     email: string
     authId: string | undefined

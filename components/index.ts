@@ -1,3 +1,5 @@
 export * from './icons'
 export * from './Forms'
 export * from './Navigations'
+export * from './Text'
+export * from './Spinner'

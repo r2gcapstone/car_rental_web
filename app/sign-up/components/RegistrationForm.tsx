@@ -19,6 +19,7 @@ interface SignUpTypes {
   address: string
   password: string
   confirmPassword: string
+  mobileNumber: string
 }
 interface InputFieldTypes {
   label: string
@@ -45,7 +46,8 @@ export const RegistrationForm: React.FC = () => {
     'lastName',
     'address',
     'password',
-    'confirmPassword'
+    'confirmPassword',
+    'mobileNumber'
   ])
 
   const isDisable = formValues.findIndex((find) => !find) > -1
@@ -53,8 +55,15 @@ export const RegistrationForm: React.FC = () => {
   const onSubmit = (data: SignUpTypes): void => {
     const { checkError } = errorHandler(data)
 
-    const { email, password, firstName, lastName, address } = data
-    const saveToDoc = { firstName, lastName, address, password, email }
+    const { email, password, firstName, lastName, address, mobileNumber } = data
+    const saveToDoc = {
+      firstName,
+      lastName,
+      address,
+      password,
+      email,
+      mobileNumber
+    }
     if (!checkError) {
       registerUser({
         email,
@@ -163,7 +172,7 @@ export const RegistrationForm: React.FC = () => {
 
   return (
     <Stack as='form' mt='2.56rem' onSubmit={handleSubmit(onSubmit)}>
-      <Grid height='100%' templateColumns='repeat(2, 1fr)' gap='2.63rem'>
+      <Grid height='100%' templateColumns='repeat(2, 1fr)' gap='1.63rem'>
         <GridItem width='100%'>
           {leftInputFields.map(
             ({ label, ariaLabel, placeholder, type, name }) => (
@@ -199,6 +208,20 @@ export const RegistrationForm: React.FC = () => {
               </Box>
             )
           )}
+        </GridItem>
+        <GridItem width='100%' colSpan={2}>
+          <Box>
+            <InputField
+              type='text'
+              label='Mobile Number'
+              placeholder='Enter Mobile Number'
+              arial-label='mobile-number'
+              height='3rem'
+              isError={!!errors.mobileNumber}
+              errorMessage={errors.mobileNumber?.message}
+              {...register('mobileNumber')}
+            />
+          </Box>
         </GridItem>
       </Grid>
 

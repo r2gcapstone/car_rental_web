@@ -3,17 +3,17 @@ import {
   signInWithEmailAndPassword
 } from 'firebase/auth'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from 'services/firebase'
 import { SharedServices } from '../shared'
 import { auth } from 'services/firebase'
-import { doc, updateDoc } from 'firebase/firestore'
-import { db } from 'services/firebase'
 import swal from 'sweetalert2'
 
 export class AuthServices {
   public uploadAvatar = async (docId: string, image: File[]) => {
     try {
       const storage = getStorage()
-      const documentRef = doc(db, 'users', docId)
+      const documentRef = doc(db, 'adminUsers', docId)
       const imageRef = ref(storage, `avatarProfile/${image[0].name}`)
       const uploadAvatar = await uploadBytes(imageRef, image[0])
       const getUrl = await getDownloadURL(uploadAvatar.ref)
@@ -41,7 +41,14 @@ export class AuthServices {
   ) => {
     try {
       const { saveDocument } = new SharedServices()
-      const config = { email, password, ...data }
+      const config = {
+        ...data,
+        email,
+        password,
+        dateCreated: serverTimestamp(),
+        deactivatedAt: ''
+      }
+
       const response = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -50,7 +57,7 @@ export class AuthServices {
 
       response &&
         saveDocument({
-          collectionName: 'users',
+          collectionName: 'adminUsers',
           data: config,
           authId: response?.user?.uid
         })
