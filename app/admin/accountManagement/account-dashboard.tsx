@@ -1,7 +1,11 @@
 import { Button, Flex, Icon, Text, Box } from '@chakra-ui/react'
-import { AccountTable } from './components'
+import {
+  AccountTable,
+  AccountStatisticsModal,
+  RegisteredUserModal
+} from './components'
 import { InfoIcon, InputField, PlusIcon, SearchIcon } from 'components'
-import { useFetchAll } from 'lib'
+import { useFetchAll, useAccountManagementActions } from 'lib'
 import { formatDateCreated } from 'helpers'
 import Link from 'next/link'
 
@@ -19,6 +23,7 @@ interface AccountDataTypes {
 
 export const AccountDashboard: React.FC = () => {
   const { data, loading } = useFetchAll('adminUsers')
+  const { isOpenStatistics } = useAccountManagementActions()
 
   const accountTypes = data as AccountDataTypes[]
 
@@ -56,6 +61,7 @@ export const AccountDashboard: React.FC = () => {
               padding='1rem'
               height='10px'
               fontWeight='normal'
+              onClick={() => isOpenStatistics('statistics')}
             >
               Statistics of Registered Users
             </Button>
@@ -94,6 +100,10 @@ export const AccountDashboard: React.FC = () => {
         </Flex>
       </Flex>
       <AccountTable users={users} loading={loading} />
+
+      {/* Account Modals */}
+      <AccountStatisticsModal />
+      <RegisteredUserModal />
     </Box>
   )
 }
