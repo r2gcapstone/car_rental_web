@@ -21,17 +21,30 @@ import {
   SortingState,
   useReactTable
 } from '@tanstack/react-table'
-import { ViewIcon, TooltipText, LazySpinner } from 'components'
+import { ViewIcon, TooltipText, LazySpinner, Pagination } from 'components'
 import { AccountTableTypes } from '../helpers/constant'
 
 interface UserDataTypes {
   users: AccountTableTypes[]
   loading: boolean
+  jumpPerPage: (id: number) => void
+  previousPage: () => void
+  nextPage: () => void
+  numbers: number[]
+  currentPage: number
 }
 
 const columnHelper = createColumnHelper<AccountTableTypes>()
 
-export const AccountTable: React.FC<UserDataTypes> = ({ users, loading }) => {
+export const AccountTable: React.FC<UserDataTypes> = ({
+  users,
+  loading,
+  jumpPerPage,
+  previousPage,
+  nextPage,
+  numbers,
+  currentPage
+}) => {
   const [sorting, setSorting] = useState<SortingState>([])
 
   const columns = useMemo(
@@ -149,6 +162,15 @@ export const AccountTable: React.FC<UserDataTypes> = ({ users, loading }) => {
           ))}
         </Tbody>
       </Table>
+
+      <Pagination
+        numbers={numbers}
+        nextPage={nextPage}
+        previousPage={previousPage}
+        jumpPerPage={jumpPerPage}
+        totalPage={numbers.length}
+        currentPage={currentPage}
+      />
     </TableContainer>
   )
 }

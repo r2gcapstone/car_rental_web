@@ -18,13 +18,19 @@ interface AccountDataTypes {
 }
 
 export const AccountDashboard: React.FC = () => {
-  const { data, loading } = useFetchAll('adminUsers')
+  const {
+    records,
+    loading,
+    nextPage,
+    previousPage,
+    jumpPerPage,
+    currentPage,
+    numbers
+  } = useFetchAll<AccountDataTypes>('adminUsers')
   const { isOpenStatistics, triggerNewUserModal } =
     useAccountManagementActions()
 
-  const accountTypes = data as AccountDataTypes[]
-
-  const users = accountTypes.map(
+  const users = records.map(
     ({ dateCreated, email, firstName, lastName, address, mobileNumber }) => ({
       dateCreated: dateCreated,
       email,
@@ -95,7 +101,15 @@ export const AccountDashboard: React.FC = () => {
           </Button>
         </Flex>
       </Flex>
-      <AccountTable users={users} loading={loading} />
+      <AccountTable
+        numbers={numbers}
+        users={users}
+        loading={loading}
+        nextPage={nextPage}
+        previousPage={previousPage}
+        jumpPerPage={jumpPerPage}
+        currentPage={currentPage}
+      />
 
       {/* Account Modals */}
       <AccountStatisticsModal />
