@@ -3,6 +3,7 @@ import { Stack, Box, Grid, GridItem, Button } from '@chakra-ui/react'
 import { EmailRegEx } from 'helpers'
 import { useAccount } from 'lib'
 import { useForm } from 'react-hook-form'
+import { SignUpTypes } from 'helpers'
 
 type Names =
   | 'email'
@@ -12,15 +13,6 @@ type Names =
   | 'password'
   | 'confirmPassword'
 
-interface SignUpTypes {
-  email: string
-  firstName: string
-  lastName: string
-  address: string
-  password: string
-  confirmPassword: string
-  mobileNumber: string
-}
 interface InputFieldTypes {
   label: string
   name: Names
@@ -88,7 +80,7 @@ export const RegistrationForm: React.FC = () => {
       isCheckError = true
     }
 
-    if (firstName.length === 50) {
+    if (firstName?.length === 50) {
       setError('firstName', {
         type: 'server',
         message: 'Maximum 50 characters only.'
@@ -96,7 +88,7 @@ export const RegistrationForm: React.FC = () => {
       isCheckError = true
     }
 
-    if (lastName.length === 50) {
+    if (lastName?.length === 50) {
       setError('lastName', {
         message: 'Maximum 50 characters only.'
       })

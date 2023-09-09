@@ -1,4 +1,5 @@
-const formatDoubleDigit = (args: number): string => ('0' + (args + 1)).slice(-2)
+export const formatDoubleDigit = (args: number): string =>
+  ('0' + (args + 1)).slice(-2)
 
 export const formatDateCreated = (dateCreated: number): string => {
   const date = new Date(dateCreated * 1000)
@@ -7,7 +8,8 @@ export const formatDateCreated = (dateCreated: number): string => {
   const month = formatDoubleDigit(date.getMonth())
   const day = formatDoubleDigit(date.getDate())
 
-  const formattedDate = `${month}/${day}/${year}`
+  const formattedDate =
+    dateCreated !== undefined ? `${month}/${day}/${year}` : ''
 
   return formattedDate
 }

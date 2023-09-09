@@ -2,18 +2,14 @@ import { Button, Flex, Icon, Text, Box } from '@chakra-ui/react'
 import {
   AccountTable,
   AccountStatisticsModal,
-  RegisteredUserModal
+  RegisteredUserModal,
+  AddNewUserModal
 } from './components'
 import { InfoIcon, InputField, PlusIcon, SearchIcon } from 'components'
 import { useFetchAll, useAccountManagementActions } from 'lib'
-import { formatDateCreated } from 'helpers'
-import Link from 'next/link'
 
 interface AccountDataTypes {
-  dateCreated: {
-    seconds: number
-    nanoseconds: number
-  }
+  dateCreated: string
   email: string
   firstName: string
   lastName: string
@@ -23,13 +19,14 @@ interface AccountDataTypes {
 
 export const AccountDashboard: React.FC = () => {
   const { data, loading } = useFetchAll('adminUsers')
-  const { isOpenStatistics } = useAccountManagementActions()
+  const { isOpenStatistics, triggerNewUserModal } =
+    useAccountManagementActions()
 
   const accountTypes = data as AccountDataTypes[]
 
   const users = accountTypes.map(
     ({ dateCreated, email, firstName, lastName, address, mobileNumber }) => ({
-      dateCreated: formatDateCreated(dateCreated.seconds) || 'N/A',
+      dateCreated: dateCreated,
       email,
       fullName: `${firstName} ${lastName}`,
       address,
@@ -65,18 +62,17 @@ export const AccountDashboard: React.FC = () => {
             >
               Statistics of Registered Users
             </Button>
-            <Link href='/sign-up'>
-              <Button
-                background='blue.dark'
-                fontSize='1.25rem'
-                padding='1rem'
-                height='10px'
-                fontWeight='normal'
-              >
-                Add user
-                <Icon as={PlusIcon} width='1.5rem' height='1.5rem' ml='2' />
-              </Button>
-            </Link>
+            <Button
+              background='blue.dark'
+              fontSize='1.25rem'
+              padding='1rem'
+              height='10px'
+              fontWeight='normal'
+              onClick={() => triggerNewUserModal(true)}
+            >
+              Add user
+              <Icon as={PlusIcon} width='1.5rem' height='1.5rem' ml='2' />
+            </Button>
           </Flex>
         </Flex>
 
@@ -104,6 +100,7 @@ export const AccountDashboard: React.FC = () => {
       {/* Account Modals */}
       <AccountStatisticsModal />
       <RegisteredUserModal />
+      <AddNewUserModal />
     </Box>
   )
 }

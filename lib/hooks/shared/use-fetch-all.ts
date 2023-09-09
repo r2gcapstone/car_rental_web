@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { db } from 'services'
+import { useRefetchData } from 'services/zustandVariables'
 import { query, collection, onSnapshot, DocumentData } from 'firebase/firestore'
 
 interface UseFetchAllTypes {
@@ -10,6 +11,7 @@ interface UseFetchAllTypes {
 export const useFetchAll = (collectionName: string): UseFetchAllTypes => {
   const [data, setData] = useState<DocumentData>([])
   const [loading, setLoading] = useState<boolean>(false)
+  const isRefetching = useRefetchData((state) => state.isRefetch)
 
   const fetchData = (): void => {
     const docQuery = query(collection(db, collectionName))
@@ -29,7 +31,7 @@ export const useFetchAll = (collectionName: string): UseFetchAllTypes => {
     })
   }
 
-  useEffect(fetchData, [collectionName])
+  useEffect(fetchData, [collectionName, isRefetching])
 
   return {
     data,

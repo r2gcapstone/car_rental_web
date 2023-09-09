@@ -29,7 +29,7 @@ export const RegisteredUserModal: React.FC = () => {
     'show-all'
   ]
 
-  const isOpen = menuTypes.includes(menu) && openModal
+  const isOpen = menuTypes.includes(menu || '') && openModal
 
   return (
     <ModalContainer

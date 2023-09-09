@@ -3,12 +3,12 @@ import {
   signInWithEmailAndPassword
 } from 'firebase/auth'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore'
+import { doc, updateDoc } from 'firebase/firestore'
+import { formatDoubleDigit } from 'helpers'
 import { db } from 'services/firebase'
 import { SharedServices } from '../shared'
 import { auth } from 'services/firebase'
 import swal from 'sweetalert2'
-
 export class AuthServices {
   public uploadAvatar = async (docId: string, image: File[]) => {
     try {
@@ -34,6 +34,31 @@ export class AuthServices {
     }
   }
 
+  public authRegisterAdmin = async <FormValues>(
+    email: string,
+    password: string,
+    data: FormValues,
+    image: File[]
+  ) => {
+    try {
+      const { uploadNewImage } = new SharedServices()
+      const { getUrl } = await uploadNewImage(image)
+      const config = { ...data, imageUrl: getUrl }
+
+      const response = await this.authRegister(email, password, config)
+
+      return {
+        authId: response?.authId
+      }
+    } catch (error) {
+      swal.fire({
+        title: 'ERROR!',
+        text: 'email already exist.',
+        icon: 'error'
+      })
+    }
+  }
+
   public authRegister = async <FormValues>(
     email: string,
     password: string,
@@ -41,11 +66,17 @@ export class AuthServices {
   ) => {
     try {
       const { saveDocument } = new SharedServices()
+      const date = new Date()
+
+      const year = date.getFullYear()
+      const month = formatDoubleDigit(date.getMonth())
+      const day = formatDoubleDigit(date.getDate())
+
       const config = {
         ...data,
         email,
         password,
-        dateCreated: serverTimestamp(),
+        dateCreated: `${month}/${day}/${year}`,
         deactivatedAt: ''
       }
 

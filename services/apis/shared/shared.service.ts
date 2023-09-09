@@ -6,9 +6,23 @@ import {
   doc,
   updateDoc
 } from 'firebase/firestore'
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db } from 'services/firebase'
 
 export class SharedServices {
+  public uploadNewImage = async (
+    image: File[]
+  ): Promise<{ getUrl: string }> => {
+    const storage = getStorage()
+    const imageRef = ref(storage, `avatarProfile/${image[0].name}`)
+    const uploadAvatar = await uploadBytes(imageRef, image[0])
+    const getUrl = await getDownloadURL(uploadAvatar.ref)
+
+    return {
+      getUrl
+    }
+  }
+
   public saveDocument = async <FormValue extends DocumentData>(args: {
     data: FormValue
     collectionName: string
