@@ -79,6 +79,8 @@ export const AddNewUserModal: React.FC = () => {
         image: state.rawImage || ''
       })
       triggerNewUserModal(false)
+      clearErrors()
+      setState({ rawImage: [], preview: '' })
       reset()
     }
 
