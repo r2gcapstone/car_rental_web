@@ -10,7 +10,7 @@ import {
   Text,
   Icon
 } from '@chakra-ui/react'
-import { CloseIcon } from 'components'
+import { CloseIcon, NavigateIcon } from 'components'
 
 interface ModalContainerProps extends ModalProps {
   title?: string
@@ -19,6 +19,9 @@ interface ModalContainerProps extends ModalProps {
   modalHeaderProps?: ModalHeaderProps
   overflow?: string
   modalHeight?: string
+  showIcon?: boolean
+  modalWidth?: string
+  background?: string
 }
 
 export const ModalContainer: React.FC<ModalContainerProps> = ({
@@ -29,15 +32,18 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   modalHeaderProps,
   overflow = 'hidden',
   modalHeight,
+  showIcon = false,
+  modalWidth = '2xl',
+  background = 'blue.dark',
   ...rest
 }) => {
   const { onClose } = rest
 
   return (
-    <Modal size='2xl' isCentered {...rest} autoFocus={false}>
+    <Modal size={modalWidth} isCentered {...rest} autoFocus={false}>
       <ModalOverlay />
       <ModalContent
-        bg='blue.dark'
+        bg={background}
         p='0'
         transition='max-width 0.4s ease-in-out'
         borderRadius='lg'
@@ -58,7 +64,10 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
               justifyContent='space-between'
               alignItems='center'
             >
-              <Text fontSize='1rem'>{title}</Text>
+              <Flex alignItems='center' gap='2'>
+                {showIcon && <Icon as={NavigateIcon} width={50} height={50} />}
+                <Text fontSize='1rem'>{title}</Text>
+              </Flex>
               <Icon cursor='pointer' as={CloseIcon} onClick={onClose} />
             </Flex>
           </ModalHeader>

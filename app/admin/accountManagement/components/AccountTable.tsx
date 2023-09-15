@@ -21,6 +21,7 @@ import {
   SortingState,
   useReactTable
 } from '@tanstack/react-table'
+import { useAccountManagementActions } from 'lib'
 import { ViewIcon, TooltipText, LazySpinner, Pagination } from 'components'
 import { AccountTableTypes } from '../helpers/constant'
 
@@ -46,6 +47,7 @@ export const AccountTable: React.FC<UserDataTypes> = ({
   currentPage
 }) => {
   const [sorting, setSorting] = useState<SortingState>([])
+  const { triggerDeactivateModal } = useAccountManagementActions()
 
   const columns = useMemo(
     () => [
@@ -76,9 +78,10 @@ export const AccountTable: React.FC<UserDataTypes> = ({
       }),
       columnHelper.accessor('action', {
         header: 'View',
-        cell: () => (
+        cell: ({ row }) => (
           <Icon
             as={ViewIcon}
+            onClick={() => triggerDeactivateModal(true, row.original)}
             width='2.23438rem'
             height='1.40625rem'
             cursor='pointer'
@@ -87,7 +90,7 @@ export const AccountTable: React.FC<UserDataTypes> = ({
         sortDescFirst: true
       })
     ],
-    []
+    [triggerDeactivateModal]
   )
 
   const table = useReactTable({

@@ -1,7 +1,7 @@
 import { useAccountManagementActions } from 'lib'
 import { useStatisticsModal } from 'services/zustandVariables'
 import { shallow } from 'zustand/shallow'
-import { Center, Text } from '@chakra-ui/react'
+import { Flex, Text, Button } from '@chakra-ui/react'
 import { ModalContainer } from 'components'
 
 export const RegisteredUserModal: React.FC = () => {
@@ -36,17 +36,27 @@ export const RegisteredUserModal: React.FC = () => {
       title='Statistics of registered user'
       isOpen={!!isOpen}
       onClose={isCloseStatistics}
+      showIcon={true}
+      modalWidth='sm'
     >
-      <Center
-        borderTop='1px solid white'
-        padding='1rem'
-        cursor='pointer'
-        _hover={{
-          background: 'blue.slitedark'
-        }}
+      <Flex
+        paddingX='1.5rem'
+        paddingBottom='2rem'
+        flexDirection='column'
+        gap='1rem'
       >
+        <Text fontSize='1.375rem'>As of 07:30 AM June 09, 203</Text>
         <Text>{registeredStatisticsMenu[menu || '']}</Text>
-      </Center>
+        <Button
+          mt='2rem'
+          type='button'
+          background='red'
+          width='100%'
+          fontSize='1rem'
+        >
+          Download PDF
+        </Button>
+      </Flex>
     </ModalContainer>
   )
 }

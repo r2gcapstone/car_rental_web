@@ -12,6 +12,9 @@ export const colors = {
     slitedark: '#526D82',
     lightblue: '#DDE6ED'
   },
+  orange: {
+    primary: '#FF9A04'
+  },
   white: {
     0: '#FFFFFF'
   },

@@ -1,11 +1,7 @@
 import { MenuTypes } from 'services/zustandVariables'
+import { UserDataTypes } from 'services/zustandVariables'
 
-export interface AccountTableTypes {
-  dateCreated: string
-  email: string
-  fullName: string
-  address: string
-  mobileNumber: string
+export interface AccountTableTypes extends UserDataTypes {
   action?: string
 }
 

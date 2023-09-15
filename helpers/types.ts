@@ -8,3 +8,13 @@ export interface SignUpTypes {
   mobileNumber: string
   uploadImage?: File[]
 }
+
+export interface AccountDataTypes {
+  dateCreated: string
+  email: string
+  firstName: string
+  lastName: string
+  address: string
+  mobileNumber: string
+  imageUrl: string
+}
