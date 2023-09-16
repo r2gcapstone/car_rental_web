@@ -1,5 +1,6 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 import { AuthServices } from 'services/apis'
+import { SharedServices } from 'services/apis/shared'
 import {
   useGetRegistration,
   useRefetchData,
@@ -8,6 +9,7 @@ import {
 import { shallow } from 'zustand/shallow'
 import { setCookie, deleteCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
+import { timeAndDate } from 'helpers'
 import swal from 'sweetalert2'
 
 interface UseAccountTypes {
@@ -27,6 +29,7 @@ interface UseAccountTypes {
     config: FormValues
     image: File[]
   }) => Promise<void>
+  changeAccountStatus: (id: string, isDeactivate: boolean) => Promise<void>
   checkLoading: () => void
   signOut: () => void
   signIn: (email: string, password: string) => Promise<void>
@@ -57,6 +60,33 @@ export const useAccount = (): UseAccountTypes => {
 
   const subscribeLoading = (): void => isCheckLoagind(true)
   const unSubscribeLoading = (): void => isCheckLoagind(false)
+
+  const changeAccountStatus = async (
+    id: string,
+    isDeactivate = false
+  ): Promise<void> => {
+    const { updateDocument } = new SharedServices()
+
+    const { dateOnly } = timeAndDate()
+
+    const args = {
+      docId: id,
+      data: { deactivatedAt: isDeactivate ? dateOnly : '' },
+      collectionName: 'adminUsers'
+    }
+
+    await updateDocument(args)
+
+    const { isConfirmed } = await swal.fire({
+      title: 'Success',
+      text: 'successfully deactivated this account',
+      icon: 'success'
+    })
+
+    if (isConfirmed) {
+      updateRefetch(true)
+    }
+  }
 
   const validateStrongPassword = (
     password: string
@@ -161,6 +191,7 @@ export const useAccount = (): UseAccountTypes => {
   }
 
   return {
+    changeAccountStatus,
     checkLoading,
     uploadAvatar,
     registerUserAdmin,

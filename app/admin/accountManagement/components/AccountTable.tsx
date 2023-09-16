@@ -76,6 +76,30 @@ export const AccountTable: React.FC<UserDataTypes> = ({
         cell: ({ row }) => <Text>{row.original.mobileNumber}</Text>,
         sortDescFirst: true
       }),
+      columnHelper.accessor('deactivatedAt', {
+        header: 'status.',
+        cell: ({ row }) => {
+          const status =
+            row.original.deactivatedAt === '' ? 'activated' : 'deactivated'
+
+          return (
+            <Center
+              bg={status === 'activated' ? 'green.500' : 'red.500'}
+              p='0.2rem'
+              rounded='xl'
+            >
+              <Text
+                textTransform='uppercase'
+                fontWeight='bold'
+                fontSize='0.9rem'
+              >
+                {status}
+              </Text>
+            </Center>
+          )
+        },
+        sortDescFirst: true
+      }),
       columnHelper.accessor('action', {
         header: 'View',
         cell: ({ row }) => (

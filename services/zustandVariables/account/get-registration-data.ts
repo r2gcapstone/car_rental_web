@@ -21,7 +21,7 @@ interface UseGetRegistrationTypes extends RegistrationTypes {
 export const initialState: RegistrationTypes = {
   email: '',
   authId: '',
-  step: 'success',
+  step: 'registrationForm',
   loading: false
 }
 

@@ -49,20 +49,24 @@ export const AccountDashboard: React.FC = () => {
 
   const users = records.map(
     ({
+      id,
       dateCreated,
       email,
       firstName,
       lastName,
       address,
       mobileNumber,
-      imageUrl
+      imageUrl,
+      deactivatedAt
     }) => ({
+      id,
       dateCreated: dateCreated,
       email,
       fullName: `${firstName} ${lastName}`,
       address,
       mobileNumber: mobileNumber || 'N/A',
-      imageUrl
+      imageUrl,
+      deactivatedAt
     })
   )
 

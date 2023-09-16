@@ -1,11 +1,13 @@
 import { create } from 'zustand'
 
 export interface UserDataTypes {
+  id?: string
   dateCreated: string
   email: string
   fullName: string
   address: string
   mobileNumber: string
+  deactivatedAt?: string
   imageUrl?: string
 }
 
@@ -16,6 +18,7 @@ interface UseDeactivateAccount {
 }
 
 export const initialDataState = {
+  id: '',
   dateCreated: '',
   email: '',
   fullName: '',

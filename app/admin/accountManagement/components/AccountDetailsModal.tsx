@@ -2,17 +2,29 @@ import {
   useDeactivateAccount,
   initialDataState
 } from 'services/zustandVariables'
-import { useAccountManagementActions } from 'lib'
+import { useAccountManagementActions, useAccount } from 'lib'
 import { Flex, Box, Image, Text, Button } from '@chakra-ui/react'
 import { ModalContainer } from 'components'
 import { shallow } from 'zustand/shallow'
+import { colors } from 'theme/colors'
+import swal from 'sweetalert2'
 
 export const AccountDetailsModal: React.FC = () => {
   const {
     isOpen,
-    data: { fullName, address, email, mobileNumber, imageUrl, dateCreated }
+    data: {
+      id,
+      fullName,
+      address,
+      email,
+      mobileNumber,
+      imageUrl,
+      dateCreated,
+      deactivatedAt
+    }
   } = useDeactivateAccount((state) => ({ ...state }), shallow)
   const { triggerDeactivateModal } = useAccountManagementActions()
+  const { changeAccountStatus } = useAccount()
 
   const userDetails = [
     {
@@ -32,6 +44,43 @@ export const AccountDetailsModal: React.FC = () => {
       content: mobileNumber
     }
   ]
+
+  const isStatusChange = async (
+    isDeactivate: boolean,
+    message: string
+  ): Promise<void> => {
+    triggerDeactivateModal(false, initialDataState)
+    const { isConfirmed, isDenied } = await swal.fire({
+      title: 'Are you sure?',
+      text: message,
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Yes',
+      denyButtonText: 'No',
+      confirmButtonColor: colors.red[0],
+      denyButtonColor: colors.blue.dark,
+      icon: 'question'
+    })
+
+    if (isConfirmed) {
+      changeAccountStatus(id as string, isDeactivate)
+      return
+    }
+
+    if (isDenied) {
+      swal.fire('Changes are not saved', '', 'info')
+    }
+  }
+
+  const onDeactivateAccount = (): void => {
+    isStatusChange(true, 'The user will not be able to access this account.')
+  }
+
+  const onActivateAccount = (): void => {
+    isStatusChange(false, 'The user will be able to access this account again.')
+  }
+
+  const isCheckDeactivate = deactivatedAt !== ''
 
   return (
     <ModalContainer
@@ -80,8 +129,15 @@ export const AccountDetailsModal: React.FC = () => {
             ))}
           </Flex>
         </Flex>
-        <Button bg='red' width='100%' fontSize='1.2rem' mt='2rem'>
-          Deactivate Account
+        <Button
+          type='button'
+          bg={isCheckDeactivate ? 'green.0' : 'red'}
+          width='100%'
+          fontSize='1.2rem'
+          mt='2rem'
+          onClick={isCheckDeactivate ? onActivateAccount : onDeactivateAccount}
+        >
+          {isCheckDeactivate ? 'Activate account' : 'Deactivate Account'}
         </Button>
       </Box>
     </ModalContainer>

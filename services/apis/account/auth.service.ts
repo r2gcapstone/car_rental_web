@@ -4,11 +4,12 @@ import {
 } from 'firebase/auth'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { doc, updateDoc } from 'firebase/firestore'
-import { formatDoubleDigit } from 'helpers'
+import { timeAndDate } from 'helpers'
 import { db } from 'services/firebase'
 import { SharedServices } from '../shared'
 import { auth } from 'services/firebase'
 import swal from 'sweetalert2'
+
 export class AuthServices {
   public uploadAvatar = async (docId: string, image: File[]) => {
     try {
@@ -66,17 +67,13 @@ export class AuthServices {
   ) => {
     try {
       const { saveDocument } = new SharedServices()
-      const date = new Date()
-
-      const year = date.getFullYear()
-      const month = formatDoubleDigit(date.getMonth())
-      const day = formatDoubleDigit(date.getDate())
+      const { dateOnly } = timeAndDate()
 
       const config = {
         ...data,
         email,
         password,
-        dateCreated: `${month}/${day}/${year}`,
+        dateCreated: dateOnly,
         deactivatedAt: ''
       }
 
@@ -111,8 +108,25 @@ export class AuthServices {
 
   public signInService = async (email: string, password: string) => {
     try {
+      const { getSpecificDoc } = new SharedServices()
+
       const response = await signInWithEmailAndPassword(auth, email, password)
       const token = auth.currentUser?.getIdToken()
+
+      const authId = auth.currentUser?.uid as string
+
+      const { isDeactivated } = await getSpecificDoc(authId as string)
+
+      if (isDeactivated) {
+        this.signOut()
+
+        swal.fire({
+          title: 'Error',
+          text: 'this account is no longer working',
+          icon: 'error'
+        })
+        return
+      }
 
       return {
         response,

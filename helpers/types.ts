@@ -10,11 +10,13 @@ export interface SignUpTypes {
 }
 
 export interface AccountDataTypes {
+  id: string
   dateCreated: string
   email: string
   firstName: string
   lastName: string
   address: string
   mobileNumber: string
+  deactivatedAt: string
   imageUrl: string
 }

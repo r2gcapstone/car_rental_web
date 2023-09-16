@@ -4,12 +4,28 @@ import {
   setDoc,
   DocumentData,
   doc,
-  updateDoc
+  updateDoc,
+  getDoc
 } from 'firebase/firestore'
+import { AuthServices } from '../account'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db } from 'services/firebase'
 
 export class SharedServices {
+  public getSpecificDoc = async (
+    authId: string
+  ): Promise<{ isDeactivated: boolean }> => {
+    // check if user account is deactivated or not
+    const docRef = doc(db, 'adminUsers', authId)
+    const docSnap = await getDoc(docRef)
+
+    const isDeactivated = docSnap && !!docSnap.data()?.deactivatedAt
+
+    return {
+      isDeactivated
+    }
+  }
+
   public uploadNewImage = async (
     image: File[]
   ): Promise<{ getUrl: string }> => {

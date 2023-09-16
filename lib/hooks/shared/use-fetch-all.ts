@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { db } from 'services'
 import { useRefetchData } from 'services/zustandVariables'
 import { query, collection, onSnapshot, DocumentData } from 'firebase/firestore'
+import { shallow } from 'zustand/shallow'
 
 interface UseFetchAllTypes<AccountDataTypes> {
   data: DocumentData
@@ -27,7 +28,10 @@ export const useFetchAll = <AccountDataTypes>(
   const records = data.slice(firstIndex, lastIndex)
   const numberOfPage = Math.ceil(data.length / countPerPage)
   const numbers = Array.from({ length: numberOfPage }, (_, i) => i + 1)
-  const isRefetching = useRefetchData((state) => state.isRefetch)
+  const { updateRefetch, isRefetch } = useRefetchData(
+    (state) => ({ ...state }),
+    shallow
+  )
 
   const fetchData = (): void => {
     const docQuery = query(collection(db, collectionName))
@@ -44,10 +48,11 @@ export const useFetchAll = <AccountDataTypes>(
 
       setData(userArray)
       setLoading(false)
+      updateRefetch(false)
     })
   }
 
-  useEffect(fetchData, [collectionName, isRefetching])
+  useEffect(fetchData, [collectionName, isRefetch])
 
   const jumpPerPage = (id: number): void => {
     setCurrentPage(id)
