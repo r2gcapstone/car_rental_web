@@ -5,92 +5,77 @@ import {
 } from 'lib'
 import { useStatisticsModal } from 'services/zustandVariables'
 import { shallow } from 'zustand/shallow'
-import { Flex, Text, Button } from '@chakra-ui/react'
-import { ModalContainer } from 'components'
-import { AccountDataTypes } from 'helpers'
-import { timeAndDate } from 'helpers'
+import { Flex, Text } from '@chakra-ui/react'
+import { ModalContainer, PDFDocument } from 'components'
+import { PDFDownloadLink, StyleSheet } from '@react-pdf/renderer'
+import { AccountDataTypes, timeAndDate } from 'helpers'
 import {
   findHighestRegisteredDate,
   findHighestRegisteredPerMonth
 } from 'helpers'
 import { ReactElement } from 'react'
 
+interface StatistcsObjectTypes {
+  content: string
+  value: number[] | number
+}
+
 interface ShowAllTypes {
   isOpen: boolean
   isClose: () => void
-  todayCount: number
-  highestPerDay: number
-  highestCountMonths: number[]
-  allUsersCount: number
+  registeredStatisticsObject: StatistcsObjectTypes[]
+  PDFData: StatistcsObjectTypes[]
   dateTime: string
 }
+
+const style = StyleSheet.create({
+  button: {
+    textAlign: 'center',
+    color: 'white',
+    backgroundColor: 'red',
+    width: '100%',
+    padding: '0.5rem',
+    borderRadius: '0.5rem'
+  }
+})
 
 const ShowAll: React.FC<ShowAllTypes> = ({
   isOpen,
   isClose,
-  highestPerDay,
-  todayCount,
-  highestCountMonths,
-  allUsersCount,
-  dateTime
-}) => {
-  const registeredStatisticsObject = [
-    {
-      content: 'Number of New Registered Users:',
-      total: todayCount
-    },
-    {
-      content: 'Average Number of New Registered Users (Per Day):',
-      total: highestPerDay
-    },
-    {
-      content: 'Average Number of New Registered Users (Monthly):',
-      total: highestCountMonths
-    },
-    {
-      content: 'Total Registered Users (All-Time):',
-      total: allUsersCount
-    }
-  ]
-
-  return (
-    <ModalContainer
-      title='Statistics of registered user'
-      isOpen={!!isOpen}
-      onClose={isClose}
-      showIcon={true}
-      modalWidth='lg'
+  registeredStatisticsObject,
+  dateTime,
+  PDFData
+}) => (
+  <ModalContainer
+    title='Statistics of registered user'
+    isOpen={!!isOpen}
+    onClose={isClose}
+    showIcon={true}
+    modalWidth='lg'
+  >
+    <Flex
+      paddingX='1.5rem'
+      paddingBottom='2rem'
+      flexDirection='column'
+      gap='1rem'
     >
-      <Flex
-        paddingX='1.5rem'
-        paddingBottom='2rem'
-        flexDirection='column'
-        gap='1rem'
+      <Text fontSize='1.375rem'>{dateTime}</Text>
+      {registeredStatisticsObject.map(({ content, value }) => (
+        <Flex key={content} alignItems='center' justifyContent='space-between'>
+          <Text fontSize='1rem'>{content}</Text>
+          <Text fontWeight='bold'>{value}</Text>
+        </Flex>
+      ))}
+      <PDFDownloadLink
+        document={<PDFDocument data={PDFData} />}
+        fileName='download.pdf'
+        style={style.button}
       >
-        <Text fontSize='1.375rem'>{dateTime}</Text>
-        {registeredStatisticsObject.map(({ content, total }) => (
-          <Flex
-            key={content}
-            alignItems='center'
-            justifyContent='space-between'
-          >
-            <Text fontSize='1rem'>{content}</Text>
-            <Text fontWeight='bold'>{total}</Text>
-          </Flex>
-        ))}
-        <Button
-          mt='2rem'
-          type='button'
-          background='red'
-          width='100%'
-          fontSize='1rem'
-        >
-          Download PDF
-        </Button>
-      </Flex>
-    </ModalContainer>
-  )
-}
+        Download PDF
+      </PDFDownloadLink>
+    </Flex>
+  </ModalContainer>
+)
 
 export const RegisteredUserModal: React.FC = () => {
   const { menu, isOpen: openModal } = useStatisticsModal(
@@ -122,22 +107,89 @@ export const RegisteredUserModal: React.FC = () => {
 
   const isOpen = menuTypes.includes(menu || '') && openModal
 
+  const todayCount = perDay.length
+  const highestPerDay = highestCount
+  const highestCountMonthsNum = Object.values(highestCountMonths)
+  const allUsersCounts = allUsers.length
+
+  const registeredStatisticsObject: {
+    [key: string]: StatistcsObjectTypes[]
+  } = {
+    today: [
+      {
+        content: 'Number of New Registered Users:',
+        value: todayCount
+      }
+    ],
+    'per-day': [
+      {
+        content: 'Average Number of New Registered Users (Per Day):',
+        value: highestPerDay
+      }
+    ],
+    monthly: [
+      {
+        content: 'Average Number of New Registered Users (Monthly):',
+        value: highestCountMonthsNum
+      }
+    ],
+    'all-time': [
+      {
+        content: 'Average Number of New Registered Users (Monthly):',
+        value: highestCountMonthsNum
+      }
+    ],
+    'show-all': [
+      {
+        content: 'Number of New Registered Users:',
+        value: todayCount
+      },
+      {
+        content: 'Average Number of New Registered Users (Per Day):',
+        value: highestPerDay
+      },
+      {
+        content: 'Average Number of New Registered Users (Monthly):',
+        value: highestCountMonthsNum
+      },
+      {
+        content: 'Total Registered Users (All-Time):',
+        value: allUsersCounts
+      }
+    ]
+  }
+
+  const showAllStatistics = [
+    {
+      content: 'Number of New Registered Users:',
+      value: todayCount
+    },
+    {
+      content: 'Average Number of New Registered Users (Per Day):',
+      value: highestPerDay
+    },
+    {
+      content: 'Average Number of New Registered Users (Monthly):',
+      value: highestCountMonthsNum
+    },
+    {
+      content: 'Total Registered Users (All-Time):',
+      value: allUsersCounts
+    }
+  ]
+
   const registeredStatisticsMenu: { [key: string]: string | ReactElement } = {
-    today: `Number of New Registered Users: ${perDay.length}`,
-    'per-day': `Average Number of New Registered Users (Per Day): ${highestCount}`,
-    monthly: `Average Number of New Registered Users (Monthly): ${Object.values(
-      highestCountMonths
-    )}`,
-    'all-time': `Total Registered Users (All-Time): ${allUsers.length}`,
+    today: `Number of New Registered Users: ${todayCount}`,
+    'per-day': `Average Number of New Registered Users (Per Day): ${highestPerDay}`,
+    monthly: `Average Number of New Registered Users (Monthly): ${highestCountMonthsNum}`,
+    'all-time': `Total Registered Users (All-Time): ${allUsersCounts}`,
     'show-all': (
       <ShowAll
         dateTime={dateTime}
         isOpen={!!isOpen}
         isClose={isCloseStatistics}
-        todayCount={perDay.length}
-        highestPerDay={highestCount}
-        highestCountMonths={Object.values(highestCountMonths)}
-        allUsersCount={allUsers.length}
+        registeredStatisticsObject={showAllStatistics}
+        PDFData={registeredStatisticsObject[menu as string]}
       />
     )
   }
@@ -158,15 +210,15 @@ export const RegisteredUserModal: React.FC = () => {
       >
         <Text fontSize='1.375rem'>{dateTime}</Text>
         <Text>{registeredStatisticsMenu[menu || '']}</Text>
-        <Button
-          mt='2rem'
-          type='button'
-          background='red'
-          width='100%'
-          fontSize='1rem'
+        <PDFDownloadLink
+          document={
+            <PDFDocument data={registeredStatisticsObject[menu || '']} />
+          }
+          fileName='download.pdf'
+          style={style.button}
         >
           Download PDF
-        </Button>
+        </PDFDownloadLink>
       </Flex>
     </ModalContainer>
   )
