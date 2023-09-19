@@ -1,9 +1,15 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 import { AuthServices } from 'services/apis'
-import { useGetRegistration } from 'services/zustandVariables'
+import { SharedServices } from 'services/apis/shared'
+import {
+  useGetRegistration,
+  useRefetchData,
+  useLoadingIndicator
+} from 'services/zustandVariables'
 import { shallow } from 'zustand/shallow'
 import { setCookie, deleteCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
+import { timeAndDate } from 'helpers'
 import swal from 'sweetalert2'
 
 interface UseAccountTypes {
@@ -17,6 +23,13 @@ interface UseAccountTypes {
     password: string
     config: FormValues
   }) => Promise<void>
+  registerUserAdmin: <FormValues>(args: {
+    email: string
+    password: string
+    config: FormValues
+    image: File[]
+  }) => Promise<void>
+  changeAccountStatus: (id: string, isDeactivate: boolean) => Promise<void>
   checkLoading: () => void
   signOut: () => void
   signIn: (email: string, password: string) => Promise<void>
@@ -34,12 +47,46 @@ export const useAccount = (): UseAccountTypes => {
     shallow
   )
 
+  const isCheckLoagind = useLoadingIndicator((state) => state.updateLoading)
+
+  const updateRefetch = useRefetchData((state) => state.updateRefetch)
+
   const checkLoading = (): void =>
     updateRegistrationVars({
       ...state,
       step,
       loading: true
     })
+
+  const subscribeLoading = (): void => isCheckLoagind(true)
+  const unSubscribeLoading = (): void => isCheckLoagind(false)
+
+  const changeAccountStatus = async (
+    id: string,
+    isDeactivate = false
+  ): Promise<void> => {
+    const { updateDocument } = new SharedServices()
+
+    const { dateOnly } = timeAndDate()
+
+    const args = {
+      docId: id,
+      data: { deactivatedAt: isDeactivate ? dateOnly : '' },
+      collectionName: 'adminUsers'
+    }
+
+    await updateDocument(args)
+
+    const { isConfirmed } = await swal.fire({
+      title: 'Success',
+      text: 'successfully deactivated this account',
+      icon: 'success'
+    })
+
+    if (isConfirmed) {
+      updateRefetch(true)
+    }
+  }
 
   const validateStrongPassword = (
     password: string
@@ -68,6 +115,34 @@ export const useAccount = (): UseAccountTypes => {
       })
   }
 
+  const registerUserAdmin = async <FormValues>(args: {
+    email: string
+    password: string
+    config: FormValues
+    image: File[]
+  }): Promise<void> => {
+    const { authRegisterAdmin } = new AuthServices()
+    subscribeLoading()
+
+    const response = await authRegisterAdmin(
+      args.email,
+      args.password,
+      args.config,
+      args.image
+    )
+
+    if (response?.authId) {
+      swal.fire({
+        title: 'Success',
+        text: 'successfully added new user',
+        icon: 'success'
+      })
+      unSubscribeLoading()
+    }
+
+    updateRefetch(true)
+  }
+
   const registerUser = async <FormValues>(args: {
     email: string
     password: string
@@ -84,6 +159,8 @@ export const useAccount = (): UseAccountTypes => {
         step: 'uploadImage',
         loading: false
       })
+
+    updateRefetch(true)
   }
 
   const signOut = (): void => {
@@ -114,8 +191,10 @@ export const useAccount = (): UseAccountTypes => {
   }
 
   return {
+    changeAccountStatus,
     checkLoading,
     uploadAvatar,
+    registerUserAdmin,
     validateStrongPassword,
     registerUser,
     signOut,

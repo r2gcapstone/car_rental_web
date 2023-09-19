@@ -25,7 +25,7 @@ export const SignIn: React.FC = () => {
   }
 
   return (
-    <Flex aria-label='sign-in' maxWidth='1200px' height='100%' margin='0 auto'>
+    <Flex aria-label='sign-in' maxWidth='1200px' height='100vh' margin='0 auto'>
       {/* left side panel */}
       <Flex
         flex='1'

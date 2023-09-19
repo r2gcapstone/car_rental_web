@@ -1,2 +1,7 @@
 export * from './get-registration-data'
 export * from './get-user-cred'
+export * from './get-statstics-modal'
+export * from './get-add-new-user-modal'
+export * from './get-refetch-data'
+export * from './get-loading-indicator'
+export * from './get-user-deactivate'

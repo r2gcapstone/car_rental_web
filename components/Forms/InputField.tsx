@@ -12,17 +12,27 @@ interface InputFieldPropTyps extends InputProps {
   inputProps?: InputProps
   isError?: boolean
   errorMessage?: string
+  labelWeight?: string
+  labelSize?: string
 }
 
 type Ref = HTMLInputElement
 
 export const InputField = forwardRef<Ref, InputFieldPropTyps>(
   function InputField(props, ref) {
-    const { label, inputProps, isError = false, errorMessage, ...rest } = props
+    const {
+      label,
+      inputProps,
+      isError = false,
+      errorMessage,
+      labelWeight = 'bold',
+      labelSize = '1.375rem',
+      ...rest
+    } = props
 
     return (
       <FormControl isInvalid={isError} flexDirection='column' gap='2'>
-        <FormLabel fontWeight='bold' fontSize='1.375rem' color='white'>
+        <FormLabel fontWeight={labelWeight} fontSize={labelSize} color='white'>
           {label}
         </FormLabel>
         <Input
