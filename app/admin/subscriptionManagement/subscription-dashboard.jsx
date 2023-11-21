@@ -17,22 +17,34 @@ export const SubscriptionDashboard = () => {
     numbers
   } = useFetchAll('subscription')
   const { handleSubmit, register, watch } = useForm()
-
   const [searchedData, setSearchedData] = useState()
+  const [updateTableKey, setUpdateTableKey] = useState(0)
 
   const watchForm = watch(['vehicleName', 'userName', 'walletNumber'])
 
   console.log(records)
 
-  const subscription = records.map(
-    ({ carId, subscriptionType, vehicleName, walletNumber, userName }) => ({
-      carId,
-      subscriptionType,
-      vehicleName,
-      walletNumber,
-      userName
-    })
-  )
+  //not recommended to filter here, uses query directly n firebase in the future
+
+  const subscription = records
+    .filter((user) => user.status === 'pending')
+    .map(
+      ({
+        id,
+        carId,
+        subscriptionType,
+        vehicleName,
+        walletNumber,
+        userName
+      }) => ({
+        id,
+        carId,
+        subscriptionType,
+        vehicleName,
+        walletNumber,
+        userName
+      })
+    )
 
   const onSearch = (searchData) => {
     const { vehicleName, userName, walletNumber } = searchData
@@ -147,6 +159,7 @@ export const SubscriptionDashboard = () => {
         </Stack>
       </Flex>
       <SubscriptionTable
+        key={setUpdateTableKey}
         numbers={numbers}
         users={searchedData || subscription}
         loading={loading}
