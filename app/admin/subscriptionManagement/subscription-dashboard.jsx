@@ -5,6 +5,11 @@ import { InfoIcon, InputField, SearchIcon } from 'components'
 import { SubscriptionTable } from './components'
 import { useFetchAll } from 'lib'
 import { useForm } from 'react-hook-form'
+import {
+  SubscriptionStatisticsModal,
+  TransactionHistoryModal
+} from './components'
+import { useSubManagementActions } from 'lib'
 
 export const SubscriptionDashboard = () => {
   const {
@@ -22,7 +27,8 @@ export const SubscriptionDashboard = () => {
 
   const watchForm = watch(['vehicleName', 'userName', 'walletNumber'])
 
-  console.log(records)
+  const { isCloseStatistics, isOpenStatistics, isSubHistory } =
+    useSubManagementActions()
 
   //not recommended to filter here, uses query directly n firebase in the future
 
@@ -106,7 +112,7 @@ export const SubscriptionDashboard = () => {
               padding='1rem'
               height='10px'
               fontWeight='normal'
-              // onClick={() => isOpenStatistics('statistics')}
+              onClick={() => isOpenStatistics('statistics')}
             >
               Statistics of Subscription
             </Button>
@@ -116,7 +122,7 @@ export const SubscriptionDashboard = () => {
               padding='1rem'
               height='10px'
               fontWeight='normal'
-              // onClick={() => triggerNewUserModal(true)}
+              onClick={() => isSubHistory(true)}
             >
               View Past Transactions
             </Button>
@@ -170,10 +176,10 @@ export const SubscriptionDashboard = () => {
       />
 
       {/* Account Modals */}
-      {/* <AccountDetailsModal />
-      <AccountStatisticsModal />
-      <RegisteredUserModal />
-      <AddNewUserModal /> */}
+      {/* <AccountDetailsModal /> */}
+      <SubscriptionStatisticsModal />
+      <TransactionHistoryModal />
+      {/* <AddNewUserModal /> */}
     </Box>
   )
 }
