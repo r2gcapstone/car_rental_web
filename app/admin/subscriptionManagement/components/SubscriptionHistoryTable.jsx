@@ -10,8 +10,7 @@ import {
   Text,
   Thead,
   Flex,
-  Center,
-  Button
+  Center
 } from '@chakra-ui/react'
 import {
   createColumnHelper,
@@ -20,14 +19,13 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { updateSubscriptionField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
-import Swal from 'sweetalert2'
+import formatFirebaseTimestamp from 'helpers/formatFirebaseTimestamp'
 
 const columnHelper = createColumnHelper()
 
-export const SubscriptionTable = ({
-  users,
+export const SubscriptionHistoryTable = ({
+  subscriptions,
   loading,
   jumpPerPage,
   previousPage,
@@ -35,12 +33,14 @@ export const SubscriptionTable = ({
   numbers,
   currentPage
 }) => {
+  console.log(subscriptions)
   const [sorting, setSorting] = useState([])
-  const [filteredUsers, setFilteredUsers] = useState(users)
+  const [filteredSubscription, setFilteredSubscription] =
+    useState(subscriptions)
 
   useEffect(() => {
-    setFilteredUsers(users)
-  }, [users])
+    setFilteredSubscription(subscriptions)
+  }, [subscriptions])
 
   const subscriptionTypeMap = {
     MONTHLY: '1 Month',
@@ -63,7 +63,7 @@ export const SubscriptionTable = ({
       }),
       columnHelper.accessor('Buyer', {
         header: 'Buyer',
-        cell: ({ row }) => <Text>{row.original.userName}</Text>,
+        cell: ({ row }) => <Text>{row.original.vehicleOwner}</Text>,
         sortDescFirst: true
       }),
       columnHelper.accessor('Vehicle', {
@@ -76,40 +76,22 @@ export const SubscriptionTable = ({
         cell: ({ row }) => <Text>{row.original.walletNumber}</Text>,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Decision', {
-        header: 'Subscription Request Action',
+      columnHelper.accessor('Purchase Date', {
+        header: 'Purchase Date',
         cell: ({ row }) => (
-          <Flex>
-            <Button
-              size={'lg'}
-              mr={2}
-              onClick={() => handleApprove(row.original.id, row.original.carId)}
-              backgroundColor='blue'
-              opacity={0.8}
-              transition='0.2s'
-              _hover={{
-                backgroundColor: 'blue',
-                opacity: 1,
-                transform: 'scale(1.05)'
-              }}
-            >
-              Approve
-            </Button>
-            <Button
-              size={'lg'}
-              onClick={() => handleDecline(row.original.id, row.original.carId)}
-              backgroundColor='red'
-              opacity={0.8}
-              transition='0.2s'
-              _hover={{
-                backgroundColor: 'red',
-                opacity: 1,
-                transform: 'scale(1.05)'
-              }}
-            >
-              Decline
-            </Button>
-          </Flex>
+          <Text>{formatFirebaseTimestamp(row.original.dateCreated)}</Text>
+        ),
+        sortDescFirst: true
+      }),
+      columnHelper.accessor('Status', {
+        header: 'Status',
+        cell: ({ row }) => (
+          <Text
+            fontWeight={'bold'}
+            color={row.original.status === 'approved' ? 'blue' : 'red'}
+          >
+            {row.original.status.toUpperCase()}
+          </Text>
         ),
         sortDescFirst: true
       })
@@ -119,7 +101,7 @@ export const SubscriptionTable = ({
   )
 
   const table = useReactTable({
-    data: filteredUsers,
+    data: filteredSubscription,
     columns,
     state: {
       sorting
@@ -128,69 +110,6 @@ export const SubscriptionTable = ({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel()
   })
-
-  const handleApprove = async (docId, carId) => {
-    try {
-      // Display SweetAlert2 modal for approval confirmation
-      const confirmed = await Swal.fire({
-        title: 'Are you sure?',
-        text: 'This will approve the user’s subscription.',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No'
-      })
-
-      if (confirmed.isConfirmed) {
-        await updateSubscriptionField('status', 'approved', docId, carId)
-        setFilteredUsers((prevUsers) =>
-          prevUsers.filter((user) => user.id !== docId)
-        )
-
-        Swal.fire(
-          'Approved!',
-          'The subscription is now applied to the vehicle.',
-          'success'
-        )
-      } else {
-        Swal.fire('Cancelled', 'Subscription approval was cancelled.', 'error')
-      }
-    } catch (error) {
-      // Handle error
-    }
-  }
-
-  const handleDecline = async (docId, carId) => {
-    try {
-      // Display SweetAlert2 modal for decline confirmation
-      const confirmed = await Swal.fire({
-        title: 'Are you sure?',
-        text: 'This will reject the user’s subscription purchase.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        confirmButtonColor: '#dc3545'
-      })
-
-      if (confirmed.isConfirmed) {
-        await updateSubscriptionField('status', 'declined', docId, carId)
-        setFilteredUsers((prevUsers) =>
-          prevUsers.filter((user) => user.id !== docId)
-        )
-
-        Swal.fire(
-          'Declined!',
-          'The subscription is rejected and will not be applied to the vehicle.',
-          'success'
-        )
-      } else {
-        Swal.fire('Cancelled', 'Subscription rejection was cancelled.', 'error')
-      }
-    } catch (error) {
-      // Handle error
-    }
-  }
 
   if (loading) {
     return (
