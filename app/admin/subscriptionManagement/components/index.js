@@ -1,5 +1,6 @@
 export * from './SubscriptionTable'
-// export * from './AccountStatisticsModal'
-// export * from './RegisteredUserModal'
+export * from './SubscriptionStatisticsModal'
+export * from './TransactionHistoryModal'
+export * from './SubscriptionHistoryTable'
 // export * from './AddNewUserModal'
 // export * from './AccountDetailsModal'
