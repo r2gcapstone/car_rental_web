@@ -81,7 +81,7 @@ export const TransactionHistoryModal = ({ isOpen, setIsOpen }) => {
     <ModalContainer2
       isOpen={isOpen}
       onClose={onClose}
-      title='Subscription History'
+      title=''
       modalWidth='5xl'
     >
       <Box width='100%'>

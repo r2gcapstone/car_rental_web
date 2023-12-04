@@ -4,23 +4,27 @@ export const statisticsMenu = [
     content: '1 MONTH'
   },
   {
-    key: '3',
+    key: '2',
     content: '3 MONTHS'
   },
   {
-    key: '6',
-    content: '6 MONTHS '
+    key: '3',
+    content: '6 MONTHS'
   },
   {
-    key: '12',
+    key: '4',
     content: '1 YEAR'
   },
   {
-    key: 'sub-count',
+    key: '5',
+    content: 'Average Subscription Count (Per Month)'
+  },
+  {
+    key: '6',
     content: 'Subscription Count'
   },
   {
-    key: 'show-all',
+    key: '7',
     content: 'Show All'
   }
 ]

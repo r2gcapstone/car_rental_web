@@ -38,7 +38,7 @@ const ModalContainer2 = ({
         position='fixed'
         maxHeight={modalHeight}
       >
-        {title && !modalHeaderProps && (
+        {!modalHeaderProps && (
           <ModalHeader
             pt='5'
             fontSize='sm'
