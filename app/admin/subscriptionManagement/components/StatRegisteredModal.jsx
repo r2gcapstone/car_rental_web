@@ -3,15 +3,17 @@ import ModalContainer2 from 'components/Modals/ModalContainer2'
 import { Button, Flex, Icon, Text, Box } from '@chakra-ui/react'
 import { CarMarker } from 'components'
 import { getSubTotalStat } from 'services/apis'
+import { PDFDocument } from 'components'
+import { PDFDownloadLink, StyleSheet } from '@react-pdf/renderer'
 
 function StatRegisteredModal({ isOpen, setIsOpen, option: { key, title } }) {
   const onClose = () => {
     setIsOpen(false)
   }
-
   const currentDate = new Date()
 
   const [size, setSize] = useState(0)
+
   const [fetchedVal, setFetchedVal] = useState({
     val1: 0,
     val2: 0,
@@ -68,6 +70,83 @@ function StatRegisteredModal({ isOpen, setIsOpen, option: { key, title } }) {
       value: fetchedVal.val6
     }
   ]
+
+  const PDFData = {
+    1: [
+      {
+        title: '1 Month',
+        content: 'Total Number of 1 Month Subscription Purchase',
+        value: size
+      }
+    ],
+    2: [
+      {
+        title: '3 Months',
+        content: 'Total Number of 3 Months Subscription Purchase',
+        value: size
+      }
+    ],
+    3: [
+      {
+        title: '6 Months',
+        content: 'Total Number of 6 Months Subscription Purchase',
+        value: size
+      }
+    ],
+    4: [
+      {
+        title: '1 Year',
+        content: 'Total Number of 1 Year Subscription Purchase',
+        value: size
+      }
+    ],
+    5: [
+      {
+        title: 'Average Subscription Purchase (Per Month)',
+        content: 'Average Subscription Purchase (Per Month)',
+        value: size
+      }
+    ],
+    6: [
+      {
+        title: 'Subscription Count',
+        content: 'Total Number of Subscription Purchase',
+        value: size
+      }
+    ],
+    7: [
+      {
+        title: '1 Month',
+        content: 'Total Number of 1 Month Subscription Purchase',
+        value: fetchedVal.val1
+      },
+      {
+        title: '3 Months',
+        content: 'Total Number of 3 Months Subscription Purchase',
+        value: fetchedVal.val2
+      },
+      {
+        title: '6 Months',
+        content: 'Total Number of 6 Months Subscription Purchase',
+        value: fetchedVal.val3
+      },
+      {
+        title: '1 Year',
+        content: 'Total Number of 1 Year Subscription Purchase',
+        value: fetchedVal.val4
+      },
+      {
+        title: 'Average Subscription Purchase (Per Month)',
+        content: 'Average Subscription Purchase (Per Month)',
+        value: fetchedVal.val5
+      },
+      {
+        title: 'Subscription Count',
+        content: 'Total Number of Subscription Purchase',
+        value: fetchedVal.val6
+      }
+    ]
+  }
 
   return (
     <ModalContainer2
@@ -134,10 +213,14 @@ function StatRegisteredModal({ isOpen, setIsOpen, option: { key, title } }) {
             </Text>
           </Flex>
         </Box>
-        <Flex justifyContent={'center'}>
-          <Button fontSize={'1.5rem'} marginTop={20} bgColor={'red'}>
-            Download as PDF
-          </Button>
+        <Flex justifyContent={'center'} marginTop={10}>
+          <PDFDownloadLink
+            document={<PDFDocument data={PDFData[key]} />}
+            fileName='download.pdf'
+            style={style.button}
+          >
+            Download PDF
+          </PDFDownloadLink>
         </Flex>
       </Box>
     </ModalContainer2>
@@ -145,3 +228,14 @@ function StatRegisteredModal({ isOpen, setIsOpen, option: { key, title } }) {
 }
 
 export default StatRegisteredModal
+
+const style = StyleSheet.create({
+  button: {
+    textAlign: 'center',
+    color: 'white',
+    backgroundColor: 'red',
+    width: '100%',
+    padding: '0.5rem',
+    borderRadius: '0.5rem'
+  }
+})
