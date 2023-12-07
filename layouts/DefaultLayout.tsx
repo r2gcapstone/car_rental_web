@@ -5,7 +5,7 @@ interface DefaultLayoutTypes {
 }
 
 export const DefaultLayout: React.FC<DefaultLayoutTypes> = ({ children }) => (
-  <Box background='blue.dark' height='100vh'>
+  <Box background='blue.dark' height='100%' minHeight='100vh'>
     {children}
   </Box>
 )

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useGetRegistration } from 'services/zustandVariables'
 import { shallow } from 'zustand/shallow'
 import { Image, Button, Flex, Text, Input, Box } from '@chakra-ui/react'
+import { uploadNewImage } from 'helpers'
 import { useAccount } from 'lib'
 import { ChangeEvent } from 'react'
 
@@ -18,12 +19,10 @@ export const UploadProfile: React.FC = () => {
   }
 
   const onUploadChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const target = e.currentTarget as HTMLInputElement
-    const file = target.files as unknown as File[]
+    const { rawImage, preview } = uploadNewImage(e)
 
-    if (file.length > 0) {
-      const objectUrl = URL.createObjectURL(file[0])
-      setState({ rawImage: file, preview: objectUrl })
+    if (rawImage.length > 0) {
+      setState({ rawImage, preview })
     }
   }
 

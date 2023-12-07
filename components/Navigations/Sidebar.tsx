@@ -2,12 +2,16 @@ import { ReactNode } from 'react'
 import { Box, Flex, Icon, Text } from '@chakra-ui/react'
 import { useSafePush } from 'lib'
 import { RedirectLinksTypes } from 'helpers'
+import { useRouter } from 'next/router'
 
 export const Sidebar: React.FC<{
   children: ReactNode
   links: RedirectLinksTypes[]
 }> = ({ children, links }) => {
   const { safePush } = useSafePush()
+  const router = useRouter()
+
+  const pathnameConverter = router.pathname.split('/')
 
   const handleClick = (path: string): void => {
     safePush(path)
@@ -23,6 +27,9 @@ export const Sidebar: React.FC<{
             alignItems='center'
             gap='4'
             padding='4'
+            background={
+              pathnameConverter[2] === path ? 'gray.primary' : 'blue.dark'
+            }
             _hover={{
               bg: 'gray.primary'
             }}
@@ -32,7 +39,7 @@ export const Sidebar: React.FC<{
           </Flex>
         ))}
       </Box>
-      <Flex flex='5' mt='4' mb='8' padding='2' overflowY='scroll'>
+      <Flex flex='5' mb='8' overflowY='scroll'>
         {children}
       </Flex>
     </Flex>

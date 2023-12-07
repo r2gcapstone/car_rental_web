@@ -92,6 +92,13 @@ module.exports = {
     // https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
     'import/prefer-default-export': 'off',
     'import/no-default-export': 'error',
+    'linebreak-style': 0,
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto'
+      }
+    ],
     // Too restrictive: https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/destructuring-assignment.md
     'react/destructuring-assignment': 'off',
     'jsx-a11y/label-has-associated-control': [
@@ -139,7 +146,7 @@ module.exports = {
     // We don't need to add react declaration in NextJS project
     'react/react-in-jsx-scope': 'off',
     // Kinda unnecessary for our usage
-    'unicorn/no-null': 'off',
+    'unicorn/no-null': 'on',
     // React Hook Form needs spreading.
     'react/jsx-props-no-spreading': 'off',
     // This is unneccessary, as we don't use propTypes anymore

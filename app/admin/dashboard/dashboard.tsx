@@ -1,13 +1,17 @@
 import { TransactionDashboardIcon, UsersIcon, VehicleIcon } from 'components'
 import { Box } from '@chakra-ui/react'
 import { CardsTypes } from './helpers/constant'
+import { useFetchAll } from 'lib'
+import { AccountDataTypes } from 'helpers'
 import { Barchart, Cards } from './components'
 
 export const Dashboard: React.FC = () => {
+  const { data } = useFetchAll<AccountDataTypes>('adminUsers')
+
   const cardsDetails: CardsTypes[] = [
     {
       title: 'Registered Users',
-      total: 1095,
+      total: data.length,
       icon: UsersIcon
     },
     {
@@ -28,7 +32,7 @@ export const Dashboard: React.FC = () => {
   ]
 
   return (
-    <Box width='100%' paddingX='1rem'>
+    <Box width='100%' mt='4' padding='2' paddingX='1rem'>
       <Barchart />
       <Cards details={cardsDetails} />
     </Box>
