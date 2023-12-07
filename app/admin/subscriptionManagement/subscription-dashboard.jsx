@@ -3,7 +3,7 @@ import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
 // import { useForm } from 'react-hook-form'
 import { InfoIcon, InputField, SearchIcon } from 'components'
 import { SubscriptionTable } from './components'
-import { useFetchAll } from 'lib'
+import { useFetchAll2 } from 'lib'
 import { useForm } from 'react-hook-form'
 import {
   SubscriptionStatisticsModal,
@@ -20,14 +20,14 @@ export const SubscriptionDashboard = () => {
     jumpPerPage,
     currentPage,
     numbers
-  } = useFetchAll('subscription')
+  } = useFetchAll2('subscription', "pending")
+
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
-  const [updateTableKey, setUpdateTableKey] = useState(0)
+  const [setUpdateTableKey] = useState(0)
   const watchForm = watch(['vehicleName', 'userName', 'walletNumber'])
 
-  const { isCloseStatistics, isOpenStatistics, isSubHistory } =
-    useSubManagementActions()
+  const { isOpenStatistics } = useSubManagementActions()
 
   const [isSubHistoryOpen, setIsSubHistoryOpen] = useState(false)
 
