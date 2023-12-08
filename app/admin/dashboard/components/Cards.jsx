@@ -1,14 +1,8 @@
 import { Box, Center, Flex, Grid, GridItem, Icon, Text } from '@chakra-ui/react'
-import { CardsTypes } from '../helpers/constant'
 
-interface CardDetails {
-  details: CardsTypes[]
-}
-
-export const Cards: React.FC<CardDetails> = ({ details }) => (
+export const Cards = ({ details }) => (
   <Grid templateRows='repeat(2, 1fr)' templateColumns='repeat(3, 1fr)' gap={4}>
     {details.map((_, index) => {
-      //[1, 2, 3, 4] is just a placeholder
       const isLastIndex = index === 3
       return (
         <GridItem
