@@ -4,29 +4,15 @@ import {
   AccountTable,
   AccountStatisticsModal,
   RegisteredUserModal,
-  AddNewUserModal,
-  AccountDetailsModal
+  AddNewUserModal
 } from './components'
 import { useForm } from 'react-hook-form'
 import { InfoIcon, InputField, PlusIcon, SearchIcon } from 'components'
 import { useFetchAll, useAccountManagementActions } from 'lib'
-import { AccountDataTypes } from 'helpers'
+import { AccountDetailsModal } from './components'
+import formatFirebaseTimestamp from 'helpers/formatFirebaseTimestamp'
 
-interface SearchTypes {
-  email: string
-  fullName: string
-  mobileNumber: string
-}
-
-interface SearchedAccountTypes {
-  dateCreated: string
-  email: string
-  fullName: string
-  address: string
-  mobileNumber: string
-}
-
-export const AccountDashboard: React.FC = () => {
+export const AccountDashboard = () => {
   const {
     records,
     loading,
@@ -35,15 +21,13 @@ export const AccountDashboard: React.FC = () => {
     jumpPerPage,
     currentPage,
     numbers
-  } = useFetchAll<AccountDataTypes>('adminUsers')
+  } = useFetchAll('users')
   const { isOpenStatistics, triggerNewUserModal } =
     useAccountManagementActions()
 
-  const [searchedData, setSearchedData] = useState<
-    SearchedAccountTypes[] | null
-  >(null)
+  const [searchedData, setSearchedData] = useState(null)
 
-  const { handleSubmit, register, watch } = useForm<SearchTypes>()
+  const { handleSubmit, register, watch } = useForm()
 
   const watchForm = watch(['email', 'fullName', 'mobileNumber'])
 
@@ -58,19 +42,33 @@ export const AccountDashboard: React.FC = () => {
       mobileNumber,
       imageUrl,
       deactivatedAt
-    }) => ({
-      id,
-      dateCreated: dateCreated,
-      email,
-      fullName: `${firstName} ${lastName}`,
-      address,
-      mobileNumber: mobileNumber || 'N/A',
-      imageUrl,
-      deactivatedAt
-    })
+    }) => {
+      const a = { ...address }
+      const concatenatedAddress = [
+        a.street,
+        a.barangay,
+        a.municipality.name,
+        a.subdivision,
+        a.province.name,
+        a.country
+      ]
+        .filter(Boolean)
+        .join(', ')
+
+      return {
+        id,
+        dateCreated: formatFirebaseTimestamp(dateCreated),
+        email,
+        fullName: `${firstName} ${lastName}`,
+        address: concatenatedAddress,
+        mobileNumber: mobileNumber || 'N/A',
+        imageUrl,
+        deactivatedAt: deactivatedAt
+      }
+    }
   )
 
-  const onSearch = (searchData: SearchTypes): void => {
+  const onSearch = (searchData) => {
     const { email, fullName, mobileNumber } = searchData
 
     const isNotEmpty = watchForm.findIndex((find) => !!find) > -1

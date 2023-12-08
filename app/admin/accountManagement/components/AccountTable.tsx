@@ -24,6 +24,7 @@ import {
 import { useAccountManagementActions } from 'lib'
 import { ViewIcon, TooltipText, LazySpinner, Pagination } from 'components'
 import { AccountTableTypes } from '../helpers/constant'
+import { toSentenceCase } from 'helpers'
 
 interface UserDataTypes {
   users: AccountTableTypes[]
@@ -63,14 +64,25 @@ export const AccountTable: React.FC<UserDataTypes> = ({
       }),
       columnHelper.accessor('fullName', {
         header: 'Full Name',
-        cell: ({ row }) => <Text>{row.original.fullName}</Text>,
+        cell: ({ row }) => <Text>{toSentenceCase(row.original.fullName)}</Text>,
         sortDescFirst: true
       }),
       columnHelper.accessor('address', {
         header: 'Address',
-        cell: ({ row }) => <TooltipText text={row.original.address} />,
+        cell: ({ row }) => (
+          <TooltipText
+            text={toSentenceCase(
+              row.original.address
+                .split(', ')
+                .filter(Boolean)
+                .slice(0, 3)
+                .join(', ')
+            )}
+          />
+        ),
         sortDescFirst: true
       }),
+
       columnHelper.accessor('mobileNumber', {
         header: 'Mobile Num.',
         cell: ({ row }) => <Text>{row.original.mobileNumber}</Text>,
@@ -80,7 +92,7 @@ export const AccountTable: React.FC<UserDataTypes> = ({
         header: 'status.',
         cell: ({ row }) => {
           const status =
-            row.original.deactivatedAt === '' ? 'activated' : 'deactivated'
+            row.original.deactivatedAt === null ? 'activated' : 'deactivated'
 
           return (
             <Center
