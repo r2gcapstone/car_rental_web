@@ -33,7 +33,6 @@ export const SubscriptionHistoryTable = ({
   numbers,
   currentPage
 }) => {
-  console.log(subscriptions)
   const [sorting, setSorting] = useState([])
   const [filteredSubscription, setFilteredSubscription] =
     useState(subscriptions)
@@ -73,7 +72,7 @@ export const SubscriptionHistoryTable = ({
       }),
       columnHelper.accessor('Mobile Number', {
         header: 'Mobile Number',
-        cell: ({ row }) => <Text>{row.original.walletNumber}</Text>,
+        cell: ({ row }) => <Text>{row.original.ownerNumber}</Text>,
         sortDescFirst: true
       }),
       columnHelper.accessor('Purchase Date', {

@@ -20,7 +20,7 @@ export const SubscriptionDashboard = () => {
     jumpPerPage,
     currentPage,
     numbers
-  } = useFetchAll2('subscription', "pending")
+  } = useFetchAll2('subscription', 'pending')
 
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
@@ -40,14 +40,14 @@ export const SubscriptionDashboard = () => {
         subscriptionType,
         vehicleName,
         walletNumber,
-        userName
+        ownerUsername
       }) => ({
         id,
         carId,
         subscriptionType,
         vehicleName,
         walletNumber,
-        userName
+        userName: ownerUsername
       })
     )
 
