@@ -33,7 +33,8 @@ export const TransactionHistoryModal = ({ isOpen, setIsOpen }) => {
         walletNumber,
         dateCreated,
         status,
-        vehicleOwner
+        ownerUsername,
+        ownerNumber
       }) => ({
         id,
         carId,
@@ -42,7 +43,8 @@ export const TransactionHistoryModal = ({ isOpen, setIsOpen }) => {
         walletNumber,
         dateCreated,
         status,
-        vehicleOwner
+        vehicleOwner: ownerUsername,
+        ownerNumber
       })
     )
 
