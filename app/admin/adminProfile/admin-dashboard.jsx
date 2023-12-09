@@ -1,10 +1,11 @@
-import { useState } from 'react'
 import { Flex, Box, Image, Text, Button } from '@chakra-ui/react'
-
+import { getUserData } from 'services/apis/account/users'
+import { useEffect, useState } from 'react'
 export const AdminProfile = () => {
   const [userData, setUserData] = useState({
     id: '',
-    fullName: '',
+    firstName: '',
+    lastName: '',
     address: '',
     email: '',
     mobileNumber: '',
@@ -12,10 +13,19 @@ export const AdminProfile = () => {
     dateCreated: ''
   })
 
+  const fetchData = async () => {
+    try {
+      const result = await getUserData()
+      setUserData(result)
+    } catch (error) {
+      console.error
+    }
+  }
+
   const userDetails = [
     {
       title: 'Full Name',
-      content: userData.fullName
+      content: userData.firstName + ' ' + userData.lastName
     },
     {
       title: 'Address',
@@ -30,6 +40,10 @@ export const AdminProfile = () => {
       content: userData.mobileNumber
     }
   ]
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <Box title='Account Information' background='dark.brown' width={'100%'}>
