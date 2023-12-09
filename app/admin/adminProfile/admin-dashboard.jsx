@@ -66,24 +66,31 @@ export const AdminProfile = () => {
               rounded='full'
             />
             <Text fontSize='1.375rem'>{userData.email}</Text>
-            <Text fontSize='0.75rem'>
-              Account Created: {userData.dateCreated}
-            </Text>
+            <Text fontSize='0.75rem'>Administrator</Text>
           </Flex>
           <Box border='1px solid white' height='300px' />
           <Flex flex='3' flexDirection='column' fontSize='1.375rem'>
             <Text
               arial-label='title'
-              color='orange.primary'
+              color='white'
               fontSize='2.1875rem'
               fontWeight='bold'
             >
-              More Information
+              Personal Information
             </Text>
             {userDetails &&
               userDetails.map(({ title, content }) => (
-                <Flex key={title} gap='0.5rem' mt='0.5rem'>
-                  <Text color='orange.primary'>{title}:</Text>
+                <Flex
+                  key={title}
+                  width={'80%'}
+                  justifyContent={'space-between'}
+                  gap='0.5rem'
+                  mt='0.5rem'
+                >
+                  <Text fontWeight={'bold'} color='white'>
+                    {' '}
+                    {title}:
+                  </Text>
                   <Text>{content}</Text>
                 </Flex>
               ))}
