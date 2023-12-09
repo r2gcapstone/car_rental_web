@@ -41,7 +41,7 @@ export const redirectLinks: RedirectLinksTypes[] = [
     icon: SubscriptionIcon
   },
   {
-    path: 'admin_profile',
+    path: 'admin-profile',
     name: 'Admin Profile',
     icon: ProfileIcon
   }
