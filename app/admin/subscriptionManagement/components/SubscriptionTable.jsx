@@ -73,7 +73,7 @@ export const SubscriptionTable = ({
       }),
       columnHelper.accessor('Mobile Number', {
         header: 'Mobile Number',
-        cell: ({ row }) => <Text>{row.original.walletNumber}</Text>,
+        cell: ({ row }) => <Text>{row.original.ownerNumber}</Text>,
         sortDescFirst: true
       }),
       columnHelper.accessor('Decision', {
