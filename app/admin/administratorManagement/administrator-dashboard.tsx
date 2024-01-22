@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
 import {
   AccountTable,
-  AccountStatisticsModal,
   RegisteredUserModal,
   AddNewUserModal,
   AccountDetailsModal
@@ -114,19 +113,9 @@ const AdministratorDashboard: React.FC = () => {
               padding='1rem'
               height='10px'
               fontWeight='normal'
-              onClick={() => isOpenStatistics('statistics')}
-            >
-              Statistics of Registered Users
-            </Button>
-            <Button
-              background='blue.dark'
-              fontSize='1.25rem'
-              padding='1rem'
-              height='10px'
-              fontWeight='normal'
               onClick={() => triggerNewUserModal(true)}
             >
-              Add user
+              Add Admin
               <Icon as={PlusIcon} width='1.5rem' height='1.5rem' ml='2' />
             </Button>
           </Flex>
@@ -178,7 +167,6 @@ const AdministratorDashboard: React.FC = () => {
 
       {/* Account Modals */}
       <AccountDetailsModal />
-      <AccountStatisticsModal />
       <RegisteredUserModal />
       <AddNewUserModal />
     </Box>
