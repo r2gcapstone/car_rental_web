@@ -25,11 +25,7 @@ export const redirectLinks: RedirectLinksTypes[] = [
     name: 'Account Management',
     icon: AccountIcon
   },
-  {
-    path: 'administrator-management',
-    name: 'Administrator Management',
-    icon: AccountIcon
-  },
+
   // {
   //   path: 'transaction-history',
   //   name: 'Transaction History',
@@ -44,6 +40,11 @@ export const redirectLinks: RedirectLinksTypes[] = [
     path: 'subscription-management',
     name: 'Subscription Management',
     icon: SubscriptionIcon
+  },
+  {
+    path: 'administrator-management',
+    name: 'Administrator Management',
+    icon: AccountIcon
   },
   {
     path: 'admin-profile',
