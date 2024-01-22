@@ -25,7 +25,7 @@ export const SubscriptionDashboard = () => {
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
   const [setUpdateTableKey] = useState(0)
-  const watchForm = watch(['vehicleName', 'userName', 'walletNumber'])
+  const watchForm = watch(['vehicleName', 'userName', 'ownerNumber'])
 
   const { isOpenStatistics } = useSubManagementActions()
 
@@ -39,22 +39,22 @@ export const SubscriptionDashboard = () => {
         carId,
         subscriptionType,
         vehicleName,
-        walletNumber,
-        ownerUsername
+        ownerNumber,
+        userName
       }) => ({
         id,
         carId,
         subscriptionType,
         vehicleName,
-        walletNumber,
-        userName: ownerUsername
+        ownerNumber,
+        userName
       })
     )
 
   console.log(subscription)
 
   const onSearch = (searchData) => {
-    const { vehicleName, userName, walletNumber } = searchData
+    const { vehicleName, userName, ownerNumber } = searchData
 
     const isNotEmpty = watchForm.findIndex((find) => !!find) > -1
 
@@ -67,17 +67,17 @@ export const SubscriptionDashboard = () => {
         typeof value['userName'] === 'string'
           ? value['userName'].toLowerCase()
           : value['userName']
-      const searchWalletNumber =
-        typeof value['walletNumber'] === 'string'
-          ? value['walletNumber']
-          : value['walletNumber'].toString()
+      const searchownerNumber =
+        typeof value['ownerNumber'] === 'string'
+          ? value['ownerNumber']
+          : value['ownerNumber'].toString()
 
       return (
         lowercaseVehicleName ===
           (vehicleName ? vehicleName.toLowerCase() : '') ||
         lowercaseUserName === (userName ? userName.toLowerCase() : '') ||
-        searchWalletNumber ===
-          (walletNumber ? walletNumber : walletNumber.toString())
+        searchownerNumber ===
+          (ownerNumber ? ownerNumber : ownerNumber.toString())
       )
     })
 
@@ -146,7 +146,7 @@ export const SubscriptionDashboard = () => {
             <InputField
               label='Vehicle Class'
               placeholder='Enter Vehicle Class'
-              {...register('walletNumber')}
+              {...register('ownerNumber')}
             />
             <Button
               type='submit'
