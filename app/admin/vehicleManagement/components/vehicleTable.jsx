@@ -20,7 +20,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { updateSubscriptionField } from 'services/apis'
+import { updateVehicleField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
 import Swal from 'sweetalert2'
 
@@ -41,13 +41,6 @@ export const SubscriptionTable = ({
   useEffect(() => {
     setFilteredUsers(users)
   }, [users])
-
-  const subscriptionTypeMap = {
-    MONTHLY: '1 Month',
-    '3 MONTHS': '3 Months',
-    '6 MONTHS': '6 Months',
-    '1 YEAR': '1 Year'
-  }
 
   const columns = useMemo(
     () => [
@@ -71,7 +64,7 @@ export const SubscriptionTable = ({
         cell: ({ row }) => <Text>{''}</Text>,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Decision', {
+      columnHelper.accessor('Action', {
         header: 'Registration Request Action',
         cell: ({ row }) => (
           <Flex>
@@ -129,7 +122,7 @@ export const SubscriptionTable = ({
       // Display SweetAlert2 modal for approval confirmation
       const confirmed = await Swal.fire({
         title: 'Are you sure?',
-        text: 'This will approve the user’s subscription.',
+        text: 'This will approve the user’s vehicle Registration.',
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Yes',
@@ -137,18 +130,18 @@ export const SubscriptionTable = ({
       })
 
       if (confirmed.isConfirmed) {
-        await updateSubscriptionField('status', 'approved', docId, carId)
+        await updateVehicleField('status', 'approved', docId, carId)
         setFilteredUsers((prevUsers) =>
           prevUsers.filter((user) => user.id !== docId)
         )
 
         Swal.fire(
           'Approved!',
-          'The subscription is now applied to the vehicle.',
+          'The vehicle is now approved and ready to rent.',
           'success'
         )
       } else {
-        Swal.fire('Cancelled', 'Subscription approval was cancelled.', 'error')
+        Swal.fire('Cancelled', 'Registration approval aborted.', 'error')
       }
     } catch (error) {
       // Handle error
@@ -160,7 +153,7 @@ export const SubscriptionTable = ({
       // Display SweetAlert2 modal for decline confirmation
       const confirmed = await Swal.fire({
         title: 'Are you sure?',
-        text: 'This will reject the user’s subscription purchase.',
+        text: 'This will reject the user’s vehicle registration.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes',
@@ -169,18 +162,18 @@ export const SubscriptionTable = ({
       })
 
       if (confirmed.isConfirmed) {
-        await updateSubscriptionField('status', 'declined', docId, carId)
+        await updateVehicleField('status', 'declined', docId, carId)
         setFilteredUsers((prevUsers) =>
           prevUsers.filter((user) => user.id !== docId)
         )
 
         Swal.fire(
           'Declined!',
-          'The subscription is rejected and will not be applied to the vehicle.',
+          'The vehicle Registration is rejected and will not be applied to the vehicle.',
           'success'
         )
       } else {
-        Swal.fire('Cancelled', 'Subscription rejection was cancelled.', 'error')
+        Swal.fire('Cancelled', 'Declined action aborted.', 'error')
       }
     } catch (error) {
       // Handle error

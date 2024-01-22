@@ -2,7 +2,7 @@ import ModalContainer2 from 'components/Modals/ModalContainer2'
 import { useState } from 'react'
 import { useFetchAll } from 'lib'
 import { useForm } from 'react-hook-form'
-import { SubscriptionHistoryTable } from './SubscriptionHistoryTable'
+import { SubscriptionHistoryTable } from './vehicleHistoryTable'
 import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
 import { CarMarker, InputField, SearchIcon } from 'components'
 

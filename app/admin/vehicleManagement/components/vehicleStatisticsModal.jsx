@@ -5,7 +5,7 @@ import { statisticsMenu } from '../helpers/constant'
 import { useSubManagementActions } from 'lib'
 import ModalContainer2 from 'components/Modals/ModalContainer2'
 import { useState } from 'react'
-import StatRegisteredModal from './StatRegisteredModal'
+import StatRegisteredModal from './vehicleRegisteredModal'
 
 export const SubscriptionStatisticsModal = () => {
   const { menu, isOpen } = useStatisticsModal(
