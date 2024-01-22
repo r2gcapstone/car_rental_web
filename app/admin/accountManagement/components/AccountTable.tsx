@@ -92,7 +92,7 @@ export const AccountTable: React.FC<UserDataTypes> = ({
         header: 'status.',
         cell: ({ row }) => {
           const status =
-            row.original.deactivatedAt === null ? 'activated' : 'deactivated'
+            row.original.deactivatedAt === '' ? 'activated' : 'deactivated'
 
           return (
             <Center

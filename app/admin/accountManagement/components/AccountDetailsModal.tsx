@@ -80,7 +80,7 @@ export const AccountDetailsModal: React.FC = () => {
     isStatusChange(false, 'The user will be able to access this account again.')
   }
 
-  let isCheckDeactivate = deactivatedAt !== null
+  const isCheckDeactivate = deactivatedAt !== ''
 
   return (
     <ModalContainer

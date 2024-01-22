@@ -46,7 +46,7 @@ export const AccountDashboard = () => {
       const a = { ...address }
       const concatenatedAddress = [
         a.street,
-        a.barangay,
+        a.barangay.name,
         a.municipality.name,
         a.subdivision,
         a.province.name,
