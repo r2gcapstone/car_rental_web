@@ -25,17 +25,17 @@ export const redirectLinks: RedirectLinksTypes[] = [
     name: 'Account Management',
     icon: AccountIcon
   },
-
+  {
+    path: 'vehicle-management',
+    name: 'Vehicle Management',
+    icon: ActivityLogIcon
+  },
   // {
   //   path: 'transaction-history',
   //   name: 'Transaction History',
   //   icon: TransactionIcon
   // },
-  // {
-  //   path: 'activity-log',
-  //   name: 'Activity Log for Vehicles',
-  //   icon: ActivityLogIcon
-  // },
+
   {
     path: 'subscription-management',
     name: 'Subscription Management',
