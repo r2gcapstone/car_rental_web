@@ -14,9 +14,12 @@ import {
 import { getVehicleData } from 'services/apis'
 import { useEffect, useState } from 'react'
 import { ImagePreviewer } from './ImagePreview'
+import { ImageModal } from './imageViewModal'
 
 export function VehicleInfoModal({ docId, isOpen, isClose }) {
   const [data, setData] = useState({})
+  const [onOpen, setOnOpen] = useState(false)
+  const [imageUrl, setImageUrl] = useState('')
 
   let dataArray = []
   try {
@@ -72,16 +75,38 @@ export function VehicleInfoModal({ docId, isOpen, isClose }) {
     ]
   } catch (error) {}
 
-  const btnArray = [
-    { key: 0, label: 'View Valid ID', value: '' },
-    { key: 1, label: 'View Birth Certificate', value: '' },
-    { key: 2, label: 'View Certificate of Registration', value: '' }
-  ]
+  let btnArray = []
+  try {
+    btnArray = [
+      { key: 0, label: 'View Valid ID', value: data.document.governmentId },
+      {
+        key: 1,
+        label: 'View Birth Certificate',
+        value: data.document.BirthCert
+      },
+      {
+        key: 2,
+        label: 'View Certificate of Registration',
+        value: data.document.CertificateOfReg
+      }
+    ]
+  } catch (error) {}
+
+  const handleOnPress = (key) => {
+    if (key === 0) {
+      setImageUrl(btnArray[key].value)
+    } else if (key === 1) {
+      setImageUrl(btnArray[key].value)
+    } else if (key === 2) {
+      setImageUrl(btnArray[key].value)
+    }
+
+    setOnOpen((prev) => !prev)
+  }
 
   const fetchData = async (docId) => {
     try {
       const result = await getVehicleData(docId)
-      console.log(result)
       if (!result.error) {
         setData(result)
       }
@@ -100,55 +125,74 @@ export function VehicleInfoModal({ docId, isOpen, isClose }) {
     }
   }, [docId, isOpen])
   return (
-    <Modal size={'3xl'} isCentered isOpen={isOpen} onClose={handleOnclose}>
-      <ModalOverlay />
-      <ModalContent padding={4} gap={2} bg={'blue.800'}>
-        <ModalHeader>
-          <ModalCloseButton color={'red'} />
-        </ModalHeader>
-        <ModalBody bg={'#526D82'} color={'white'}>
-          {data && <ImagePreviewer imageUrls={data.imageUrls} />}
-        </ModalBody>
-        <Flex gap={2}>
-          <ModalBody flex={3} borderRadius={10} bg={'#526D82'} color={'white'}>
-            <Text style={styles.header} borderBottom={'1px'}>
-              Vehicle Information
-            </Text>
-            {dataArray.map((item) => (
-              <Flex justifyContent={'space-between'} key={item.key}>
-                <Text fontWeight={'bold'}>{item.label} :</Text>
-                <Text>
-                  {[7, 8].includes(item.key) && 'PHP '}
-                  {[7, 8].includes(item.key)
-                    ? item.value.toLocaleString()
-                    : item.value}
-                </Text>
-              </Flex>
-            ))}
-          </ModalBody>
-          <ModalBody borderRadius={10} bg={'#526D82'} color={'white'}>
-            <Text style={styles.header} borderBottom={'1px'}>
-              Documents
-            </Text>
-            <Flex flexDirection={'column'}>
-              {btnArray.map((item) => (
-                <Button
-                  bg={'blue.800'}
-                  justifyContent={'center'}
-                  key={item.key}
-                  marginTop={4}
-                  w={'full'}
-                >
-                  <Text fontSize={14}>{item.label}</Text>
-                </Button>
+    <>
+      <Modal size={'3xl'} isCentered isOpen={isOpen} onClose={handleOnclose}>
+        <ModalOverlay />
+        <ModalContent
+          justifyContent={'center'}
+          padding={4}
+          gap={2}
+          bg={'blue.800'}
+        >
+          <ModalHeader>
+            <ModalCloseButton color={'red'} />
+          </ModalHeader>
+          <Flex
+            alignSelf={'center'}
+            marginBottom={2}
+            color={'white'}
+            width={'500px'}
+          >
+            {data && <ImagePreviewer imageUrls={data.imageUrls} />}
+          </Flex>
+          <Flex gap={2}>
+            <ModalBody
+              flex={2}
+              borderRadius={10}
+              bg={'#526D82'}
+              color={'white'}
+            >
+              <Text style={styles.header} borderBottom={'1px'}>
+                Vehicle Information
+              </Text>
+              {dataArray.map((item) => (
+                <Flex justifyContent={'space-between'} key={item.key}>
+                  <Text fontWeight={'bold'}>{item.label} :</Text>
+                  <Text>
+                    {[7, 8].includes(item.key) && 'PHP '}
+                    {[7, 8].includes(item.key)
+                      ? item.value.toLocaleString()
+                      : item.value}
+                  </Text>
+                </Flex>
               ))}
-            </Flex>
-          </ModalBody>
-        </Flex>
+            </ModalBody>
+            <ModalBody borderRadius={10} bg={'#526D82'} color={'white'}>
+              <Text style={styles.header} borderBottom={'1px'}>
+                Documents
+              </Text>
+              <Flex flexDirection={'column'}>
+                {btnArray.map((item) => (
+                  <Button
+                    bg={'blue.800'}
+                    justifyContent={'center'}
+                    key={item.key}
+                    marginTop={4}
+                    w={'full'}
+                    onClick={() => handleOnPress(item.key)}
+                  >
+                    <Text fontSize={14}>{item.label}</Text>
+                  </Button>
+                ))}
+              </Flex>
+            </ModalBody>
+          </Flex>
 
-        <ModalFooter></ModalFooter>
-      </ModalContent>
-    </Modal>
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
+      <ImageModal imageUrl={imageUrl} onOpen={onOpen} onClose={setOnOpen} />
+    </>
   )
 }
 
