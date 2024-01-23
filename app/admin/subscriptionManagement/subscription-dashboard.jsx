@@ -51,8 +51,6 @@ export const SubscriptionDashboard = () => {
       })
     )
 
-  console.log(subscription)
-
   const onSearch = (searchData) => {
     const { vehicleName, userName, ownerNumber } = searchData
 
