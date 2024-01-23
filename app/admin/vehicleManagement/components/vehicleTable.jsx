@@ -23,11 +23,12 @@ import {
 import { updateVehicleField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
 import Swal from 'sweetalert2'
+import { VehicleInfoModal } from './vehicleInfoModal'
 
 const columnHelper = createColumnHelper()
 
-export const SubscriptionTable = ({
-  users,
+export const VehicleTable = ({
+  vehicles,
   loading,
   jumpPerPage,
   previousPage,
@@ -36,11 +37,89 @@ export const SubscriptionTable = ({
   currentPage
 }) => {
   const [sorting, setSorting] = useState([])
-  const [filteredUsers, setFilteredUsers] = useState(users)
+  const [filteredVehicles, setFilteredVehicles] = useState(vehicles)
+  const [isModal1Open, setIsModal1Open] = useState(false)
+  const [targetId, setTargetId] = useState('')
 
   useEffect(() => {
-    setFilteredUsers(users)
-  }, [users])
+    setFilteredVehicles(vehicles)
+  }, [vehicles])
+
+  const handleId = (id) => {
+    setIsModal1Open((prev) => !prev)
+    setTargetId(id)
+  }
+
+  //columns
+  const RegistrationAction = ({ row }) => (
+    <Flex>
+      <Button
+        size={'lg'}
+        mr={2}
+        onClick={() => handleApprove(row.original.id, row.original.carId)}
+        backgroundColor='blue'
+        opacity={0.8}
+        transition='0.2s'
+        _hover={{
+          backgroundColor: 'blue',
+          opacity: 1,
+          transform: 'scale(1.05)'
+        }}
+      >
+        Approve
+      </Button>
+      <Button
+        size={'lg'}
+        onClick={() => handleDecline(row.original.id, row.original.carId)}
+        backgroundColor='red'
+        opacity={0.8}
+        transition='0.2s'
+        _hover={{
+          backgroundColor: 'red',
+          opacity: 1,
+          transform: 'scale(1.05)'
+        }}
+      >
+        Decline
+      </Button>
+    </Flex>
+  )
+
+  const VehicleInfo = ({ row }) => (
+    <Button
+      size={'lg'}
+      mr={2}
+      onClick={() => handleId(row.original.carId)}
+      backgroundColor='blue.700'
+      opacity={0.8}
+      transition='0.2s'
+      _hover={{
+        backgroundColor: 'blue.400',
+        opacity: 1,
+        transform: 'scale(1.05)'
+      }}
+    >
+      View Vehicle's Info
+    </Button>
+  )
+
+  const OwnerInfo = ({ row }) => (
+    <Button
+      size={'lg'}
+      mr={2}
+      // onClick={() => handleApprove(row.original.id, row.original.carId)}
+      backgroundColor='blue.700'
+      opacity={0.8}
+      transition='0.2s'
+      _hover={{
+        backgroundColor: 'blue.400',
+        opacity: 1,
+        transform: 'scale(1.05)'
+      }}
+    >
+      View Owner's Info
+    </Button>
+  )
 
   const columns = useMemo(
     () => [
@@ -56,49 +135,17 @@ export const SubscriptionTable = ({
       }),
       columnHelper.accessor('Vehicle Info', {
         header: 'Vehicle Info',
-        cell: ({ row }) => <Text>{''}</Text>,
+        cell: ({ row }) => <VehicleInfo row={row} />,
         sortDescFirst: true
       }),
       columnHelper.accessor('Owner Info', {
         header: 'Owner Info',
-        cell: ({ row }) => <Text>{''}</Text>,
+        cell: ({ row }) => <OwnerInfo row={row} />,
         sortDescFirst: true
       }),
       columnHelper.accessor('Action', {
         header: 'Registration Request Action',
-        cell: ({ row }) => (
-          <Flex>
-            <Button
-              size={'lg'}
-              mr={2}
-              onClick={() => handleApprove(row.original.id, row.original.carId)}
-              backgroundColor='blue'
-              opacity={0.8}
-              transition='0.2s'
-              _hover={{
-                backgroundColor: 'blue',
-                opacity: 1,
-                transform: 'scale(1.05)'
-              }}
-            >
-              Approve
-            </Button>
-            <Button
-              size={'lg'}
-              onClick={() => handleDecline(row.original.id, row.original.carId)}
-              backgroundColor='red'
-              opacity={0.8}
-              transition='0.2s'
-              _hover={{
-                backgroundColor: 'red',
-                opacity: 1,
-                transform: 'scale(1.05)'
-              }}
-            >
-              Decline
-            </Button>
-          </Flex>
-        ),
+        cell: ({ row }) => <RegistrationAction row={row} />,
         sortDescFirst: true
       })
       // Add other columns as needed...
@@ -107,7 +154,7 @@ export const SubscriptionTable = ({
   )
 
   const table = useReactTable({
-    data: filteredUsers,
+    data: filteredVehicles,
     columns,
     state: {
       sorting
@@ -131,7 +178,7 @@ export const SubscriptionTable = ({
 
       if (confirmed.isConfirmed) {
         await updateVehicleField('status', 'approved', docId, carId)
-        setFilteredUsers((prevUsers) =>
+        setFilteredVehicles((prevUsers) =>
           prevUsers.filter((user) => user.id !== docId)
         )
 
@@ -163,7 +210,7 @@ export const SubscriptionTable = ({
 
       if (confirmed.isConfirmed) {
         await updateVehicleField('status', 'declined', docId, carId)
-        setFilteredUsers((prevUsers) =>
+        setFilteredVehicles((prevUsers) =>
           prevUsers.filter((user) => user.id !== docId)
         )
 
@@ -173,7 +220,7 @@ export const SubscriptionTable = ({
           'success'
         )
       } else {
-        Swal.fire('Cancelled', 'Declined action aborted.', 'error')
+        Swal.fire('Cancelled', 'Decline action aborted.', 'error')
       }
     } catch (error) {
       // Handle error
@@ -249,6 +296,11 @@ export const SubscriptionTable = ({
         jumpPerPage={jumpPerPage}
         totalPage={numbers.length}
         currentPage={currentPage}
+      />
+      <VehicleInfoModal
+        docId={targetId}
+        isOpen={isModal1Open}
+        isClose={setIsModal1Open}
       />
     </TableContainer>
   )
