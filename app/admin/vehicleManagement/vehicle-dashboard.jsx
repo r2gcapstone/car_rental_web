@@ -1,15 +1,10 @@
 import React, { useState } from 'react'
 import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
-// import { useForm } from 'react-hook-form'
 import { InfoIcon, InputField, SearchIcon } from 'components'
-import { SubscriptionTable } from './components'
+import { VehicleTable } from './components'
 import { useFetchAll2 } from 'lib'
 import { useForm } from 'react-hook-form'
-import {
-  SubscriptionStatisticsModal,
-  TransactionHistoryModal
-} from './components'
-import { useSubManagementActions } from 'lib'
+import { TransactionHistoryModal } from './components'
 
 export const VehicleDashboard = () => {
   const {
@@ -27,38 +22,32 @@ export const VehicleDashboard = () => {
   const [setUpdateTableKey] = useState(0)
   const watchForm = watch(['vehicleName', 'ownerName'])
 
-  const { isOpenStatistics } = useSubManagementActions()
-
   const [isSubHistoryOpen, setIsSubHistoryOpen] = useState(false)
 
-  const subscription = records
+  const vehicles = records
     .filter((user) => user.status === 'pending')
     .map(
       ({
         id,
         carId,
-        subscriptionType,
         vehicleDetails: { vehicleName },
         ownerNumber,
         ownerName
       }) => ({
         id,
         carId,
-        subscriptionType,
         vehicleName,
         ownerNumber,
         ownerName
       })
     )
 
-  console.log(subscription)
-
   const onSearch = (searchData) => {
     const { vehicleName, ownerName } = searchData
 
     const isNotEmpty = watchForm.findIndex((find) => !!find) > -1
 
-    const searchedValue = subscription.filter((value) => {
+    const searchedValue = vehicles.filter((value) => {
       const lowercaseVehicleName =
         typeof value['vehicleName'] === 'string'
           ? value['vehicleName'].toLowerCase()
@@ -155,10 +144,10 @@ export const VehicleDashboard = () => {
           </Flex>
         </Stack>
       </Flex>
-      <SubscriptionTable
+      <VehicleTable
         key={setUpdateTableKey}
         numbers={numbers}
-        users={searchedData || subscription}
+        vehicles={searchedData || vehicles}
         loading={loading}
         nextPage={nextPage}
         previousPage={previousPage}
@@ -167,13 +156,10 @@ export const VehicleDashboard = () => {
       />
 
       {/* Account Modals */}
-      {/* <AccountDetailsModal /> */}
-      <SubscriptionStatisticsModal />
       <TransactionHistoryModal
         isOpen={isSubHistoryOpen}
         setIsOpen={setIsSubHistoryOpen}
       />
-      {/* <AddNewUserModal /> */}
     </Box>
   )
 }
