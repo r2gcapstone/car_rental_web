@@ -154,12 +154,6 @@ export const VehicleDashboard = () => {
         jumpPerPage={jumpPerPage}
         currentPage={currentPage}
       />
-
-      {/* Account Modals */}
-      <TransactionHistoryModal
-        isOpen={isSubHistoryOpen}
-        setIsOpen={setIsSubHistoryOpen}
-      />
     </Box>
   )
 }
