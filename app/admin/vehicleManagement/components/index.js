@@ -1,9 +1,6 @@
 export * from './vehicleTable'
-export * from './vehicleRegisteredModal'
+export * from './VehicleRegisteredModal'
 export * from './vehicleInfoModal'
 export * from './ImagePreview'
-export * from './imageViewModal'
-export * from './imageViewModal'
+export * from './ImageViewModal'
 export * from './userInfoModal'
-
-// export * from './AccountDetailsModal'

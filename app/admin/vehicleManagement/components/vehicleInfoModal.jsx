@@ -14,7 +14,7 @@ import {
 import { getVehicleData } from 'services/apis'
 import { useEffect, useState } from 'react'
 import { ImagePreviewer } from './ImagePreview'
-import { ImageModal } from './imageViewModal'
+import { ImageModal } from './ImageViewModal'
 
 export function VehicleInfoModal({ docId, isOpen, isClose }) {
   const [data, setData] = useState({})

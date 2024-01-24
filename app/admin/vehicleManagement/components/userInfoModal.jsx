@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { ImagePreviewer } from './ImagePreview'
-import { ImageModal } from './imageViewModal'
+import { ImageModal } from './ImageViewModal'
 import { getUserData } from 'services/apis/account/users'
 
 export function UserInfoModal({ docId, isOpen, isClose }) {
