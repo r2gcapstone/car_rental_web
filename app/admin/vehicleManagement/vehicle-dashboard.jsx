@@ -32,13 +32,15 @@ export const VehicleDashboard = () => {
         carId,
         vehicleDetails: { vehicleName },
         ownerNumber,
-        ownerName
+        ownerName,
+        userId
       }) => ({
         id,
         carId,
         vehicleName,
         ownerNumber,
-        ownerName
+        ownerName,
+        userId
       })
     )
 

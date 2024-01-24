@@ -24,6 +24,7 @@ import { updateVehicleField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
 import Swal from 'sweetalert2'
 import { VehicleInfoModal } from './vehicleInfoModal'
+import { UserInfoModal } from './userInfoModal'
 
 const columnHelper = createColumnHelper()
 
@@ -39,14 +40,20 @@ export const VehicleTable = ({
   const [sorting, setSorting] = useState([])
   const [filteredVehicles, setFilteredVehicles] = useState(vehicles)
   const [isModal1Open, setIsModal1Open] = useState(false)
+  const [isModal2Open, setIsModal2Open] = useState(false)
   const [targetId, setTargetId] = useState('')
 
   useEffect(() => {
     setFilteredVehicles(vehicles)
   }, [vehicles])
 
-  const handleId = (id) => {
-    setIsModal1Open((prev) => !prev)
+  const handleId = (key, id) => {
+    if (key === 'vehicle') {
+      setIsModal1Open((prev) => !prev)
+    } else if (key === 'user') {
+      setIsModal2Open((prev) => !prev)
+    }
+
     setTargetId(id)
   }
 
@@ -89,7 +96,7 @@ export const VehicleTable = ({
     <Button
       size={'lg'}
       mr={2}
-      onClick={() => handleId(row.original.carId)}
+      onClick={() => handleId('vehicle', row.original.carId)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
@@ -107,7 +114,7 @@ export const VehicleTable = ({
     <Button
       size={'lg'}
       mr={2}
-      // onClick={() => handleApprove(row.original.id, row.original.carId)}
+      onClick={() => handleId('user', row.original.userId)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
@@ -297,10 +304,17 @@ export const VehicleTable = ({
         totalPage={numbers.length}
         currentPage={currentPage}
       />
+
       <VehicleInfoModal
         docId={targetId}
         isOpen={isModal1Open}
         isClose={setIsModal1Open}
+      />
+
+      <UserInfoModal
+        docId={targetId}
+        isOpen={isModal2Open}
+        isClose={setIsModal2Open}
       />
     </TableContainer>
   )
