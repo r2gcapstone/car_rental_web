@@ -25,6 +25,7 @@ import { Pagination, LazySpinner } from 'components'
 import Swal from 'sweetalert2'
 import { VehicleInfoModal } from './vehicleInfoModal'
 import { UserInfoModal } from './userInfoModal'
+import { WriteMessageModal } from './WriteMessageModal'
 
 const columnHelper = createColumnHelper()
 
@@ -41,6 +42,7 @@ export const VehicleTable = ({
   const [filteredVehicles, setFilteredVehicles] = useState(vehicles)
   const [isModal1Open, setIsModal1Open] = useState(false)
   const [isModal2Open, setIsModal2Open] = useState(false)
+  const [isWriteMessage, setIsWriteMessage] = useState(false)
   const [targetId, setTargetId] = useState('')
 
   useEffect(() => {
@@ -185,8 +187,8 @@ export const VehicleTable = ({
 
       if (confirmed.isConfirmed) {
         await updateVehicleField('status', 'approved', docId, carId)
-        setFilteredVehicles((prevUsers) =>
-          prevUsers.filter((user) => user.id !== docId)
+        setFilteredVehicles((prevVehicle) =>
+          prevVehicle.filter((Vehicles) => Vehicles.id !== docId)
         )
 
         Swal.fire(
@@ -202,36 +204,10 @@ export const VehicleTable = ({
     }
   }
 
-  const handleDecline = async (docId, carId) => {
-    try {
-      // Display SweetAlert2 modal for decline confirmation
-      const confirmed = await Swal.fire({
-        title: 'Are you sure?',
-        text: 'This will reject the user’s vehicle registration.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        confirmButtonColor: '#dc3545'
-      })
-
-      if (confirmed.isConfirmed) {
-        await updateVehicleField('status', 'declined', docId, carId)
-        setFilteredVehicles((prevUsers) =>
-          prevUsers.filter((user) => user.id !== docId)
-        )
-
-        Swal.fire(
-          'Declined!',
-          'The vehicle Registration is rejected and will not be applied to the vehicle.',
-          'success'
-        )
-      } else {
-        Swal.fire('Cancelled', 'Decline action aborted.', 'error')
-      }
-    } catch (error) {
-      // Handle error
-    }
+  const handleDecline = async (docId) => {
+    console.log(docId)
+    setTargetId(docId)
+    setIsWriteMessage((prev) => !prev)
   }
 
   if (loading) {
@@ -315,6 +291,13 @@ export const VehicleTable = ({
         docId={targetId}
         isOpen={isModal2Open}
         isClose={setIsModal2Open}
+      />
+
+      <WriteMessageModal
+        filter={setFilteredVehicles}
+        docId={targetId}
+        isOpen={isWriteMessage}
+        isClose={setIsWriteMessage}
       />
     </TableContainer>
   )

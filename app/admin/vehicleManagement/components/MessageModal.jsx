@@ -28,9 +28,9 @@ export function MessageModal({ docId, isOpen, isClose }) {
   const MessageComponent = () => (
     <>
       {data.adminMessage
-        ? data.adminMessage.split('  ').map((line, index) => (
-            <Text key={index}>
-              {'\n'}
+        ? data.adminMessage.split('\n').map((line, index) => (
+            <Text whiteSpace={'break-spaces'} key={index}>
+              {`\n`}
               {line}
             </Text>
           ))

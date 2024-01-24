@@ -14,20 +14,19 @@ export const VehicleDashboard = () => {
     previousPage,
     jumpPerPage,
     currentPage,
-    numbers
+    numbers,
+    refetchData
   } = useFetchAll2('cars', 'pending')
 
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
   const [setUpdateTableKey] = useState(0)
 
-  const watchForm = watch(['vehicleName', 'ownerName'])
-
   const [isDeclinedVehicleModalOpen, setIsDeclinedVehicleModalOpen] =
     useState(false)
 
   const vehicles = records
-    .filter((user) => user.status === 'pending')
+    .filter((vehicle) => vehicle.status === 'pending')
     .map(
       ({
         id,
@@ -45,6 +44,8 @@ export const VehicleDashboard = () => {
         userId
       })
     )
+
+  const watchForm = watch(['vehicleName', 'ownerName'])
 
   const onSearch = (searchData) => {
     const { vehicleName, ownerName } = searchData
@@ -109,7 +110,10 @@ export const VehicleDashboard = () => {
               padding='1rem'
               height='10px'
               fontWeight='normal'
-              onClick={() => setIsDeclinedVehicleModalOpen(true)}
+              onClick={() => {
+                setIsDeclinedVehicleModalOpen(true)
+                refetchData()
+              }}
             >
               Past Declined Vehicle
             </Button>
@@ -148,16 +152,19 @@ export const VehicleDashboard = () => {
           </Flex>
         </Stack>
       </Flex>
-      <VehicleTable
-        key={setUpdateTableKey}
-        numbers={numbers}
-        vehicles={searchedData || vehicles}
-        loading={loading}
-        nextPage={nextPage}
-        previousPage={previousPage}
-        jumpPerPage={jumpPerPage}
-        currentPage={currentPage}
-      />
+
+      {!isDeclinedVehicleModalOpen && (
+        <VehicleTable
+          key={setUpdateTableKey}
+          numbers={numbers}
+          vehicles={searchedData || vehicles}
+          loading={loading}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          jumpPerPage={jumpPerPage}
+          currentPage={currentPage}
+        />
+      )}
 
       <DeclinedVehicleModal
         isOpen={isDeclinedVehicleModalOpen}

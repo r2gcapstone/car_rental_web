@@ -49,6 +49,9 @@ export const VehicleDeclinedTable = ({
     setFilteredVehicles(vehicles)
   }, [vehicles])
 
+  // Use Set to keep track of unique carId values
+  const uniqueCarIds = new Set()
+
   const handleId = (key, id) => {
     console.log(id)
     if (key === 'vehicle') {
@@ -197,29 +200,39 @@ export const VehicleDeclinedTable = ({
           ))}
         </Thead>
         <Tbody>
-          {table.getRowModel().rows.map((row) => (
-            <Tr
-              key={row.id}
-              aria-label='account-row'
-              borderBottom='1px solid white'
-            >
-              {row.getVisibleCells().map((cell, index) => (
-                <Td py='1rem' px='0' key={cell.id} height='auto'>
-                  <Box
-                    {...(index === 0 && { ml: '4' })}
-                    {...(index !== 0 && { ml: '2' })}
-                  >
-                    <>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </>
-                  </Box>
-                </Td>
-              ))}
-            </Tr>
-          ))}
+          {table.getRowModel().rows.map((row) => {
+            // Check if carId is unique, if not, skip rendering the row
+            if (uniqueCarIds.has(row.original.carId)) {
+              return null
+            }
+
+            // Add the carId to the set
+            uniqueCarIds.add(row.original.carId)
+
+            return (
+              <Tr
+                key={row.id}
+                aria-label='account-row'
+                borderBottom='1px solid white'
+              >
+                {row.getVisibleCells().map((cell, index) => (
+                  <Td py='1rem' px='0' key={cell.id} height='auto'>
+                    <Box
+                      {...(index === 0 && { ml: '4' })}
+                      {...(index !== 0 && { ml: '2' })}
+                    >
+                      <>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </>
+                    </Box>
+                  </Td>
+                ))}
+              </Tr>
+            )
+          })}
         </Tbody>
       </Table>
 

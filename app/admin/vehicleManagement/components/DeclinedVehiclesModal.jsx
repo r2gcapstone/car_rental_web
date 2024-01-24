@@ -1,6 +1,6 @@
 import ModalContainer2 from 'components/Modals/ModalContainer2'
 import { useState } from 'react'
-import { useFetchAll } from 'lib'
+import { useFetchAll2 } from 'lib'
 import { useForm } from 'react-hook-form'
 import { VehicleDeclinedTable } from './VehicleDeclinedTable'
 // import { SubscriptionHistoryTable } from './SubscriptionHistoryTable'
@@ -17,7 +17,7 @@ export const DeclinedVehicleModal = ({ isOpen, setIsOpen }) => {
     jumpPerPage,
     currentPage,
     numbers
-  } = useFetchAll('cars')
+  } = useFetchAll2('cars', 'declined')
 
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()

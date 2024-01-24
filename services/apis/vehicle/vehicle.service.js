@@ -11,11 +11,11 @@ import {
   where,
   getDoc
 } from 'firebase/firestore'
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { auth, db } from 'services/firebase'
-import { getAverageSubscriptionCountPerMonth } from 'helpers'
 
-export const updateVehicleField = async (key, value, docId, cardId) => {
+import { auth, db } from 'services/firebase'
+
+export const updateVehicleField = async (key, value, docId) => {
+  console.log(key, value, docId)
   let dateUpdated = new Date()
   dateUpdated = Timestamp.fromDate(dateUpdated)
 
@@ -25,13 +25,6 @@ export const updateVehicleField = async (key, value, docId, cardId) => {
       [key]: value,
       dateUpdated: value && dateUpdated
     })
-
-    let bool = null
-    if (value === 'approved') {
-      bool = true
-    } else {
-      bool = false
-    }
 
     return {
       message: 'Update success!',
