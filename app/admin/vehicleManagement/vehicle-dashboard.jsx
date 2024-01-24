@@ -4,7 +4,7 @@ import { InfoIcon, InputField, SearchIcon } from 'components'
 import { VehicleTable } from './components'
 import { useFetchAll2 } from 'lib'
 import { useForm } from 'react-hook-form'
-import { TransactionHistoryModal } from './components'
+import { DeclinedVehicleModal } from './components'
 
 export const VehicleDashboard = () => {
   const {
@@ -20,9 +20,11 @@ export const VehicleDashboard = () => {
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
   const [setUpdateTableKey] = useState(0)
+
   const watchForm = watch(['vehicleName', 'ownerName'])
 
-  const [isSubHistoryOpen, setIsSubHistoryOpen] = useState(false)
+  const [isDeclinedVehicleModalOpen, setIsDeclinedVehicleModalOpen] =
+    useState(false)
 
   const vehicles = records
     .filter((user) => user.status === 'pending')
@@ -107,7 +109,7 @@ export const VehicleDashboard = () => {
               padding='1rem'
               height='10px'
               fontWeight='normal'
-              // onClick={() => setIsSubHistoryOpen(true)}
+              onClick={() => setIsDeclinedVehicleModalOpen(true)}
             >
               Past Declined Vehicle
             </Button>
@@ -155,6 +157,11 @@ export const VehicleDashboard = () => {
         previousPage={previousPage}
         jumpPerPage={jumpPerPage}
         currentPage={currentPage}
+      />
+
+      <DeclinedVehicleModal
+        isOpen={isDeclinedVehicleModalOpen}
+        setIsOpen={setIsDeclinedVehicleModalOpen}
       />
     </Box>
   )
