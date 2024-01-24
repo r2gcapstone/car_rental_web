@@ -53,7 +53,6 @@ export const VehicleDeclinedTable = ({
   const uniqueCarIds = new Set()
 
   const handleId = (key, id) => {
-    console.log(id)
     if (key === 'vehicle') {
       setIsModal1Open((prev) => !prev)
     } else if (key === 'user') {

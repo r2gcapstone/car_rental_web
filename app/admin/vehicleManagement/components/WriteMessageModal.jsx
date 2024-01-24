@@ -15,7 +15,6 @@ import { updateVehicleField } from 'services/apis'
 import Swal from 'sweetalert2'
 
 export function WriteMessageModal({ docId, isOpen, isClose, filter }) {
-  console.log(docId)
   const [value, setValue] = useState('')
 
   let handleInputChange = (e) => {
@@ -28,7 +27,6 @@ export function WriteMessageModal({ docId, isOpen, isClose, filter }) {
       const result = await updateVehicleField('adminMessage', value, docId)
 
       if (!result.error) {
-        console.log(result)
         await updateVehicleField('status', 'declined', docId)
         filter((prevVehicle) =>
           prevVehicle.filter((Vehicles) => Vehicles.id !== docId)

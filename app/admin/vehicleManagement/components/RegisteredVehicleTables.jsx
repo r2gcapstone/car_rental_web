@@ -43,8 +43,6 @@ export const RegisteredVehicleTable = ({
   const [isModal2Open, setIsModal2Open] = useState(false)
   const [targetId, setTargetId] = useState('')
 
-  console.log('reg', vehicles)
-
   useEffect(() => {
     setFilteredVehicles(vehicles)
   }, [vehicles])
@@ -52,7 +50,6 @@ export const RegisteredVehicleTable = ({
   const uniqueCarIds = new Set()
 
   const handleId = (key, id) => {
-    console.log(id)
     if (key === 'vehicle') {
       setIsModal1Open((prev) => !prev)
     } else if (key === 'user') {
@@ -65,7 +62,7 @@ export const RegisteredVehicleTable = ({
   const handleArchiveBtn = async (row) => {
     try {
       const Archive = row.original.isHidden
-      console.log(Archive)
+
       const result = await updateVehicleField(
         'isHidden',
         Archive ? false : true,

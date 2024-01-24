@@ -205,7 +205,6 @@ export const VehicleTable = ({
   }
 
   const handleDecline = async (docId) => {
-    console.log(docId)
     setTargetId(docId)
     setIsWriteMessage((prev) => !prev)
   }
