@@ -116,7 +116,7 @@ export const RegisteredVehicleTable = ({
       size={'lg'}
       mr={2}
       onClick={() => handleArchiveBtn(row)}
-      backgroundColor={row.original.isHidden ? 'orange.500' : 'blue.700'}
+      backgroundColor={row.original.isHidden ? 'red.500' : 'blue.500'}
       opacity={0.8}
       transition='0.2s'
       _hover={{
@@ -125,7 +125,7 @@ export const RegisteredVehicleTable = ({
         transform: 'scale(1.05)'
       }}
     >
-      {row.original.isHidden ? 'Archived' : 'Archive'}
+      {row.original.isHidden ? 'Unarchive' : 'Archive'}
     </Button>
   )
 
