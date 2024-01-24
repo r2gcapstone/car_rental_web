@@ -1,5 +1,5 @@
 import { Flex, Box, Image, Text, Button } from '@chakra-ui/react'
-import { getUserData } from 'services/apis/account/users'
+import { getAdminData } from 'services/apis/account/users'
 import { useEffect, useState } from 'react'
 export const AdminProfile = () => {
   const [userData, setUserData] = useState({
@@ -15,7 +15,7 @@ export const AdminProfile = () => {
 
   const fetchData = async () => {
     try {
-      const result = await getUserData()
+      const result = await getAdminData()
       setUserData(result)
     } catch (error) {
       console.error
