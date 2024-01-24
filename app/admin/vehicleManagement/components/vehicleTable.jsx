@@ -153,7 +153,7 @@ export const VehicleTable = ({
         sortDescFirst: true
       }),
       columnHelper.accessor('Action', {
-        header: 'Registration Request Action',
+        header: 'Action',
         cell: ({ row }) => <RegistrationAction row={row} />,
         sortDescFirst: true
       })
@@ -293,12 +293,14 @@ export const VehicleTable = ({
         isClose={setIsModal2Open}
       />
 
-      <WriteMessageModal
-        filter={setFilteredVehicles}
-        docId={targetId}
-        isOpen={isWriteMessage}
-        isClose={setIsWriteMessage}
-      />
+      {isWriteMessage && targetId && (
+        <WriteMessageModal
+          filter={setFilteredVehicles}
+          docId={targetId}
+          isOpen={isWriteMessage}
+          isClose={setIsWriteMessage}
+        />
+      )}
     </TableContainer>
   )
 }

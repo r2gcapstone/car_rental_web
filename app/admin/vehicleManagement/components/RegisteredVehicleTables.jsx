@@ -47,7 +47,6 @@ export const RegisteredVehicleTable = ({
     setFilteredVehicles(vehicles)
   }, [vehicles])
 
-  // Use Set to keep track of unique carId values
   const uniqueCarIds = new Set()
 
   const handleId = (key, id) => {
@@ -122,7 +121,16 @@ export const RegisteredVehicleTable = ({
       }),
       columnHelper.accessor('Status', {
         header: 'Status',
-        cell: ({ row }) => <Text>{row.original.status}</Text>,
+        cell: ({ row }) => (
+          <Text
+            fontWeight={'bold'}
+            color={
+              row.original.status === 'ongoing' ? 'green.300' : 'whiteAlpha.100'
+            }
+          >
+            {row.original.status === 'ongoing' ? 'Booked' : 'Not Booked'}
+          </Text>
+        ),
         sortDescFirst: true
       })
       // Add other columns as needed...

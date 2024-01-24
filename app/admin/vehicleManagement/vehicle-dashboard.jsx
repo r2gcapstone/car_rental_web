@@ -1,12 +1,18 @@
 import React, { useState } from 'react'
 import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
 import { InfoIcon, InputField, SearchIcon } from 'components'
-import { VehicleTable } from './components'
 import { useFetchAll2 } from 'lib'
 import { useForm } from 'react-hook-form'
-import { DeclinedVehicleModal } from './components'
+import {
+  DeclinedVehicleModal,
+  RegisteredVehicleTable,
+  VehicleTable
+} from './components'
 
 export const VehicleDashboard = () => {
+  const [registeredMode, setRegisteredMode] = useState(false)
+  const [isDeclinedVehicleModalOpen, setIsDeclinedVehicleModalOpen] =
+    useState(false)
   const {
     records,
     loading,
@@ -16,34 +22,30 @@ export const VehicleDashboard = () => {
     currentPage,
     numbers,
     refetchData
-  } = useFetchAll2('cars', 'pending')
+  } = useFetchAll2('cars', registeredMode ? 'ongoing' : 'pending')
 
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
-  const [setUpdateTableKey] = useState(0)
 
-  const [isDeclinedVehicleModalOpen, setIsDeclinedVehicleModalOpen] =
-    useState(false)
-
-  const vehicles = records
-    .filter((vehicle) => vehicle.status === 'pending')
-    .map(
-      ({
-        id,
-        carId,
-        vehicleDetails: { vehicleName },
-        ownerNumber,
-        ownerName,
-        userId
-      }) => ({
-        id,
-        carId,
-        vehicleName,
-        ownerNumber,
-        ownerName,
-        userId
-      })
-    )
+  const vehicles = records.map(
+    ({
+      id,
+      carId,
+      vehicleDetails: { vehicleName },
+      ownerNumber,
+      ownerName,
+      userId,
+      status
+    }) => ({
+      id,
+      carId,
+      vehicleName,
+      ownerNumber,
+      ownerName,
+      userId,
+      status
+    })
+  )
 
   const watchForm = watch(['vehicleName', 'ownerName'])
 
@@ -77,6 +79,11 @@ export const VehicleDashboard = () => {
     setSearchedData(null)
   }
 
+  const toggleRegisteredMode = () => {
+    setRegisteredMode((prevMode) => !prevMode)
+    refetchData()
+  }
+
   return (
     <Box width='100%'>
       <Flex
@@ -90,7 +97,9 @@ export const VehicleDashboard = () => {
           <Flex alignItems='center' gap={4}>
             <Icon as={SearchIcon} width='2.125rem' height='2.25rem' />
             <Text fontWeight='bold' fontSize='2rem'>
-              Find Vehicle
+              {registeredMode
+                ? 'Find Registered Vehicle'
+                : 'Vehicle Registration Request'}
             </Text>
           </Flex>
           <Flex gap={2}>
@@ -100,9 +109,9 @@ export const VehicleDashboard = () => {
               padding='1rem'
               height='10px'
               fontWeight='normal'
-              // onClick={() => isOpenStatistics('statistics')}
+              onClick={toggleRegisteredMode}
             >
-              Registered Vehicle
+              {!registeredMode ? 'View Registered Vehicle' : 'Go back'}
             </Button>
             <Button
               background='blue.dark'
@@ -110,10 +119,7 @@ export const VehicleDashboard = () => {
               padding='1rem'
               height='10px'
               fontWeight='normal'
-              onClick={() => {
-                setIsDeclinedVehicleModalOpen(true)
-                refetchData()
-              }}
+              onClick={() => setIsDeclinedVehicleModalOpen(true)}
             >
               Past Declined Vehicle
             </Button>
@@ -121,7 +127,6 @@ export const VehicleDashboard = () => {
         </Flex>
 
         <Stack as='form' onSubmit={handleSubmit(onSearch)} mt='1rem'>
-          {/* <Stack as='form' mt='1rem'> */}
           <Flex gap='2' alignItems='center'>
             <InputField
               label='Vehicle'
@@ -153,9 +158,8 @@ export const VehicleDashboard = () => {
         </Stack>
       </Flex>
 
-      {!isDeclinedVehicleModalOpen && (
+      {!isDeclinedVehicleModalOpen && !registeredMode ? (
         <VehicleTable
-          key={setUpdateTableKey}
           numbers={numbers}
           vehicles={searchedData || vehicles}
           loading={loading}
@@ -164,11 +168,26 @@ export const VehicleDashboard = () => {
           jumpPerPage={jumpPerPage}
           currentPage={currentPage}
         />
+      ) : (
+        !isDeclinedVehicleModalOpen && (
+          <RegisteredVehicleTable
+            numbers={numbers}
+            vehicles={searchedData || vehicles}
+            loading={loading}
+            nextPage={nextPage}
+            previousPage={previousPage}
+            jumpPerPage={jumpPerPage}
+            currentPage={currentPage}
+          />
+        )
       )}
 
       <DeclinedVehicleModal
         isOpen={isDeclinedVehicleModalOpen}
-        setIsOpen={setIsDeclinedVehicleModalOpen}
+        setIsOpen={() => {
+          setIsDeclinedVehicleModalOpen()
+          refetchData()
+        }}
       />
     </Box>
   )
