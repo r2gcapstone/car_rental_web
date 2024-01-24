@@ -156,9 +156,13 @@ export function VehicleInfoModal({ docId, isOpen, isClose }) {
                 Vehicle Information
               </Text>
               {dataArray.map((item) => (
-                <Flex justifyContent={'space-between'} key={item.key}>
+                <Flex
+                  marginTop={2}
+                  justifyContent={'space-between'}
+                  key={item.key}
+                >
                   <Text fontWeight={'bold'}>{item.label} :</Text>
-                  <Text>
+                  <Text w={'30%'}>
                     {[7, 8].includes(item.key) && 'PHP '}
                     {[7, 8].includes(item.key)
                       ? item.value.toLocaleString()
