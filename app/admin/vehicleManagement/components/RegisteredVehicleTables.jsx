@@ -23,10 +23,12 @@ import {
 import { Pagination, LazySpinner } from 'components'
 import { VehicleInfoModal } from './vehicleInfoModal'
 import { UserInfoModal } from './userInfoModal'
+import { updateVehicleField } from 'services/apis'
 
 const columnHelper = createColumnHelper()
 
 export const RegisteredVehicleTable = ({
+  refetchData,
   vehicles,
   loading,
   jumpPerPage,
@@ -60,7 +62,22 @@ export const RegisteredVehicleTable = ({
     setTargetId(id)
   }
 
-  //columns
+  const handleArchiveBtn = async (row) => {
+    try {
+      const Archive = row.original.isHidden
+      console.log(Archive)
+      const result = await updateVehicleField(
+        'isHidden',
+        Archive ? false : true,
+        row.original.carId
+      )
+      if (!result.error) {
+        refetchData()
+      }
+    } catch (error) {}
+  }
+
+  //components
   const VehicleInfo = ({ row }) => (
     <Button
       size={'lg'}
@@ -83,7 +100,7 @@ export const RegisteredVehicleTable = ({
     <Button
       size={'lg'}
       mr={2}
-      onClick={() => handleId('user', row.original.userId)}
+      onClick={() => handleId('user', row.original.docId)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
@@ -94,6 +111,24 @@ export const RegisteredVehicleTable = ({
       }}
     >
       View Owner's Info
+    </Button>
+  )
+
+  const ArchiveBtn = ({ row }) => (
+    <Button
+      size={'lg'}
+      mr={2}
+      onClick={() => handleArchiveBtn(row)}
+      backgroundColor={row.original.isHidden ? 'orange.500' : 'blue.700'}
+      opacity={0.8}
+      transition='0.2s'
+      _hover={{
+        backgroundColor: 'blue.400',
+        opacity: 1,
+        transform: 'scale(1.05)'
+      }}
+    >
+      {row.original.isHidden ? 'Archived' : 'Archive'}
     </Button>
   )
 
@@ -132,7 +167,13 @@ export const RegisteredVehicleTable = ({
           </Text>
         ),
         sortDescFirst: true
+      }),
+      columnHelper.accessor('Action', {
+        header: 'Action',
+        cell: ({ row }) => <ArchiveBtn row={row} />,
+        sortDescFirst: true
       })
+
       // Add other columns as needed...
     ],
     []

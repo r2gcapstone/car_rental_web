@@ -35,7 +35,8 @@ export const VehicleDashboard = () => {
       ownerNumber,
       ownerName,
       userId,
-      status
+      status,
+      isHidden
     }) => ({
       id,
       carId,
@@ -43,7 +44,8 @@ export const VehicleDashboard = () => {
       ownerNumber,
       ownerName,
       userId,
-      status
+      status,
+      isHidden
     })
   )
 
@@ -171,6 +173,7 @@ export const VehicleDashboard = () => {
       ) : (
         !isDeclinedVehicleModalOpen && (
           <RegisteredVehicleTable
+            refetchData={refetchData}
             numbers={numbers}
             vehicles={searchedData || vehicles}
             loading={loading}
