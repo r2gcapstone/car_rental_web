@@ -30,12 +30,11 @@ export const redirectLinks: RedirectLinksTypes[] = [
     name: 'Vehicle Management',
     icon: ActivityLogIcon
   },
-  // {
-  //   path: 'transaction-history',
-  //   name: 'Transaction History',
-  //   icon: TransactionIcon
-  // },
-
+  {
+    path: 'transaction-management',
+    name: 'Transaction History',
+    icon: TransactionIcon
+  },
   {
     path: 'subscription-management',
     name: 'Subscription Management',
