@@ -83,7 +83,27 @@ export const TransactionTable = ({
       }),
       columnHelper.accessor('Application Status', {
         header: 'Application Status',
-        cell: ({ row }) => <Text>{row.original.status}</Text>,
+        cell: ({ row }) => {
+          const status = row.original.status
+          return (
+            <Text
+              fontWeight={'bold'}
+              color={
+                status === 'approved'
+                  ? 'green.500'
+                  : status === 'pending'
+                  ? 'blue.500'
+                  : status === 'declined'
+                  ? 'red.500'
+                  : status === 'canceled'
+                  ? 'yellow.500'
+                  : 'white'
+              }
+            >
+              {status}
+            </Text>
+          )
+        },
         sortDescFirst: true
       }),
       columnHelper.accessor('Date of Application', {
@@ -112,69 +132,6 @@ export const TransactionTable = ({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel()
   })
-
-  const handleApprove = async (docId, carId) => {
-    try {
-      // Display SweetAlert2 modal for approval confirmation
-      const confirmed = await Swal.fire({
-        title: 'Are you sure?',
-        text: 'This will approve the user’s subscription.',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No'
-      })
-
-      if (confirmed.isConfirmed) {
-        await updateSubscriptionField('status', 'approved', docId, carId)
-        setFilteredUsers((prevUsers) =>
-          prevUsers.filter((user) => user.id !== docId)
-        )
-
-        Swal.fire(
-          'Approved!',
-          'The subscription is now applied to the vehicle.',
-          'success'
-        )
-      } else {
-        Swal.fire('Cancelled', 'Subscription approval was cancelled.', 'error')
-      }
-    } catch (error) {
-      // Handle error
-    }
-  }
-
-  const handleDecline = async (docId, carId) => {
-    try {
-      // Display SweetAlert2 modal for decline confirmation
-      const confirmed = await Swal.fire({
-        title: 'Are you sure?',
-        text: 'This will reject the user’s subscription purchase.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        confirmButtonColor: '#dc3545'
-      })
-
-      if (confirmed.isConfirmed) {
-        await updateSubscriptionField('status', 'declined', docId, carId)
-        setFilteredUsers((prevUsers) =>
-          prevUsers.filter((user) => user.id !== docId)
-        )
-
-        Swal.fire(
-          'Declined!',
-          'The subscription is rejected and will not be applied to the vehicle.',
-          'success'
-        )
-      } else {
-        Swal.fire('Cancelled', 'Subscription rejection was cancelled.', 'error')
-      }
-    } catch (error) {
-      // Handle error
-    }
-  }
 
   if (loading) {
     return (
