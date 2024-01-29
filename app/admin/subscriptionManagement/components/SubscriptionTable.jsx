@@ -23,8 +23,8 @@ import {
 import { updateSubscriptionField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
 import Swal from 'sweetalert2'
-import { VehicleInfoModal } from './vehicleInfoModal'
-import { UserInfoModal } from './userInfoModal'
+import { PaymentInfoModal } from './PaymentInfoModal'
+import { ReceiptImg } from './ReceiptImg'
 import { WriteMessageModal } from './WriteMessageModal'
 
 const columnHelper = createColumnHelper()
@@ -39,25 +39,26 @@ export const SubscriptionTable = ({
   currentPage
 }) => {
   const [sorting, setSorting] = useState([])
-  const [filteredVehicles, setFilteredVehicles] = useState(users)
-  const [isModal1Open, setIsModal1Open] = useState(false)
-  const [isModal2Open, setIsModal2Open] = useState(false)
+  const [filteredSubs, setFilteredSub] = useState(users)
+  const [isPaymentInfoOpen, setIsPaymentInfoOpen] = useState(false)
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false)
   const [isWriteMessage, setIsWriteMessage] = useState(false)
   const [targetId, setTargetId] = useState('')
+  const [img, setImg] = useState('')
+  const [paymentData, setPaymentData] = useState('')
 
   useEffect(() => {
-    setFilteredVehicles(users)
+    setFilteredSub(users)
   }, [users])
 
-  const handleId = (key, id) => {
-    console.log(key, id)
-    if (key === 'vehicle') {
-      setIsModal1Open((prev) => !prev)
-    } else if (key === 'user') {
-      setIsModal2Open((prev) => !prev)
+  const handleId = (key, data) => {
+    if (key === 'paymentInfo') {
+      setIsPaymentInfoOpen((prev) => !prev)
+      setPaymentData(data)
+    } else if (key === 'receipt') {
+      setImg(data)
+      setIsReceiptModalOpen((prev) => !prev)
     }
-
-    setTargetId(id)
   }
   //components
 
@@ -95,11 +96,11 @@ export const SubscriptionTable = ({
     </Flex>
   )
 
-  const VehicleInfo = ({ row }) => (
+  const PaymentInfo = ({ row }) => (
     <Button
       size={'lg'}
       mr={2}
-      onClick={() => handleId('vehicle', row.original.carId)}
+      onClick={() => handleId('paymentInfo', row)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
@@ -109,15 +110,15 @@ export const SubscriptionTable = ({
         transform: 'scale(1.05)'
       }}
     >
-      View Vehicle's Info
+      View Payment Info
     </Button>
   )
 
-  const OwnerInfo = ({ row }) => (
+  const ViewReceipt = ({ row }) => (
     <Button
       size={'lg'}
       mr={2}
-      onClick={() => handleId('user', row.original.userId)}
+      onClick={() => handleId('receipt', row.receiptImg)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
@@ -127,7 +128,7 @@ export const SubscriptionTable = ({
         transform: 'scale(1.05)'
       }}
     >
-      View Owner's Info
+      View Receipt
     </Button>
   )
 
@@ -160,14 +161,14 @@ export const SubscriptionTable = ({
         cell: ({ row }) => <Text>{row.original.userName}</Text>,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Vehicle Info', {
-        header: 'Vehicle Info',
-        cell: ({ row }) => <VehicleInfo row={row} />,
+      columnHelper.accessor('Payment Info', {
+        header: 'Payment Info',
+        cell: ({ row }) => <PaymentInfo row={row.original} />,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Owner Info', {
-        header: 'Owner Info',
-        cell: ({ row }) => <OwnerInfo row={row} />,
+      columnHelper.accessor('View Receipt', {
+        header: 'View Receipt',
+        cell: ({ row }) => <ViewReceipt row={row.original} />,
         sortDescFirst: true
       }),
       columnHelper.accessor('Action', {
@@ -180,7 +181,7 @@ export const SubscriptionTable = ({
   )
 
   const table = useReactTable({
-    data: filteredVehicles,
+    data: filteredSubs,
     columns,
     state: {
       sorting
@@ -204,7 +205,7 @@ export const SubscriptionTable = ({
 
       if (confirmed.isConfirmed) {
         await updateSubscriptionField('status', 'approved', docId, carId)
-        setFilteredVehicles((prevUsers) =>
+        setFilteredSub((prevUsers) =>
           prevUsers.filter((user) => user.id !== docId)
         )
 
@@ -296,21 +297,21 @@ export const SubscriptionTable = ({
         currentPage={currentPage}
       />
 
-      <VehicleInfoModal
-        docId={targetId}
-        isOpen={isModal1Open}
-        isClose={setIsModal1Open}
+      <PaymentInfoModal
+        data={paymentData}
+        isOpen={isPaymentInfoOpen}
+        isClose={setIsPaymentInfoOpen}
       />
 
-      <UserInfoModal
-        docId={targetId}
-        isOpen={isModal2Open}
-        isClose={setIsModal2Open}
+      <ReceiptImg
+        img={img}
+        isOpen={isReceiptModalOpen}
+        isClose={setIsReceiptModalOpen}
       />
 
       {isWriteMessage && targetId && (
         <WriteMessageModal
-          filter={setFilteredVehicles}
+          filter={setFilteredSub}
           docId={targetId}
           isOpen={isWriteMessage}
           isClose={setIsWriteMessage}

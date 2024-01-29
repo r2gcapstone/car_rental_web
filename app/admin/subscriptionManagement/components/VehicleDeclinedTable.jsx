@@ -23,8 +23,8 @@ import {
 import { updateVehicleField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
 import Swal from 'sweetalert2'
-import { VehicleInfoModal } from './vehicleInfoModal'
-import { UserInfoModal } from './userInfoModal'
+import { VehicleInfoModal } from './PaymentInfoModal'
+import { UserInfoModal } from './ReceiptImg'
 import { MessageModal } from './MessageModal'
 
 const columnHelper = createColumnHelper()

@@ -24,8 +24,6 @@ export const ListOfAdmins = ({ isOpen, setIsOpen }) => {
   const [searchedData, setSearchedData] = useState()
   const watchForm = watch(['email'])
 
-  console.log(records)
-
   const admins = records.map(
     ({ id, firstName, lastName, email, mobileNumber, address }) => ({
       id,

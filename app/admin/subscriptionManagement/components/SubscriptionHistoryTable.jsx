@@ -21,8 +21,8 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import { Pagination, LazySpinner } from 'components'
-import { VehicleInfoModal } from './vehicleInfoModal'
-import { UserInfoModal } from './userInfoModal'
+import { PaymentInfoModal } from './PaymentInfoModal'
+import { ReceiptImg } from './ReceiptImg'
 
 const columnHelper = createColumnHelper()
 
@@ -38,9 +38,10 @@ export const SubscriptionHistoryTable = ({
   const [sorting, setSorting] = useState([])
   const [filteredSubscription, setFilteredSubscription] =
     useState(subscriptions)
-  const [isModal1Open, setIsModal1Open] = useState(false)
-  const [isModal2Open, setIsModal2Open] = useState(false)
-  const [targetId, setTargetId] = useState('')
+  const [isPaymentInfoOpen, setIsPaymentInfoOpen] = useState(false)
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false)
+  const [img, setImg] = useState('')
+  const [paymentData, setPaymentData] = useState('')
 
   useEffect(() => {
     setFilteredSubscription(subscriptions)
@@ -48,14 +49,14 @@ export const SubscriptionHistoryTable = ({
 
   const uniqueDocIds = new Set()
 
-  const handleId = (key, id) => {
-    if (key === 'vehicle') {
-      setIsModal1Open((prev) => !prev)
-    } else if (key === 'user') {
-      setIsModal2Open((prev) => !prev)
+  const handleId = (key, data) => {
+    if (key === 'paymentInfo') {
+      setIsPaymentInfoOpen((prev) => !prev)
+      setPaymentData(data)
+    } else if (key === 'receipt') {
+      setImg(data)
+      setIsReceiptModalOpen((prev) => !prev)
     }
-
-    setTargetId(id)
   }
 
   const subscriptionTypeMap = {
@@ -66,11 +67,11 @@ export const SubscriptionHistoryTable = ({
   }
 
   //components
-  const VehicleInfo = ({ row }) => (
+  const PaymentInfo = ({ row }) => (
     <Button
       size={'lg'}
       mr={2}
-      onClick={() => handleId('vehicle', row.original.carId)}
+      onClick={() => handleId('paymentInfo', row)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
@@ -80,15 +81,15 @@ export const SubscriptionHistoryTable = ({
         transform: 'scale(1.05)'
       }}
     >
-      View Vehicle's Info
+      View Payment Info
     </Button>
   )
 
-  const OwnerInfo = ({ row }) => (
+  const ViewReceipt = ({ row }) => (
     <Button
       size={'lg'}
       mr={2}
-      onClick={() => handleId('user', row.original.userId)}
+      onClick={() => handleId('receipt', row.receiptImg)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
@@ -98,10 +99,9 @@ export const SubscriptionHistoryTable = ({
         transform: 'scale(1.05)'
       }}
     >
-      View Owner's Info
+      View Receipt
     </Button>
   )
-
   const columns = useMemo(
     () => [
       columnHelper.accessor('Subscription', {
@@ -124,14 +124,14 @@ export const SubscriptionHistoryTable = ({
         cell: ({ row }) => <Text>{row.original.userName}</Text>,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Vehicle Info', {
-        header: 'Vehicle Info',
-        cell: ({ row }) => <VehicleInfo row={row} />,
+      columnHelper.accessor('Payment Info', {
+        header: 'Payment Info',
+        cell: ({ row }) => <PaymentInfo row={row.original} />,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Owner Info', {
-        header: 'Owner Info',
-        cell: ({ row }) => <OwnerInfo row={row} />,
+      columnHelper.accessor('View Receipt', {
+        header: 'View Receipt',
+        cell: ({ row }) => <ViewReceipt row={row.original} />,
         sortDescFirst: true
       }),
       columnHelper.accessor('Status', {
@@ -152,7 +152,6 @@ export const SubscriptionHistoryTable = ({
         ),
         sortDescFirst: true
       })
-      // Add other columns as needed...
     ],
     []
   )
@@ -247,16 +246,16 @@ export const SubscriptionHistoryTable = ({
         currentPage={currentPage}
       />
 
-      <VehicleInfoModal
-        docId={targetId}
-        isOpen={isModal1Open}
-        isClose={setIsModal1Open}
+      <PaymentInfoModal
+        data={paymentData}
+        isOpen={isPaymentInfoOpen}
+        isClose={setIsPaymentInfoOpen}
       />
 
-      <UserInfoModal
-        docId={targetId}
-        isOpen={isModal2Open}
-        isClose={setIsModal2Open}
+      <ReceiptImg
+        img={img}
+        isOpen={isReceiptModalOpen}
+        isClose={setIsReceiptModalOpen}
       />
     </TableContainer>
   )
