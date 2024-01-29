@@ -22,7 +22,7 @@ export const VehicleDashboard = () => {
     currentPage,
     numbers,
     refetchData
-  } = useFetchAll2('cars', registeredMode ? 'ongoing' : 'pending')
+  } = useFetchAll2('cars', registeredMode ? 'approved' : 'pending')
 
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
