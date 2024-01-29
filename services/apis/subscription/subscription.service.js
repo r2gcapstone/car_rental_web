@@ -10,11 +10,12 @@ import {
   getDocs,
   where
 } from 'firebase/firestore'
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db } from 'services/firebase'
 import { getAverageSubscriptionCountPerMonth } from 'helpers'
 
-export const updateSubscriptionField = async (key, value, docId, cardId) => {
+export const approveSubscriptionRequest = async (key, value, docId, carId) => {
+  console.log(carId)
+
   let dateUpdated = new Date()
   dateUpdated = Timestamp.fromDate(dateUpdated)
 
@@ -25,15 +26,10 @@ export const updateSubscriptionField = async (key, value, docId, cardId) => {
       dateUpdated: value && dateUpdated
     })
 
-    let bool = null
-    if (value === 'approved') {
-      bool = true
-    } else {
-      bool = false
-    }
+    let bool = value === 'approved'
 
     // Update the car's status in subscription
-    await updateDoc(doc(db, 'cars', cardId), {
+    await updateDoc(doc(db, 'cars', carId), {
       isSubscribed: bool
     })
 
@@ -43,6 +39,7 @@ export const updateSubscriptionField = async (key, value, docId, cardId) => {
       status: 200
     }
   } catch (error) {
+    console.error('Error updating data:', error)
     return {
       error: true,
       message: error.message,
