@@ -36,7 +36,8 @@ export const VehicleDashboard = () => {
       ownerName,
       userId,
       status,
-      isHidden
+      isHidden,
+      dateCreated
     }) => ({
       id,
       carId,
@@ -45,7 +46,8 @@ export const VehicleDashboard = () => {
       ownerName,
       userId,
       status,
-      isHidden
+      isHidden,
+      dateCreated
     })
   )
 

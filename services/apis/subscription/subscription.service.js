@@ -51,6 +51,38 @@ export const updateSubscriptionField = async (key, value, docId, cardId) => {
   }
 }
 
+export const rejectSubscriptionRequest = async (key, value, docId) => {
+  let dateUpdated = new Date()
+  dateUpdated = Timestamp.fromDate(dateUpdated)
+
+  try {
+    // Update the subscription document
+    await updateDoc(doc(db, 'subscription', docId), {
+      [key]: value,
+      dateUpdated: value && dateUpdated
+    })
+
+    let bool = null
+    if (value === 'approved') {
+      bool = true
+    } else {
+      bool = false
+    }
+
+    return {
+      message: 'Update success!',
+      error: false,
+      status: 200
+    }
+  } catch (error) {
+    return {
+      error: true,
+      message: error.message,
+      status: error.code
+    }
+  }
+}
+
 export const getSubTotalStat = async (subscriptionType) => {
   try {
     const subscriptionCollection = collection(db, 'subscription')
