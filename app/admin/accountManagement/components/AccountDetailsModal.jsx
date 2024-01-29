@@ -31,7 +31,6 @@ const AccountDetailsModal = ({ data, isOpen, setIsOpen, refetchData }) => {
         refetchData()
         onClose()
       }
-      console.log(result)
     } catch (error) {
       refetchData()
     }

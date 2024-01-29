@@ -45,10 +45,9 @@ export const EditAdminProfileModal = ({
   }
 
   const onSaveChanges = async (docId) => {
-    console.log(docId)
     try {
       const result = await updateUserData(editableData, docId)
-      console.log(result)
+
       if (!result.error) {
         swal.fire({
           title: 'Success',

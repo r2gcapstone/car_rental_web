@@ -49,7 +49,6 @@ export const SubscriptionHistoryTable = ({
   const uniqueDocIds = new Set()
 
   const handleId = (key, id) => {
-    console.log(key, id)
     if (key === 'vehicle') {
       setIsModal1Open((prev) => !prev)
     } else if (key === 'user') {
