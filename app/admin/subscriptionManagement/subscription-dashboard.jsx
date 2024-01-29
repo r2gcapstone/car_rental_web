@@ -19,7 +19,8 @@ export const SubscriptionDashboard = () => {
     previousPage,
     jumpPerPage,
     currentPage,
-    numbers
+    numbers,
+    refetchData
   } = useFetchAll2('subscription', 'pending')
 
   const { handleSubmit, register, watch } = useForm()
@@ -31,29 +32,29 @@ export const SubscriptionDashboard = () => {
 
   const [isSubHistoryOpen, setIsSubHistoryOpen] = useState(false)
 
-  const subscription = records
-    .filter((user) => user.status === 'pending')
-    .map(
-      ({
-        id,
-        userId,
-        carId,
-        subscriptionType,
-        vehicleName,
-        ownerNumber,
-        userName,
-        dateCreated
-      }) => ({
-        id,
-        userId,
-        carId,
-        subscriptionType,
-        vehicleName,
-        ownerNumber,
-        userName,
-        dateCreated
-      })
-    )
+  const subscription = records.map(
+    ({
+      id,
+      docId,
+      userId,
+      carId,
+      subscriptionType,
+      vehicleName,
+      ownerNumber,
+      userName,
+      dateCreated
+    }) => ({
+      id,
+      docId,
+      userId,
+      carId,
+      subscriptionType,
+      vehicleName,
+      ownerNumber,
+      userName,
+      dateCreated
+    })
+  )
 
   const onSearch = (searchData) => {
     const { vehicleName, userName, ownerNumber } = searchData
@@ -166,21 +167,26 @@ export const SubscriptionDashboard = () => {
           </Flex>
         </Stack>
       </Flex>
-      <SubscriptionTable
-        key={setUpdateTableKey}
-        numbers={numbers}
-        users={searchedData || subscription}
-        loading={loading}
-        nextPage={nextPage}
-        previousPage={previousPage}
-        jumpPerPage={jumpPerPage}
-        currentPage={currentPage}
-      />
+
+      {!isSubHistoryOpen && (
+        <SubscriptionTable
+          key={setUpdateTableKey}
+          numbers={numbers}
+          users={searchedData || subscription}
+          loading={loading}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          jumpPerPage={jumpPerPage}
+          currentPage={currentPage}
+        />
+      )}
 
       <SubscriptionStatisticsModal />
       <TransactionHistoryModal
         isOpen={isSubHistoryOpen}
-        setIsOpen={setIsSubHistoryOpen}
+        setIsOpen={() => {
+          setIsSubHistoryOpen(), refetchData()
+        }}
       />
     </Box>
   )

@@ -10,7 +10,8 @@ import {
   Text,
   Thead,
   Flex,
-  Center
+  Center,
+  Button
 } from '@chakra-ui/react'
 import {
   createColumnHelper,
@@ -20,7 +21,8 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import { Pagination, LazySpinner } from 'components'
-import formatFirebaseTimestamp from 'helpers/formatFirebaseTimestamp'
+import { VehicleInfoModal } from './vehicleInfoModal'
+import { UserInfoModal } from './userInfoModal'
 
 const columnHelper = createColumnHelper()
 
@@ -36,10 +38,26 @@ export const SubscriptionHistoryTable = ({
   const [sorting, setSorting] = useState([])
   const [filteredSubscription, setFilteredSubscription] =
     useState(subscriptions)
+  const [isModal1Open, setIsModal1Open] = useState(false)
+  const [isModal2Open, setIsModal2Open] = useState(false)
+  const [targetId, setTargetId] = useState('')
 
   useEffect(() => {
     setFilteredSubscription(subscriptions)
   }, [subscriptions])
+
+  const uniqueDocIds = new Set()
+
+  const handleId = (key, id) => {
+    console.log(key, id)
+    if (key === 'vehicle') {
+      setIsModal1Open((prev) => !prev)
+    } else if (key === 'user') {
+      setIsModal2Open((prev) => !prev)
+    }
+
+    setTargetId(id)
+  }
 
   const subscriptionTypeMap = {
     MONTHLY: '1 Month',
@@ -47,6 +65,43 @@ export const SubscriptionHistoryTable = ({
     '6 MONTHS': '6 Months',
     '1 YEAR': '1 Year'
   }
+
+  //components
+  const VehicleInfo = ({ row }) => (
+    <Button
+      size={'lg'}
+      mr={2}
+      onClick={() => handleId('vehicle', row.original.carId)}
+      backgroundColor='blue.700'
+      opacity={0.8}
+      transition='0.2s'
+      _hover={{
+        backgroundColor: 'blue.400',
+        opacity: 1,
+        transform: 'scale(1.05)'
+      }}
+    >
+      View Vehicle's Info
+    </Button>
+  )
+
+  const OwnerInfo = ({ row }) => (
+    <Button
+      size={'lg'}
+      mr={2}
+      onClick={() => handleId('user', row.original.userId)}
+      backgroundColor='blue.700'
+      opacity={0.8}
+      transition='0.2s'
+      _hover={{
+        backgroundColor: 'blue.400',
+        opacity: 1,
+        transform: 'scale(1.05)'
+      }}
+    >
+      View Owner's Info
+    </Button>
+  )
 
   const columns = useMemo(
     () => [
@@ -60,26 +115,24 @@ export const SubscriptionHistoryTable = ({
         ),
         sortDescFirst: true
       }),
-      columnHelper.accessor('Buyer', {
-        header: 'Buyer',
-        cell: ({ row }) => <Text>{row.original.vehicleOwner}</Text>,
-        sortDescFirst: true
-      }),
-      columnHelper.accessor('Vehicle', {
-        header: 'Vehicle',
+      columnHelper.accessor('Vehicle Name', {
+        header: 'Vehicle Name',
         cell: ({ row }) => <Text>{row.original.vehicleName}</Text>,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Mobile Number', {
-        header: 'Mobile Number',
-        cell: ({ row }) => <Text>{row.original.ownerNumber}</Text>,
+      columnHelper.accessor('Owner', {
+        header: 'Owner',
+        cell: ({ row }) => <Text>{row.original.userName}</Text>,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Purchase Date', {
-        header: 'Purchase Date',
-        cell: ({ row }) => (
-          <Text>{formatFirebaseTimestamp(row.original.dateCreated)}</Text>
-        ),
+      columnHelper.accessor('Vehicle Info', {
+        header: 'Vehicle Info',
+        cell: ({ row }) => <VehicleInfo row={row} />,
+        sortDescFirst: true
+      }),
+      columnHelper.accessor('Owner Info', {
+        header: 'Owner Info',
+        cell: ({ row }) => <OwnerInfo row={row} />,
         sortDescFirst: true
       }),
       columnHelper.accessor('Status', {
@@ -87,7 +140,13 @@ export const SubscriptionHistoryTable = ({
         cell: ({ row }) => (
           <Text
             fontWeight={'bold'}
-            color={row.original.status === 'approved' ? 'blue' : 'red'}
+            color={
+              row.original.status === 'approved'
+                ? 'blue'
+                : row.original.status === 'declined'
+                ? 'red'
+                : 'white'
+            }
           >
             {row.original.status.toUpperCase()}
           </Text>
@@ -145,30 +204,38 @@ export const SubscriptionHistoryTable = ({
             </Tr>
           ))}
         </Thead>
+
         <Tbody>
-          {table.getRowModel().rows.map((row) => (
-            <Tr
-              key={row.id}
-              aria-label='account-row'
-              borderBottom='1px solid white'
-            >
-              {row.getVisibleCells().map((cell, index) => (
-                <Td py='1rem' px='0' key={cell.id} height='auto'>
-                  <Box
-                    {...(index === 0 && { ml: '4' })}
-                    {...(index !== 0 && { ml: '2' })}
-                  >
-                    <>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </>
-                  </Box>
-                </Td>
-              ))}
-            </Tr>
-          ))}
+          {table.getRowModel().rows.map((row) => {
+            if (uniqueDocIds.has(row.original.docId)) {
+              return null
+            }
+            uniqueDocIds.add(row.original.docId)
+
+            return (
+              <Tr
+                key={row.id}
+                aria-label='account-row'
+                borderBottom='1px solid white'
+              >
+                {row.getVisibleCells().map((cell, index) => (
+                  <Td py='1rem' px='0' key={cell.id} height='auto'>
+                    <Box
+                      {...(index === 0 && { ml: '4' })}
+                      {...(index !== 0 && { ml: '2' })}
+                    >
+                      <>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </>
+                    </Box>
+                  </Td>
+                ))}
+              </Tr>
+            )
+          })}
         </Tbody>
       </Table>
 
@@ -179,6 +246,18 @@ export const SubscriptionHistoryTable = ({
         jumpPerPage={jumpPerPage}
         totalPage={numbers.length}
         currentPage={currentPage}
+      />
+
+      <VehicleInfoModal
+        docId={targetId}
+        isOpen={isModal1Open}
+        isClose={setIsModal1Open}
+      />
+
+      <UserInfoModal
+        docId={targetId}
+        isOpen={isModal2Open}
+        isClose={setIsModal2Open}
       />
     </TableContainer>
   )

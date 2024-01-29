@@ -49,13 +49,6 @@ export const SubscriptionTable = ({
     setFilteredVehicles(users)
   }, [users])
 
-  const subscriptionTypeMap = {
-    MONTHLY: '1 Month',
-    '3 MONTHS': '3 Months',
-    '6 MONTHS': '6 Months',
-    '1 YEAR': '1 Year'
-  }
-
   const handleId = (key, id) => {
     console.log(key, id)
     if (key === 'vehicle') {
@@ -137,6 +130,13 @@ export const SubscriptionTable = ({
       View Owner's Info
     </Button>
   )
+
+  const subscriptionTypeMap = {
+    MONTHLY: '1 Month',
+    '3 MONTHS': '3 Months',
+    '6 MONTHS': '6 Months',
+    '1 YEAR': '1 Year'
+  }
 
   const columns = useMemo(
     () => [

@@ -15,41 +15,48 @@ export const TransactionHistoryModal = ({ isOpen, setIsOpen }) => {
     previousPage,
     jumpPerPage,
     currentPage,
-    numbers
-  } = useFetchAll2('subscription', 'declined')
+    numbers,
+    refetchData
+  } = useFetchAll2('subscription', '')
 
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
   const watchForm = watch(['vehicleOwner', 'vehicleName'])
 
   const subscription = records
-    .filter((user) => user.status === 'approved' || user.status === 'declined')
+    .filter((sub) => sub.status !== 'pending')
     .map(
       ({
         id,
         carId,
+        docId,
+        userId,
         subscriptionType,
         vehicleName,
         walletNumber,
         dateCreated,
         status,
-        ownerUsername,
+        userName,
         ownerNumber
       }) => ({
         id,
         carId,
+        docId,
+        userId,
         subscriptionType,
         vehicleName,
         walletNumber,
         dateCreated,
         status,
-        vehicleOwner: ownerUsername,
+        userName,
         ownerNumber
       })
     )
 
   const onSearch = (searchData) => {
     const { vehicleName, vehicleOwner } = searchData
+
+    const isNotEmpty = watchForm.findIndex((find) => !!find) > -1
 
     const searchedValue = subscription.filter((value) => {
       const lowercaseVehicleOwner =
@@ -72,7 +79,10 @@ export const TransactionHistoryModal = ({ isOpen, setIsOpen }) => {
       return matchVehicleOwner && matchVehicleName
     })
 
-    setSearchedData(searchedValue)
+    if (isNotEmpty) {
+      setSearchedData(searchedValue)
+      return
+    }
   }
 
   const onClose = () => {
