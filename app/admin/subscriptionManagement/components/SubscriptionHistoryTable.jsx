@@ -21,7 +21,7 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import { Pagination, LazySpinner } from 'components'
-import { VehicleInfoModal } from './vehicleInfoModal'
+import { VehicleInfoModal } from './PaymentInfoModal'
 import { UserInfoModal } from './ReceiptImg'
 
 const columnHelper = createColumnHelper()

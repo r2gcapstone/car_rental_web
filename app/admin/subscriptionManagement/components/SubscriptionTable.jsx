@@ -23,7 +23,7 @@ import {
 import { updateSubscriptionField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
 import Swal from 'sweetalert2'
-import { VehicleInfoModal } from './vehicleInfoModal'
+import { PaymentInfoModal } from './PaymentInfoModal'
 import { ReceiptImg } from './ReceiptImg'
 import { WriteMessageModal } from './WriteMessageModal'
 
@@ -40,26 +40,27 @@ export const SubscriptionTable = ({
 }) => {
   const [sorting, setSorting] = useState([])
   const [filteredVehicles, setFilteredVehicles] = useState(users)
-  const [isModal1Open, setIsModal1Open] = useState(false)
+  const [isPaymentInfoOpen, setIsPaymentInfoOpen] = useState(false)
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false)
   const [isWriteMessage, setIsWriteMessage] = useState(false)
   const [targetId, setTargetId] = useState('')
   const [img, setImg] = useState('')
+  const [paymentData, setPaymentData] = useState('')
 
   useEffect(() => {
     setFilteredVehicles(users)
   }, [users])
 
-  const handleId = (key, id) => {
-    console.log(key, id)
+  const handleId = (key, data) => {
     if (key === 'paymentInfo') {
-      setIsModal1Open((prev) => !prev)
+      setIsPaymentInfoOpen((prev) => !prev)
+      setPaymentData(data)
     } else if (key === 'receipt') {
-      setImg(id)
+      setImg(data)
       setIsReceiptModalOpen((prev) => !prev)
     }
 
-    setTargetId(id)
+    setTargetId(data)
   }
   //components
 
@@ -101,7 +102,7 @@ export const SubscriptionTable = ({
     <Button
       size={'lg'}
       mr={2}
-      onClick={() => handleId('paymentInfo', row.imageUrl)}
+      onClick={() => handleId('paymentInfo', row)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
@@ -298,10 +299,10 @@ export const SubscriptionTable = ({
         currentPage={currentPage}
       />
 
-      <VehicleInfoModal
-        docId={targetId}
-        isOpen={isModal1Open}
-        isClose={setIsModal1Open}
+      <PaymentInfoModal
+        data={paymentData}
+        isOpen={isPaymentInfoOpen}
+        isClose={setIsPaymentInfoOpen}
       />
 
       <ReceiptImg
