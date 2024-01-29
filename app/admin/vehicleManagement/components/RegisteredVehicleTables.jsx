@@ -97,7 +97,7 @@ export const RegisteredVehicleTable = ({
     <Button
       size={'lg'}
       mr={2}
-      onClick={() => handleId('user', row.original.docId)}
+      onClick={() => handleId('user', row.original.userId)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
