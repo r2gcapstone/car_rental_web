@@ -36,18 +36,22 @@ export const SubscriptionDashboard = () => {
     .map(
       ({
         id,
+        userId,
         carId,
         subscriptionType,
         vehicleName,
         ownerNumber,
-        userName
+        userName,
+        dateCreated
       }) => ({
         id,
+        userId,
         carId,
         subscriptionType,
         vehicleName,
         ownerNumber,
-        userName
+        userName,
+        dateCreated
       })
     )
 
@@ -174,14 +178,11 @@ export const SubscriptionDashboard = () => {
         currentPage={currentPage}
       />
 
-      {/* Account Modals */}
-      {/* <AccountDetailsModal /> */}
       <SubscriptionStatisticsModal />
       <TransactionHistoryModal
         isOpen={isSubHistoryOpen}
         setIsOpen={setIsSubHistoryOpen}
       />
-      {/* <AddNewUserModal /> */}
     </Box>
   )
 }
