@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react'
 import { ImagePreviewer } from './ImagePreview'
 import { ImageModal } from './ImageViewModal'
 import { getUserData } from 'services/apis/account/users'
+import formatDate from 'utils/formatDate'
 
 export function UserInfoModal({ docId, isOpen, isClose }) {
   const [data, setData] = useState({})
@@ -94,7 +95,9 @@ export function UserInfoModal({ docId, isOpen, isClose }) {
               <Text style={styles.header} marginTop={4}>
                 Date of Registration
               </Text>
-              <Text textAlign={'center'}>11/24/2023</Text>
+              <Text textAlign={'center'}>
+                {data && formatDate(data.dateCreated)}
+              </Text>
             </ModalBody>
             <ModalBody
               borderRadius={10}
