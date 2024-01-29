@@ -39,14 +39,14 @@ export const SubscriptionTable = ({
   currentPage
 }) => {
   const [sorting, setSorting] = useState([])
-  const [filteredUsers, setFilteredUsers] = useState(users)
+  const [filteredVehicles, setFilteredVehicles] = useState(users)
   const [isModal1Open, setIsModal1Open] = useState(false)
   const [isModal2Open, setIsModal2Open] = useState(false)
   const [isWriteMessage, setIsWriteMessage] = useState(false)
   const [targetId, setTargetId] = useState('')
 
   useEffect(() => {
-    setFilteredUsers(users)
+    setFilteredVehicles(users)
   }, [users])
 
   const subscriptionTypeMap = {
@@ -68,12 +68,12 @@ export const SubscriptionTable = ({
   }
   //components
 
-  const RegistrationAction = ({ row }) => (
+  const SubscriptionAction = ({ row }) => (
     <Flex>
       <Button
         size={'lg'}
         mr={2}
-        onClick={() => handleApprove(row.original.id, row.original.carId)}
+        onClick={() => handleApprove(row.original.id, row.original.docId)}
         backgroundColor='blue'
         opacity={0.8}
         transition='0.2s'
@@ -87,7 +87,7 @@ export const SubscriptionTable = ({
       </Button>
       <Button
         size={'lg'}
-        onClick={() => handleDecline(row.original.id, row.original.carId)}
+        onClick={() => handleDecline(row.original.id, row.original.docId)}
         backgroundColor='red'
         opacity={0.8}
         transition='0.2s'
@@ -172,7 +172,7 @@ export const SubscriptionTable = ({
       }),
       columnHelper.accessor('Action', {
         header: 'Action',
-        cell: ({ row }) => <RegistrationAction row={row} />,
+        cell: ({ row }) => <SubscriptionAction row={row} />,
         sortDescFirst: true
       })
     ],
@@ -180,7 +180,7 @@ export const SubscriptionTable = ({
   )
 
   const table = useReactTable({
-    data: filteredUsers,
+    data: filteredVehicles,
     columns,
     state: {
       sorting
@@ -204,7 +204,7 @@ export const SubscriptionTable = ({
 
       if (confirmed.isConfirmed) {
         await updateSubscriptionField('status', 'approved', docId, carId)
-        setFilteredUsers((prevUsers) =>
+        setFilteredVehicles((prevUsers) =>
           prevUsers.filter((user) => user.id !== docId)
         )
 
@@ -220,37 +220,9 @@ export const SubscriptionTable = ({
       // Handle error
     }
   }
-
-  const handleDecline = async (docId, carId) => {
-    try {
-      // Display SweetAlert2 modal for decline confirmation
-      const confirmed = await Swal.fire({
-        title: 'Are you sure?',
-        text: 'This will reject the user’s subscription purchase.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        confirmButtonColor: '#dc3545'
-      })
-
-      if (confirmed.isConfirmed) {
-        await updateSubscriptionField('status', 'declined', docId, carId)
-        setFilteredUsers((prevUsers) =>
-          prevUsers.filter((user) => user.id !== docId)
-        )
-
-        Swal.fire(
-          'Declined!',
-          'The subscription is rejected and will not be applied to the vehicle.',
-          'success'
-        )
-      } else {
-        Swal.fire('Cancelled', 'Subscription rejection was cancelled.', 'error')
-      }
-    } catch (error) {
-      // Handle error
-    }
+  const handleDecline = async (docId) => {
+    setTargetId(docId)
+    setIsWriteMessage((prev) => !prev)
   }
 
   if (loading) {
@@ -335,7 +307,7 @@ export const SubscriptionTable = ({
         isOpen={isModal2Open}
         isClose={setIsModal2Open}
       />
-      {/* 
+
       {isWriteMessage && targetId && (
         <WriteMessageModal
           filter={setFilteredVehicles}
@@ -343,7 +315,7 @@ export const SubscriptionTable = ({
           isOpen={isWriteMessage}
           isClose={setIsWriteMessage}
         />
-      )} */}
+      )}
     </TableContainer>
   )
 }

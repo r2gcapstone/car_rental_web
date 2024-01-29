@@ -21,6 +21,7 @@ import formatDate from 'utils/formatDate'
 
 export function UserInfoModal({ docId, isOpen, isClose }) {
   const [data, setData] = useState({})
+  const [date, setDate] = useState()
   const [onOpen, setOnOpen] = useState(false)
   const [imageUrl, setImageUrl] = useState('')
 
@@ -50,6 +51,7 @@ export function UserInfoModal({ docId, isOpen, isClose }) {
       const result = await getUserData(docId)
       if (!result.error) {
         setData(result)
+        setDate(result.dateCreated)
       }
     } catch (error) {
       alert(error)
@@ -95,9 +97,7 @@ export function UserInfoModal({ docId, isOpen, isClose }) {
               <Text style={styles.header} marginTop={4}>
                 Date of Registration
               </Text>
-              <Text textAlign={'center'}>
-                {data && formatDate(data.dateCreated)}
-              </Text>
+              <Text textAlign={'center'}>{date && formatDate(date)}</Text>
             </ModalBody>
             <ModalBody
               borderRadius={10}
@@ -109,7 +109,7 @@ export function UserInfoModal({ docId, isOpen, isClose }) {
               <Text style={styles.header}>Vehicle Owner</Text>
               {dataArray.map((item) => (
                 <Flex
-                  gap={'40%'}
+                  gap={'35%'}
                   justifyContent={'space-between'}
                   key={item.key}
                 >

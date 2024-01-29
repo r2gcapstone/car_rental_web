@@ -106,7 +106,6 @@ export const SubscriptionDashboard = () => {
             <Text fontWeight='bold' fontSize='2rem'>
               Find Subscription Buyer
             </Text>
-            <Icon as={InfoIcon} width='1.875rem' height='1.875rem' />
           </Flex>
           <Flex gap={2}>
             <Button

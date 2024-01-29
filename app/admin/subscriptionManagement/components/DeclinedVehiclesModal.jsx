@@ -2,11 +2,12 @@ import ModalContainer2 from 'components/Modals/ModalContainer2'
 import { useState } from 'react'
 import { useFetchAll2 } from 'lib'
 import { useForm } from 'react-hook-form'
-import { SubscriptionHistoryTable } from './SubscriptionHistoryTable'
+import { VehicleDeclinedTable } from './VehicleDeclinedTable'
+// import { SubscriptionHistoryTable } from './SubscriptionHistoryTable'
 import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
 import { CarMarker, InputField, SearchIcon } from 'components'
 
-export const TransactionHistoryModal = ({ isOpen, setIsOpen }) => {
+export const DeclinedVehicleModal = ({ isOpen, setIsOpen }) => {
   const [updateTableKey, setUpdateTableKey] = useState(0)
   const {
     records,
@@ -16,61 +17,62 @@ export const TransactionHistoryModal = ({ isOpen, setIsOpen }) => {
     jumpPerPage,
     currentPage,
     numbers
-  } = useFetchAll2('subscription', 'declined')
+  } = useFetchAll2('cars', 'declined')
 
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
-  const watchForm = watch(['vehicleOwner', 'vehicleName'])
+  const watchForm = watch(['ownerName', 'vehicleName'])
 
-  const subscription = records
-    .filter((user) => user.status === 'approved' || user.status === 'declined')
+  const vehicles = records
+    .filter((vehicle) => vehicle.status === 'declined')
     .map(
       ({
         id,
         carId,
-        subscriptionType,
-        vehicleName,
-        walletNumber,
-        dateCreated,
-        status,
-        ownerUsername,
-        ownerNumber
+        vehicleDetails: { vehicleName },
+        ownerNumber,
+        ownerName,
+        userId
       }) => ({
         id,
         carId,
-        subscriptionType,
         vehicleName,
-        walletNumber,
-        dateCreated,
-        status,
-        vehicleOwner: ownerUsername,
-        ownerNumber
+        ownerNumber,
+        ownerName,
+        userId
       })
     )
 
   const onSearch = (searchData) => {
-    const { vehicleName, vehicleOwner } = searchData
+    const { vehicleName, ownerName } = searchData
 
-    const searchedValue = subscription.filter((value) => {
-      const lowercaseVehicleOwner =
-        typeof value['vehicleOwner'] === 'string'
-          ? value['vehicleOwner'].toLowerCase()
+    const isNotEmpty = watchForm.findIndex((find) => !!find) > -1
+
+    const searchedValue = vehicles.filter((value) => {
+      const lowercaseownerName =
+        typeof value['ownerName'] === 'string'
+          ? value['ownerName'].toLowerCase()
           : ''
       const lowercaseVehicleName =
         typeof value['vehicleName'] === 'string'
           ? value['vehicleName'].toLowerCase()
           : ''
 
-      const matchVehicleOwner = vehicleOwner
-        ? lowercaseVehicleOwner.includes(vehicleOwner.toLowerCase())
+      const matchownerName = ownerName
+        ? lowercaseownerName.includes(ownerName.toLowerCase())
         : true
 
       const matchVehicleName = vehicleName
         ? lowercaseVehicleName.includes(vehicleName.toLowerCase())
         : true
 
-      return matchVehicleOwner && matchVehicleName
+      return matchownerName && matchVehicleName
     })
+
+    if (isNotEmpty) {
+      setSearchedData(searchedValue)
+      return
+    }
 
     setSearchedData(searchedValue)
   }
@@ -103,13 +105,13 @@ export const TransactionHistoryModal = ({ isOpen, setIsOpen }) => {
                 fontWeight={'bold'}
                 marginRight={'3rem'}
               >
-                Past Transaction
+                Declined Vehicles
               </Box>
 
               <InputField
                 label='Vehicle Owner'
                 placeholder='Enter owners name'
-                {...register('vehicleOwner')}
+                {...register('ownerName')}
               />
               <InputField
                 label='Vehicle Name'
@@ -133,10 +135,11 @@ export const TransactionHistoryModal = ({ isOpen, setIsOpen }) => {
             </Flex>
           </Stack>
         </Flex>
-        <SubscriptionHistoryTable
+
+        <VehicleDeclinedTable
           key={setUpdateTableKey}
           numbers={numbers}
-          subscriptions={searchedData || subscription}
+          vehicles={searchedData || vehicles}
           loading={loading}
           nextPage={nextPage}
           previousPage={previousPage}

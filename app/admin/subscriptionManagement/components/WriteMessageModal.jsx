@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { Textarea } from '@chakra-ui/react'
 import { useState } from 'react'
-import { updateVehicleField } from 'services/apis'
+import { rejectSubscriptionRequest } from 'services/apis'
 import Swal from 'sweetalert2'
 
 export function WriteMessageModal({ docId, isOpen, isClose, filter }) {
@@ -24,17 +24,21 @@ export function WriteMessageModal({ docId, isOpen, isClose, filter }) {
 
   const postMessage = async () => {
     try {
-      const result = await updateVehicleField('adminMessage', value, docId)
+      const result = await rejectSubscriptionRequest(
+        'adminMessage',
+        value,
+        docId
+      )
 
       if (!result.error) {
-        await updateVehicleField('status', 'declined', docId)
+        await rejectSubscriptionRequest('status', 'declined', docId)
         filter((prevVehicle) =>
           prevVehicle.filter((Vehicles) => Vehicles.id !== docId)
         )
         handleOnclose()
         Swal.fire(
           'Successfully Rejected!',
-          'The vehicle registration is declined!',
+          'The vehicle subscription is declined!',
           'success'
         )
       }
@@ -80,7 +84,7 @@ export function WriteMessageModal({ docId, isOpen, isClose, filter }) {
             w={'full'}
             onClick={() => postMessage()}
           >
-            <Text fontSize={14}>Reject Vehicle Registration</Text>
+            <Text fontSize={14}>Reject Vehicle Subsription Request</Text>
           </Button>
 
           <ModalFooter></ModalFooter>
