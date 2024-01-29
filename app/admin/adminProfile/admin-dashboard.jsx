@@ -1,11 +1,16 @@
 import { Flex, Box, Image, Text, Button } from '@chakra-ui/react'
 import { getAdminData } from 'services/apis/account/users'
 import { useEffect, useState } from 'react'
-import { ChangePassModal, EditAdminProfileModal } from './components'
+import {
+  ChangePassModal,
+  EditAdminProfileModal,
+  ListOfAdmins
+} from './components'
 
 export const AdminProfile = () => {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isChangePassModal, setIsChangePassModal] = useState(false)
+  const [isListOfAdminModalOpen, setIsListOfAdminModalOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
   const [userData, setUserData] = useState({
     id: '',
@@ -52,6 +57,10 @@ export const AdminProfile = () => {
 
   const hanleChangePassOnClick = () => {
     setIsChangePassModal((prev) => !prev)
+  }
+
+  const hanleListOfAdmin = () => {
+    setIsListOfAdminModalOpen((prev) => !prev)
   }
 
   useEffect(() => {
@@ -139,6 +148,7 @@ export const AdminProfile = () => {
             fontWeight={'normal'}
             background={'#526D82'}
             borderRadius={'md'}
+            onClick={() => hanleListOfAdmin(userData)}
           >
             List of Admin
           </Button>
@@ -156,6 +166,11 @@ export const AdminProfile = () => {
       <ChangePassModal
         isOpen={isChangePassModal}
         setIsOpen={setIsChangePassModal}
+      />
+
+      <ListOfAdmins
+        isOpen={isListOfAdminModalOpen}
+        setIsOpen={setIsListOfAdminModalOpen}
       />
     </Box>
   )
