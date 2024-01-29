@@ -1,1 +1,2 @@
-// export * from './AccountDetailsModal'
+export * from './ChangePassModal'
+export * from './EditAdminProfileModal'
