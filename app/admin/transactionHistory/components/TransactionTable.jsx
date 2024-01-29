@@ -48,6 +48,7 @@ export const TransactionTable = ({
   }, [users])
 
   const handleId = (id) => {
+    console.log(id)
     setIsViewModal((prev) => !prev)
     setTargetId(id)
   }

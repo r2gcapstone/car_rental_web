@@ -50,7 +50,9 @@ export const TransactionDashboard = () => {
       paymentMethod,
       outsideRate,
       rentee,
-      dateCreated
+      dateCreated,
+      docId,
+      imageUrl
     }) => ({
       carId,
       subscriptionType,
@@ -69,7 +71,9 @@ export const TransactionDashboard = () => {
       paymentMethod,
       outsideRate,
       rentee,
-      dateCreated
+      dateCreated,
+      docId,
+      imageUrl
     })
   )
 
