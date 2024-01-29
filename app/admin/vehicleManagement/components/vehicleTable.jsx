@@ -20,14 +20,17 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
+import { updateVehicleField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
+import Swal from 'sweetalert2'
 import { VehicleInfoModal } from './vehicleInfoModal'
 import { UserInfoModal } from './userInfoModal'
+import { WriteMessageModal } from './WriteMessageModal'
 
 const columnHelper = createColumnHelper()
 
-export const SubscriptionHistoryTable = ({
-  subscriptions,
+export const VehicleTable = ({
+  vehicles,
   loading,
   jumpPerPage,
   previousPage,
@@ -36,20 +39,17 @@ export const SubscriptionHistoryTable = ({
   currentPage
 }) => {
   const [sorting, setSorting] = useState([])
-  const [filteredSubscription, setFilteredSubscription] =
-    useState(subscriptions)
+  const [filteredVehicles, setFilteredVehicles] = useState(vehicles)
   const [isModal1Open, setIsModal1Open] = useState(false)
   const [isModal2Open, setIsModal2Open] = useState(false)
+  const [isWriteMessage, setIsWriteMessage] = useState(false)
   const [targetId, setTargetId] = useState('')
 
   useEffect(() => {
-    setFilteredSubscription(subscriptions)
-  }, [subscriptions])
-
-  const uniqueDocIds = new Set()
+    setFilteredVehicles(vehicles)
+  }, [vehicles])
 
   const handleId = (key, id) => {
-    console.log(key, id)
     if (key === 'vehicle') {
       setIsModal1Open((prev) => !prev)
     } else if (key === 'user') {
@@ -59,14 +59,41 @@ export const SubscriptionHistoryTable = ({
     setTargetId(id)
   }
 
-  const subscriptionTypeMap = {
-    MONTHLY: '1 Month',
-    '3 MONTHS': '3 Months',
-    '6 MONTHS': '6 Months',
-    '1 YEAR': '1 Year'
-  }
+  //columns
+  const RegistrationAction = ({ row }) => (
+    <Flex>
+      <Button
+        size={'lg'}
+        mr={2}
+        onClick={() => handleApprove(row.original.id, row.original.carId)}
+        backgroundColor='blue'
+        opacity={0.8}
+        transition='0.2s'
+        _hover={{
+          backgroundColor: 'blue',
+          opacity: 1,
+          transform: 'scale(1.05)'
+        }}
+      >
+        Approve
+      </Button>
+      <Button
+        size={'lg'}
+        onClick={() => handleDecline(row.original.id, row.original.carId)}
+        backgroundColor='red'
+        opacity={0.8}
+        transition='0.2s'
+        _hover={{
+          backgroundColor: 'red',
+          opacity: 1,
+          transform: 'scale(1.05)'
+        }}
+      >
+        Decline
+      </Button>
+    </Flex>
+  )
 
-  //components
   const VehicleInfo = ({ row }) => (
     <Button
       size={'lg'}
@@ -105,16 +132,6 @@ export const SubscriptionHistoryTable = ({
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor('Subscription', {
-        header: 'Subscription',
-        cell: ({ row }) => (
-          <Text>
-            {subscriptionTypeMap[row.original.subscriptionType] ||
-              row.original.subscriptionType}
-          </Text>
-        ),
-        sortDescFirst: true
-      }),
       columnHelper.accessor('Vehicle Name', {
         header: 'Vehicle Name',
         cell: ({ row }) => <Text>{row.original.vehicleName}</Text>,
@@ -122,7 +139,7 @@ export const SubscriptionHistoryTable = ({
       }),
       columnHelper.accessor('Owner', {
         header: 'Owner',
-        cell: ({ row }) => <Text>{row.original.userName}</Text>,
+        cell: ({ row }) => <Text>{row.original.ownerName}</Text>,
         sortDescFirst: true
       }),
       columnHelper.accessor('Vehicle Info', {
@@ -135,22 +152,9 @@ export const SubscriptionHistoryTable = ({
         cell: ({ row }) => <OwnerInfo row={row} />,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Status', {
-        header: 'Status',
-        cell: ({ row }) => (
-          <Text
-            fontWeight={'bold'}
-            color={
-              row.original.status === 'approved'
-                ? 'blue'
-                : row.original.status === 'declined'
-                ? 'red'
-                : 'white'
-            }
-          >
-            {row.original.status.toUpperCase()}
-          </Text>
-        ),
+      columnHelper.accessor('Action', {
+        header: 'Action',
+        cell: ({ row }) => <RegistrationAction row={row} />,
         sortDescFirst: true
       })
       // Add other columns as needed...
@@ -159,7 +163,7 @@ export const SubscriptionHistoryTable = ({
   )
 
   const table = useReactTable({
-    data: filteredSubscription,
+    data: filteredVehicles,
     columns,
     state: {
       sorting
@@ -168,6 +172,42 @@ export const SubscriptionHistoryTable = ({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel()
   })
+
+  const handleApprove = async (docId, carId) => {
+    try {
+      // Display SweetAlert2 modal for approval confirmation
+      const confirmed = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will approve the user’s vehicle Registration.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No'
+      })
+
+      if (confirmed.isConfirmed) {
+        await updateVehicleField('status', 'approved', docId, carId)
+        setFilteredVehicles((prevVehicle) =>
+          prevVehicle.filter((Vehicles) => Vehicles.id !== docId)
+        )
+
+        Swal.fire(
+          'Approved!',
+          'The vehicle is now approved and ready to rent.',
+          'success'
+        )
+      } else {
+        Swal.fire('Cancelled', 'Registration approval aborted.', 'error')
+      }
+    } catch (error) {
+      // Handle error
+    }
+  }
+
+  const handleDecline = async (docId) => {
+    setTargetId(docId)
+    setIsWriteMessage((prev) => !prev)
+  }
 
   if (loading) {
     return (
@@ -204,38 +244,30 @@ export const SubscriptionHistoryTable = ({
             </Tr>
           ))}
         </Thead>
-
         <Tbody>
-          {table.getRowModel().rows.map((row) => {
-            if (uniqueDocIds.has(row.original.docId)) {
-              return null
-            }
-            uniqueDocIds.add(row.original.docId)
-
-            return (
-              <Tr
-                key={row.id}
-                aria-label='account-row'
-                borderBottom='1px solid white'
-              >
-                {row.getVisibleCells().map((cell, index) => (
-                  <Td py='1rem' px='0' key={cell.id} height='auto'>
-                    <Box
-                      {...(index === 0 && { ml: '4' })}
-                      {...(index !== 0 && { ml: '2' })}
-                    >
-                      <>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </>
-                    </Box>
-                  </Td>
-                ))}
-              </Tr>
-            )
-          })}
+          {table.getRowModel().rows.map((row) => (
+            <Tr
+              key={row.id}
+              aria-label='account-row'
+              borderBottom='1px solid white'
+            >
+              {row.getVisibleCells().map((cell, index) => (
+                <Td py='1rem' px='0' key={cell.id} height='auto'>
+                  <Box
+                    {...(index === 0 && { ml: '4' })}
+                    {...(index !== 0 && { ml: '2' })}
+                  >
+                    <>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </>
+                  </Box>
+                </Td>
+              ))}
+            </Tr>
+          ))}
         </Tbody>
       </Table>
 
@@ -259,6 +291,15 @@ export const SubscriptionHistoryTable = ({
         isOpen={isModal2Open}
         isClose={setIsModal2Open}
       />
+
+      {isWriteMessage && targetId && (
+        <WriteMessageModal
+          filter={setFilteredVehicles}
+          docId={targetId}
+          isOpen={isWriteMessage}
+          isClose={setIsWriteMessage}
+        />
+      )}
     </TableContainer>
   )
 }

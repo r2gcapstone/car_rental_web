@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
-// import { useForm } from 'react-hook-form'
 import { InfoIcon, InputField, SearchIcon } from 'components'
-import { SubscriptionTable } from './components'
 import { useFetchAll2 } from 'lib'
 import { useForm } from 'react-hook-form'
 import {
-  SubscriptionStatisticsModal,
-  TransactionHistoryModal
+  DeclinedVehicleModal,
+  RegisteredVehicleTable,
+  VehicleTable
 } from './components'
-import { useSubManagementActions } from 'lib'
 
-export const SubscriptionDashboard = () => {
+export const VehicleDashboard = () => {
+  const [registeredMode, setRegisteredMode] = useState(false)
+  const [isDeclinedVehicleModalOpen, setIsDeclinedVehicleModalOpen] =
+    useState(false)
   const {
     records,
     loading,
@@ -21,66 +22,56 @@ export const SubscriptionDashboard = () => {
     currentPage,
     numbers,
     refetchData
-  } = useFetchAll2('subscription', 'pending')
+  } = useFetchAll2('cars', registeredMode ? 'ongoing' : 'pending')
 
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
-  const [setUpdateTableKey] = useState(0)
-  const watchForm = watch(['vehicleName', 'userName', 'ownerNumber'])
 
-  const { isOpenStatistics } = useSubManagementActions()
-
-  const [isSubHistoryOpen, setIsSubHistoryOpen] = useState(false)
-
-  const subscription = records.map(
+  const vehicles = records.map(
     ({
       id,
-      docId,
-      userId,
       carId,
-      subscriptionType,
-      vehicleName,
+      vehicleDetails: { vehicleName },
       ownerNumber,
-      userName,
+      ownerName,
+      userId,
+      status,
+      isHidden,
       dateCreated
     }) => ({
       id,
-      docId,
-      userId,
       carId,
-      subscriptionType,
       vehicleName,
       ownerNumber,
-      userName,
+      ownerName,
+      userId,
+      status,
+      isHidden,
       dateCreated
     })
   )
 
+  const watchForm = watch(['vehicleName', 'ownerName'])
+
   const onSearch = (searchData) => {
-    const { vehicleName, userName, ownerNumber } = searchData
+    const { vehicleName, ownerName } = searchData
 
     const isNotEmpty = watchForm.findIndex((find) => !!find) > -1
 
-    const searchedValue = subscription.filter((value) => {
+    const searchedValue = vehicles.filter((value) => {
       const lowercaseVehicleName =
         typeof value['vehicleName'] === 'string'
           ? value['vehicleName'].toLowerCase()
           : value['vehicleName']
-      const lowercaseUserName =
-        typeof value['userName'] === 'string'
-          ? value['userName'].toLowerCase()
-          : value['userName']
-      const searchownerNumber =
-        typeof value['ownerNumber'] === 'string'
-          ? value['ownerNumber']
-          : value['ownerNumber'].toString()
+      const lowercaseOwnerName =
+        typeof value['ownerName'] === 'string'
+          ? value['ownerName'].toLowerCase()
+          : value['ownerName']
 
       return (
         lowercaseVehicleName ===
           (vehicleName ? vehicleName.toLowerCase() : '') ||
-        lowercaseUserName === (userName ? userName.toLowerCase() : '') ||
-        searchownerNumber ===
-          (ownerNumber ? ownerNumber : ownerNumber.toString())
+        lowercaseOwnerName === (ownerName ? ownerName.toLowerCase() : '')
       )
     })
 
@@ -90,6 +81,11 @@ export const SubscriptionDashboard = () => {
     }
 
     setSearchedData(null)
+  }
+
+  const toggleRegisteredMode = () => {
+    setRegisteredMode((prevMode) => !prevMode)
+    refetchData()
   }
 
   return (
@@ -105,19 +101,21 @@ export const SubscriptionDashboard = () => {
           <Flex alignItems='center' gap={4}>
             <Icon as={SearchIcon} width='2.125rem' height='2.25rem' />
             <Text fontWeight='bold' fontSize='2rem'>
-              Find Subscription Buyer
+              {registeredMode
+                ? 'Find Registered Vehicle'
+                : 'Vehicle Registration Request'}
             </Text>
           </Flex>
           <Flex gap={2}>
             <Button
-              background='blue.dark'
+              background='blue.500'
               fontSize='1.25rem'
               padding='1rem'
               height='10px'
               fontWeight='normal'
-              onClick={() => isOpenStatistics('statistics')}
+              onClick={toggleRegisteredMode}
             >
-              Statistics of Subscription
+              {!registeredMode ? 'View Registered Vehicle' : 'Go back'}
             </Button>
             <Button
               background='blue.dark'
@@ -125,31 +123,26 @@ export const SubscriptionDashboard = () => {
               padding='1rem'
               height='10px'
               fontWeight='normal'
-              onClick={() => setIsSubHistoryOpen(true)}
+              onClick={() => setIsDeclinedVehicleModalOpen(true)}
             >
-              View Past Transactions
+              Past Declined Vehicle
             </Button>
           </Flex>
         </Flex>
 
         <Stack as='form' onSubmit={handleSubmit(onSearch)} mt='1rem'>
-          {/* <Stack as='form' mt='1rem'> */}
           <Flex gap='2' alignItems='center'>
             <InputField
               label='Vehicle'
-              placeholder='Enter Vehicle'
+              placeholder='Enter Vehicles Name'
               {...register('vehicleName')}
             />
             <InputField
-              label='Vehicle Owner'
-              placeholder='Enter Vehicle Username'
-              {...register('userName')}
+              label='Owner'
+              placeholder='Enter Owners Name'
+              {...register('ownerName')}
             />
-            <InputField
-              label='Vehicle Class'
-              placeholder='Enter Vehicle Class'
-              {...register('ownerNumber')}
-            />
+
             <Button
               type='submit'
               mt='2.5rem'
@@ -164,28 +157,41 @@ export const SubscriptionDashboard = () => {
               <Icon as={SearchIcon} width='1.5rem' height='1.5rem' />
               Search
             </Button>
+            <InputField hidden={true} label='' placeholder='' />
           </Flex>
         </Stack>
       </Flex>
 
-      {!isSubHistoryOpen && (
-        <SubscriptionTable
-          key={setUpdateTableKey}
+      {!isDeclinedVehicleModalOpen && !registeredMode ? (
+        <VehicleTable
           numbers={numbers}
-          users={searchedData || subscription}
+          vehicles={searchedData || vehicles}
           loading={loading}
           nextPage={nextPage}
           previousPage={previousPage}
           jumpPerPage={jumpPerPage}
           currentPage={currentPage}
         />
+      ) : (
+        !isDeclinedVehicleModalOpen && (
+          <RegisteredVehicleTable
+            refetchData={refetchData}
+            numbers={numbers}
+            vehicles={searchedData || vehicles}
+            loading={loading}
+            nextPage={nextPage}
+            previousPage={previousPage}
+            jumpPerPage={jumpPerPage}
+            currentPage={currentPage}
+          />
+        )
       )}
 
-      <SubscriptionStatisticsModal />
-      <TransactionHistoryModal
-        isOpen={isSubHistoryOpen}
+      <DeclinedVehicleModal
+        isOpen={isDeclinedVehicleModalOpen}
         setIsOpen={() => {
-          setIsSubHistoryOpen(), refetchData()
+          setIsDeclinedVehicleModalOpen()
+          refetchData()
         }}
       />
     </Box>

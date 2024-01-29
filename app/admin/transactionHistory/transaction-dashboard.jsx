@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
 // import { useForm } from 'react-hook-form'
 import { InfoIcon, InputField, SearchIcon } from 'components'
-import { SubscriptionTable } from './components'
-import { useFetchAll2 } from 'lib'
+import { TransactionTable } from './components'
+import { useFetchAll } from 'lib'
 import { useForm } from 'react-hook-form'
 import {
   SubscriptionStatisticsModal,
@@ -11,7 +11,7 @@ import {
 } from './components'
 import { useSubManagementActions } from 'lib'
 
-export const SubscriptionDashboard = () => {
+export const TransactionDashboard = () => {
   const {
     records,
     loading,
@@ -19,14 +19,13 @@ export const SubscriptionDashboard = () => {
     previousPage,
     jumpPerPage,
     currentPage,
-    numbers,
-    refetchData
-  } = useFetchAll2('subscription', 'pending')
+    numbers
+  } = useFetchAll('rentals')
 
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
   const [setUpdateTableKey] = useState(0)
-  const watchForm = watch(['vehicleName', 'userName', 'ownerNumber'])
+  const watchForm = watch(['vehicleName', 'ownerName', 'status'])
 
   const { isOpenStatistics } = useSubManagementActions()
 
@@ -34,30 +33,52 @@ export const SubscriptionDashboard = () => {
 
   const subscription = records.map(
     ({
-      id,
-      docId,
-      userId,
       carId,
       subscriptionType,
-      vehicleName,
+      vehicleDetails,
+      vehicleDetails: { vehicleName },
       ownerNumber,
-      userName,
-      dateCreated
+      ownerName,
+      status,
+      pickupLocation,
+      dropoffLocation,
+      dateTime,
+      rentDuration,
+      totalPayment,
+      priceRate,
+      ownerId,
+      paymentMethod,
+      outsideRate,
+      rentee,
+      dateCreated,
+      docId,
+      imageUrl
     }) => ({
-      id,
-      docId,
-      userId,
       carId,
       subscriptionType,
       vehicleName,
+      vehicleDetails,
       ownerNumber,
-      userName,
-      dateCreated
+      ownerName,
+      status,
+      pickupLocation,
+      dropoffLocation,
+      dateTime,
+      rentDuration,
+      totalPayment,
+      priceRate,
+      ownerId,
+      paymentMethod,
+      outsideRate,
+      rentee,
+      dateCreated,
+      docId,
+      imageUrl
     })
   )
 
   const onSearch = (searchData) => {
-    const { vehicleName, userName, ownerNumber } = searchData
+    const { vehicleName, ownerName, status } = searchData
 
     const isNotEmpty = watchForm.findIndex((find) => !!find) > -1
 
@@ -66,21 +87,20 @@ export const SubscriptionDashboard = () => {
         typeof value['vehicleName'] === 'string'
           ? value['vehicleName'].toLowerCase()
           : value['vehicleName']
-      const lowercaseUserName =
-        typeof value['userName'] === 'string'
-          ? value['userName'].toLowerCase()
-          : value['userName']
-      const searchownerNumber =
-        typeof value['ownerNumber'] === 'string'
-          ? value['ownerNumber']
-          : value['ownerNumber'].toString()
+      const lowercaseOwnerName =
+        typeof value['ownerName'] === 'string'
+          ? value['ownerName'].toLowerCase()
+          : value['ownerName']
+      const searchStatus =
+        typeof value['status'] === 'string'
+          ? value['status']
+          : value['status'].toString()
 
       return (
         lowercaseVehicleName ===
           (vehicleName ? vehicleName.toLowerCase() : '') ||
-        lowercaseUserName === (userName ? userName.toLowerCase() : '') ||
-        searchownerNumber ===
-          (ownerNumber ? ownerNumber : ownerNumber.toString())
+        lowercaseOwnerName === (ownerName ? ownerName.toLowerCase() : '') ||
+        searchStatus === (status ? status : status.toString())
       )
     })
 
@@ -105,30 +125,8 @@ export const SubscriptionDashboard = () => {
           <Flex alignItems='center' gap={4}>
             <Icon as={SearchIcon} width='2.125rem' height='2.25rem' />
             <Text fontWeight='bold' fontSize='2rem'>
-              Find Subscription Buyer
+              Find a Transaction
             </Text>
-          </Flex>
-          <Flex gap={2}>
-            <Button
-              background='blue.dark'
-              fontSize='1.25rem'
-              padding='1rem'
-              height='10px'
-              fontWeight='normal'
-              onClick={() => isOpenStatistics('statistics')}
-            >
-              Statistics of Subscription
-            </Button>
-            <Button
-              background='blue.dark'
-              fontSize='1.25rem'
-              padding='1rem'
-              height='10px'
-              fontWeight='normal'
-              onClick={() => setIsSubHistoryOpen(true)}
-            >
-              View Past Transactions
-            </Button>
           </Flex>
         </Flex>
 
@@ -136,19 +134,19 @@ export const SubscriptionDashboard = () => {
           {/* <Stack as='form' mt='1rem'> */}
           <Flex gap='2' alignItems='center'>
             <InputField
-              label='Vehicle'
+              label='Vehicle Name'
               placeholder='Enter Vehicle'
               {...register('vehicleName')}
             />
             <InputField
-              label='Vehicle Owner'
-              placeholder='Enter Vehicle Username'
-              {...register('userName')}
+              label='Owner Name'
+              placeholder='Enter Vehicle ownerName'
+              {...register('ownerName')}
             />
             <InputField
-              label='Vehicle Class'
-              placeholder='Enter Vehicle Class'
-              {...register('ownerNumber')}
+              label='Status'
+              placeholder='Enter Application Status'
+              {...register('status')}
             />
             <Button
               type='submit'
@@ -167,26 +165,15 @@ export const SubscriptionDashboard = () => {
           </Flex>
         </Stack>
       </Flex>
-
-      {!isSubHistoryOpen && (
-        <SubscriptionTable
-          key={setUpdateTableKey}
-          numbers={numbers}
-          users={searchedData || subscription}
-          loading={loading}
-          nextPage={nextPage}
-          previousPage={previousPage}
-          jumpPerPage={jumpPerPage}
-          currentPage={currentPage}
-        />
-      )}
-
-      <SubscriptionStatisticsModal />
-      <TransactionHistoryModal
-        isOpen={isSubHistoryOpen}
-        setIsOpen={() => {
-          setIsSubHistoryOpen(), refetchData()
-        }}
+      <TransactionTable
+        key={setUpdateTableKey}
+        numbers={numbers}
+        users={searchedData || subscription}
+        loading={loading}
+        nextPage={nextPage}
+        previousPage={previousPage}
+        jumpPerPage={jumpPerPage}
+        currentPage={currentPage}
       />
     </Box>
   )

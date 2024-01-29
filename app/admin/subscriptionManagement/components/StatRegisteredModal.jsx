@@ -28,7 +28,6 @@ function StatRegisteredModal({ isOpen, setIsOpen, option: { key, title } }) {
       const result = await getSubTotalStat(subType)
       return result
     } catch (error) {
-      console.log(error)
       return 0
     }
   }

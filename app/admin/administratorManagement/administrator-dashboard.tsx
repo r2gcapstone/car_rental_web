@@ -102,42 +102,24 @@ const AdministratorDashboard: React.FC = () => {
           <Flex alignItems='center' gap={4}>
             <Icon as={SearchIcon} width='2.125rem' height='2.25rem' />
             <Text fontWeight='bold' fontSize='2rem'>
-              Find User
+              Find an Adminstrator
             </Text>
-            <Icon as={InfoIcon} width='1.875rem' height='1.875rem' />
-          </Flex>
-          <Flex gap={2}>
-            <Button
-              background='blue.dark'
-              fontSize='1.25rem'
-              padding='1rem'
-              height='10px'
-              fontWeight='normal'
-              onClick={() => triggerNewUserModal(true)}
-            >
-              Add Admin
-              <Icon as={PlusIcon} width='1.5rem' height='1.5rem' ml='2' />
-            </Button>
           </Flex>
         </Flex>
 
         <Stack as='form' onSubmit={handleSubmit(onSearch)} mt='1rem'>
           <Flex gap='2' alignItems='center'>
             <InputField
-              label='Email'
+              label='Admin Email Address'
               placeholder='Enter email'
               {...register('email')}
             />
             <InputField
-              label='Full name'
+              label='Admin Full name'
               placeholder='Enter fulllname'
               {...register('fullName')}
             />
-            <InputField
-              label='Mobile Number'
-              placeholder='Mobile number'
-              {...register('mobileNumber')}
-            />
+
             <Button
               type='submit'
               mt='2.5rem'
@@ -152,6 +134,12 @@ const AdministratorDashboard: React.FC = () => {
               <Icon as={SearchIcon} width='1.5rem' height='1.5rem' />
               Search
             </Button>
+            <InputField
+              hidden={true}
+              label=''
+              placeholder='Enter fulllname'
+              {...register('fullName')}
+            />
           </Flex>
         </Stack>
       </Flex>
