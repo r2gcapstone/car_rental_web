@@ -1,7 +1,17 @@
 import { Flex, Box, Image, Text, Button } from '@chakra-ui/react'
 import { getAdminData } from 'services/apis/account/users'
 import { useEffect, useState } from 'react'
+import {
+  ChangePassModal,
+  EditAdminProfileModal,
+  ListOfAdmins
+} from './components'
+
 export const AdminProfile = () => {
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [isChangePassModal, setIsChangePassModal] = useState(false)
+  const [isListOfAdminModalOpen, setIsListOfAdminModalOpen] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(null)
   const [userData, setUserData] = useState({
     id: '',
     firstName: '',
@@ -41,9 +51,21 @@ export const AdminProfile = () => {
     }
   ]
 
+  const hanleOnClick = () => {
+    setIsEditOpen((prev) => !prev)
+  }
+
+  const hanleChangePassOnClick = () => {
+    setIsChangePassModal((prev) => !prev)
+  }
+
+  const hanleListOfAdmin = () => {
+    setIsListOfAdminModalOpen((prev) => !prev)
+  }
+
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [isEditOpen, selectedImage])
 
   return (
     <Box title='Account Information' background='dark.brown' width={'100%'}>
@@ -57,7 +79,13 @@ export const AdminProfile = () => {
             gap='0.125rem'
           >
             <Image
-              src={userData.imageUrl || '/image/avatar.jpg'}
+              src={
+                selectedImage
+                  ? URL?.createObjectURL(selectedImage)
+                  : userData.imageUrl
+                  ? userData.imageUrl
+                  : '/image/avatar.jpg'
+              }
               width={250}
               height={250}
               objectFit='cover'
@@ -102,6 +130,7 @@ export const AdminProfile = () => {
             fontWeight={'normal'}
             background={'#0DA800'}
             borderRadius={'md'}
+            onClick={() => hanleOnClick(userData)}
           >
             Edit Personal Information
           </Button>
@@ -110,6 +139,7 @@ export const AdminProfile = () => {
             fontWeight={'normal'}
             background={'#CF0202'}
             borderRadius={'md'}
+            onClick={() => hanleChangePassOnClick(userData)}
           >
             Change Password
           </Button>
@@ -118,11 +148,30 @@ export const AdminProfile = () => {
             fontWeight={'normal'}
             background={'#526D82'}
             borderRadius={'md'}
+            onClick={() => hanleListOfAdmin(userData)}
           >
             List of Admin
           </Button>
         </Flex>
       </Box>
+
+      <EditAdminProfileModal
+        adminData={userData && userData}
+        isOpen={isEditOpen}
+        setIsOpen={setIsEditOpen}
+        setSelectedImage={setSelectedImage}
+        selectedImage={selectedImage}
+      />
+
+      <ChangePassModal
+        isOpen={isChangePassModal}
+        setIsOpen={setIsChangePassModal}
+      />
+
+      <ListOfAdmins
+        isOpen={isListOfAdminModalOpen}
+        setIsOpen={setIsListOfAdminModalOpen}
+      />
     </Box>
   )
 }

@@ -3,13 +3,11 @@ import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
 import {
   AccountTable,
   AccountStatisticsModal,
-  RegisteredUserModal,
-  AddNewUserModal
+  RegisteredUserModal
 } from './components'
 import { useForm } from 'react-hook-form'
-import { InfoIcon, InputField, PlusIcon, SearchIcon } from 'components'
-import { useFetchAll, useAccountManagementActions } from 'lib'
-import { AccountDetailsModal } from './components'
+import { InfoIcon, InputField, SearchIcon } from 'components'
+import { useFetchAll2, useAccountManagementActions } from 'lib'
 import formatFirebaseTimestamp from 'helpers/formatFirebaseTimestamp'
 
 export const AccountDashboard = () => {
@@ -20,13 +18,13 @@ export const AccountDashboard = () => {
     previousPage,
     jumpPerPage,
     currentPage,
-    numbers
-  } = useFetchAll('users')
+    numbers,
+    refetchData
+  } = useFetchAll2('users', '')
   const { isOpenStatistics, triggerNewUserModal } =
     useAccountManagementActions()
 
   const [searchedData, setSearchedData] = useState(null)
-
   const { handleSubmit, register, watch } = useForm()
 
   const watchForm = watch(['email', 'fullName', 'mobileNumber'])
@@ -57,6 +55,7 @@ export const AccountDashboard = () => {
 
       return {
         id,
+
         dateCreated: formatFirebaseTimestamp(dateCreated),
         email,
         fullName: `${firstName} ${lastName}`,
@@ -116,17 +115,6 @@ export const AccountDashboard = () => {
             >
               Statistics of Registered Users
             </Button>
-            <Button
-              background='blue.dark'
-              fontSize='1.25rem'
-              padding='1rem'
-              height='10px'
-              fontWeight='normal'
-              onClick={() => triggerNewUserModal(true)}
-            >
-              Add user
-              <Icon as={PlusIcon} width='1.5rem' height='1.5rem' ml='2' />
-            </Button>
           </Flex>
         </Flex>
 
@@ -165,6 +153,7 @@ export const AccountDashboard = () => {
         </Stack>
       </Flex>
       <AccountTable
+        refetchData={refetchData}
         numbers={numbers}
         users={searchedData || users}
         loading={loading}
@@ -175,10 +164,8 @@ export const AccountDashboard = () => {
       />
 
       {/* Account Modals */}
-      <AccountDetailsModal />
       <AccountStatisticsModal />
       <RegisteredUserModal />
-      <AddNewUserModal />
     </Box>
   )
 }

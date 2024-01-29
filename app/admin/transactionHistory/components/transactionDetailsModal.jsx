@@ -21,7 +21,6 @@ import formatTime from 'utils/formatTime'
 import { toSentenceCase } from 'helpers'
 
 export function TransactionDetailsModal({ docId, isOpen, isClose }) {
-  console.log(docId)
   const [data, setData] = useState({})
 
   let dataArray = []
@@ -145,7 +144,7 @@ export function TransactionDetailsModal({ docId, isOpen, isClose }) {
   const fetchData = async (docId) => {
     try {
       const result = await getRentingDoc(docId)
-      console.log(result)
+
       if (!result.error) {
         setData(result)
       }
