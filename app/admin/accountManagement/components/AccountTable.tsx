@@ -25,6 +25,7 @@ import { useAccountManagementActions } from 'lib'
 import { ViewIcon, TooltipText, LazySpinner, Pagination } from 'components'
 import { AccountTableTypes } from '../helpers/constant'
 import { toSentenceCase } from 'helpers'
+import AccountDetailsModal from './AccountDetailsModal'
 
 interface UserDataTypes {
   users: AccountTableTypes[]
@@ -45,10 +46,18 @@ export const AccountTable: React.FC<UserDataTypes> = ({
   previousPage,
   nextPage,
   numbers,
-  currentPage
+  currentPage,
+  refetchData
 }) => {
   const [sorting, setSorting] = useState<SortingState>([])
   const { triggerDeactivateModal } = useAccountManagementActions()
+  const [isOpenAccModal, setisOpenAccModal] = useState(false)
+  const [userData, setUserData] = useState<any>()
+
+  const handleView = (data: any) => {
+    setisOpenAccModal((prev) => !prev)
+    setUserData(data)
+  }
 
   const columns = useMemo(
     () => [
@@ -117,7 +126,7 @@ export const AccountTable: React.FC<UserDataTypes> = ({
         cell: ({ row }) => (
           <Icon
             as={ViewIcon}
-            onClick={() => triggerDeactivateModal(true, row.original)}
+            onClick={() => handleView(row.original)}
             width='2.23438rem'
             height='1.40625rem'
             cursor='pointer'
@@ -209,6 +218,13 @@ export const AccountTable: React.FC<UserDataTypes> = ({
         jumpPerPage={jumpPerPage}
         totalPage={numbers.length}
         currentPage={currentPage}
+      />
+
+      <AccountDetailsModal
+        isOpen={isOpenAccModal}
+        setIsOpen={setisOpenAccModal}
+        data={userData}
+        refetchData={refetchData}
       />
     </TableContainer>
   )
