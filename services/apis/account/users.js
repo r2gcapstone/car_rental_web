@@ -56,46 +56,24 @@ export const updateUserFeild = async (key, value, docId) => {
   }
 }
 
-export const updateAllUserData = async (data) => {
+export const updateUserData = async (updates, docId) => {
   try {
     const user = auth.currentUser
-    const date = new Date()
-    const dateUpdated = Timestamp.fromDate(date)
+    let dateUpdated = new Date()
+    dateUpdated = Timestamp.fromDate(dateUpdated)
 
-    // update email in auth
-    if (data.email) {
-      try {
-        await updateEmail(user, data.email)
-      } catch (error) {
-        alert(error)
-      }
-    }
-
-    let image = data.imageUrl
-    if (data.imageUrl.startsWith('file://')) {
-      try {
-        const result = await updateUserImage(data.imageUrl)
-        //replace with new image
-        image = result.imageUrl
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    await updateDoc(doc(db, 'users', user.uid), {
-      ...data,
-      imageUrl: image,
+    // Update the user document with multiple fields
+    await updateDoc(doc(db, 'adminUsers', docId), {
+      ...updates,
       dateUpdated: dateUpdated
     })
 
     return {
-      message: 'update success!',
+      message: 'Update success!',
       error: false,
-      status: 200,
-      imageUrl: image
+      status: 200
     }
   } catch (error) {
-    alert(error)
     return { error: true, message: error.message, status: error.code }
   }
 }
@@ -126,22 +104,6 @@ export const updateUserPassword = async (newPassword) => {
       }
     } else {
       throw new Error('No user is currently signed in.')
-    }
-  } catch (error) {
-    return { error: true, message: error.message, status: error.code }
-  }
-}
-
-export const updateUserImage = async (value) => {
-  try {
-    const resizedImageUrl = await resizeImage(value, 640)
-    const downloadURL = await uploadImage(resizedImageUrl, 'userProfile')
-
-    return {
-      imageUrl: downloadURL,
-      message: 'update success!',
-      error: false,
-      status: 200
     }
   } catch (error) {
     return { error: true, message: error.message, status: error.code }

@@ -71,9 +71,11 @@ export const AdminProfile = () => {
           >
             <Image
               src={
-                userData.imageUrl
+                selectedImage
+                  ? URL?.createObjectURL(selectedImage)
+                  : userData.imageUrl
                   ? userData.imageUrl
-                  : URL?.createObjectURL(selectedImage) || '/image/avatar.jpg'
+                  : '/image/avatar.jpg'
               }
               width={250}
               height={250}
