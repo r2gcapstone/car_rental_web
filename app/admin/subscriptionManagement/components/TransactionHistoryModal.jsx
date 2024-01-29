@@ -28,28 +28,34 @@ export const TransactionHistoryModal = ({ isOpen, setIsOpen }) => {
     .map(
       ({
         id,
-        carId,
         docId,
         userId,
+        carId,
         subscriptionType,
         vehicleName,
-        walletNumber,
-        dateCreated,
-        status,
+        ownerNumber,
         userName,
-        ownerNumber
+        dateCreated,
+        receiptImg,
+        ammount,
+        paymentMethod,
+        carImage,
+        status
       }) => ({
         id,
-        carId,
         docId,
         userId,
+        carId,
         subscriptionType,
         vehicleName,
-        walletNumber,
-        dateCreated,
-        status,
+        ownerNumber,
         userName,
-        ownerNumber
+        dateCreated,
+        receiptImg,
+        ammount,
+        paymentMethod,
+        carImage,
+        status
       })
     )
 

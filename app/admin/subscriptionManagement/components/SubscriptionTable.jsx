@@ -39,7 +39,7 @@ export const SubscriptionTable = ({
   currentPage
 }) => {
   const [sorting, setSorting] = useState([])
-  const [filteredVehicles, setFilteredVehicles] = useState(users)
+  const [filteredSubs, setFilteredSub] = useState(users)
   const [isPaymentInfoOpen, setIsPaymentInfoOpen] = useState(false)
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false)
   const [isWriteMessage, setIsWriteMessage] = useState(false)
@@ -48,7 +48,7 @@ export const SubscriptionTable = ({
   const [paymentData, setPaymentData] = useState('')
 
   useEffect(() => {
-    setFilteredVehicles(users)
+    setFilteredSub(users)
   }, [users])
 
   const handleId = (key, data) => {
@@ -59,8 +59,6 @@ export const SubscriptionTable = ({
       setImg(data)
       setIsReceiptModalOpen((prev) => !prev)
     }
-
-    setTargetId(data)
   }
   //components
 
@@ -183,7 +181,7 @@ export const SubscriptionTable = ({
   )
 
   const table = useReactTable({
-    data: filteredVehicles,
+    data: filteredSubs,
     columns,
     state: {
       sorting
@@ -207,7 +205,7 @@ export const SubscriptionTable = ({
 
       if (confirmed.isConfirmed) {
         await updateSubscriptionField('status', 'approved', docId, carId)
-        setFilteredVehicles((prevUsers) =>
+        setFilteredSub((prevUsers) =>
           prevUsers.filter((user) => user.id !== docId)
         )
 
@@ -313,7 +311,7 @@ export const SubscriptionTable = ({
 
       {isWriteMessage && targetId && (
         <WriteMessageModal
-          filter={setFilteredVehicles}
+          filter={setFilteredSub}
           docId={targetId}
           isOpen={isWriteMessage}
           isClose={setIsWriteMessage}
