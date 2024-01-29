@@ -24,7 +24,7 @@ import { updateSubscriptionField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
 import Swal from 'sweetalert2'
 import { VehicleInfoModal } from './vehicleInfoModal'
-import { UserInfoModal } from './userInfoModal'
+import { ReceiptImg } from './ReceiptImg'
 import { WriteMessageModal } from './WriteMessageModal'
 
 const columnHelper = createColumnHelper()
@@ -41,9 +41,10 @@ export const SubscriptionTable = ({
   const [sorting, setSorting] = useState([])
   const [filteredVehicles, setFilteredVehicles] = useState(users)
   const [isModal1Open, setIsModal1Open] = useState(false)
-  const [isModal2Open, setIsModal2Open] = useState(false)
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false)
   const [isWriteMessage, setIsWriteMessage] = useState(false)
   const [targetId, setTargetId] = useState('')
+  const [img, setImg] = useState('')
 
   useEffect(() => {
     setFilteredVehicles(users)
@@ -51,10 +52,11 @@ export const SubscriptionTable = ({
 
   const handleId = (key, id) => {
     console.log(key, id)
-    if (key === 'vehicle') {
+    if (key === 'paymentInfo') {
       setIsModal1Open((prev) => !prev)
-    } else if (key === 'user') {
-      setIsModal2Open((prev) => !prev)
+    } else if (key === 'receipt') {
+      setImg(id)
+      setIsReceiptModalOpen((prev) => !prev)
     }
 
     setTargetId(id)
@@ -95,11 +97,11 @@ export const SubscriptionTable = ({
     </Flex>
   )
 
-  const VehicleInfo = ({ row }) => (
+  const PaymentInfo = ({ row }) => (
     <Button
       size={'lg'}
       mr={2}
-      onClick={() => handleId('vehicle', row.original.carId)}
+      onClick={() => handleId('paymentInfo', row.imageUrl)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
@@ -109,15 +111,15 @@ export const SubscriptionTable = ({
         transform: 'scale(1.05)'
       }}
     >
-      View Vehicle's Info
+      View Payment Info
     </Button>
   )
 
-  const OwnerInfo = ({ row }) => (
+  const ViewReceipt = ({ row }) => (
     <Button
       size={'lg'}
       mr={2}
-      onClick={() => handleId('user', row.original.userId)}
+      onClick={() => handleId('receipt', row.receiptImg)}
       backgroundColor='blue.700'
       opacity={0.8}
       transition='0.2s'
@@ -127,7 +129,7 @@ export const SubscriptionTable = ({
         transform: 'scale(1.05)'
       }}
     >
-      View Owner's Info
+      View Receipt
     </Button>
   )
 
@@ -160,14 +162,14 @@ export const SubscriptionTable = ({
         cell: ({ row }) => <Text>{row.original.userName}</Text>,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Vehicle Info', {
-        header: 'Vehicle Info',
-        cell: ({ row }) => <VehicleInfo row={row} />,
+      columnHelper.accessor('Payment Info', {
+        header: 'Payment Info',
+        cell: ({ row }) => <PaymentInfo row={row.original} />,
         sortDescFirst: true
       }),
-      columnHelper.accessor('Owner Info', {
-        header: 'Owner Info',
-        cell: ({ row }) => <OwnerInfo row={row} />,
+      columnHelper.accessor('View Receipt', {
+        header: 'View Receipt',
+        cell: ({ row }) => <ViewReceipt row={row.original} />,
         sortDescFirst: true
       }),
       columnHelper.accessor('Action', {
@@ -302,10 +304,10 @@ export const SubscriptionTable = ({
         isClose={setIsModal1Open}
       />
 
-      <UserInfoModal
-        docId={targetId}
-        isOpen={isModal2Open}
-        isClose={setIsModal2Open}
+      <ReceiptImg
+        img={img}
+        isOpen={isReceiptModalOpen}
+        isClose={setIsReceiptModalOpen}
       />
 
       {isWriteMessage && targetId && (

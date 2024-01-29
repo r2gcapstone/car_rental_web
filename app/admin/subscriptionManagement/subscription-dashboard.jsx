@@ -42,7 +42,8 @@ export const SubscriptionDashboard = () => {
       vehicleName,
       ownerNumber,
       userName,
-      dateCreated
+      dateCreated,
+      receiptImg
     }) => ({
       id,
       docId,
@@ -52,7 +53,8 @@ export const SubscriptionDashboard = () => {
       vehicleName,
       ownerNumber,
       userName,
-      dateCreated
+      dateCreated,
+      receiptImg
     })
   )
 

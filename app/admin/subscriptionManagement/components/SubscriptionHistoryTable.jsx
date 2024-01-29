@@ -22,7 +22,7 @@ import {
 } from '@tanstack/react-table'
 import { Pagination, LazySpinner } from 'components'
 import { VehicleInfoModal } from './vehicleInfoModal'
-import { UserInfoModal } from './userInfoModal'
+import { UserInfoModal } from './ReceiptImg'
 
 const columnHelper = createColumnHelper()
 
