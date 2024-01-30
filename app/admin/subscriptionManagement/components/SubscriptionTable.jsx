@@ -47,6 +47,8 @@ export const SubscriptionTable = ({
   const [img, setImg] = useState('')
   const [paymentData, setPaymentData] = useState('')
 
+  const uniqueDocIds = new Set()
+
   useEffect(() => {
     setFilteredSub(users)
   }, [users])
@@ -262,29 +264,36 @@ export const SubscriptionTable = ({
           ))}
         </Thead>
         <Tbody>
-          {table.getRowModel().rows.map((row) => (
-            <Tr
-              key={row.id}
-              aria-label='account-row'
-              borderBottom='1px solid white'
-            >
-              {row.getVisibleCells().map((cell, index) => (
-                <Td py='1rem' px='0' key={cell.id} height='auto'>
-                  <Box
-                    {...(index === 0 && { ml: '4' })}
-                    {...(index !== 0 && { ml: '2' })}
-                  >
-                    <>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </>
-                  </Box>
-                </Td>
-              ))}
-            </Tr>
-          ))}
+          {table.getRowModel().rows.map((row) => {
+            if (uniqueDocIds.has(row.original.docId)) {
+              return null
+            }
+            uniqueDocIds.add(row.original.docId)
+
+            return (
+              <Tr
+                key={row.id}
+                aria-label='account-row'
+                borderBottom='1px solid white'
+              >
+                {row.getVisibleCells().map((cell, index) => (
+                  <Td py='1rem' px='0' key={cell.id} height='auto'>
+                    <Box
+                      {...(index === 0 && { ml: '4' })}
+                      {...(index !== 0 && { ml: '2' })}
+                    >
+                      <>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </>
+                    </Box>
+                  </Td>
+                ))}
+              </Tr>
+            )
+          })}
         </Tbody>
       </Table>
 
