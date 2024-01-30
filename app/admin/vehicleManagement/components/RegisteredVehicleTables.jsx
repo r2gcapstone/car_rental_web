@@ -60,7 +60,6 @@ export const RegisteredVehicleTable = ({
   }
 
   const handleArchiveBtn = async (row) => {
-    console.log(row.original)
     try {
       const Archive = row.original.isHidden
 

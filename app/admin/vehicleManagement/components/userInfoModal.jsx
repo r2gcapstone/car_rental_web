@@ -3,19 +3,15 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   Flex,
   ModalCloseButton,
   Text,
-  Button,
-  Box,
   Image,
   Center
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { ImagePreviewer } from './ImagePreview'
-import { ImageModal } from './ImageViewModal'
+import { ImageViewModal } from './ImageViewModal'
 import { getUserData } from 'services/apis/account/users'
 import formatDate from 'utils/formatDate'
 
@@ -125,7 +121,7 @@ export function UserInfoModal({ docId, isOpen, isClose }) {
           {/* <ModalFooter></ModalFooter> */}
         </ModalContent>
       </Modal>
-      <ImageModal imageUrl={imageUrl} onOpen={onOpen} onClose={setOnOpen} />
+      <ImageViewModal imageUrl={imageUrl} onOpen={onOpen} onClose={setOnOpen} />
     </>
   )
 }
