@@ -22,7 +22,6 @@ export const getAdminData = async () => {
 }
 
 export const getUserData = async (docId) => {
-  console.log(docId)
   try {
     const userDoc = doc(db, 'users', docId)
     const userSnapshot = await getDoc(userDoc)

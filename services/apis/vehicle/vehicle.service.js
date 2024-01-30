@@ -13,7 +13,6 @@ import {
 import { db } from 'services/firebase'
 
 export const updateVehicleField = async (key, value, docId) => {
-  console.log(key, value, docId)
   let dateUpdated = new Date()
   dateUpdated = Timestamp.fromDate(dateUpdated)
 

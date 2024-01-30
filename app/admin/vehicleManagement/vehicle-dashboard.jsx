@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
-import { InfoIcon, InputField, SearchIcon } from 'components'
+import { InputField, SearchIcon } from 'components'
 import { getVehicleDatas } from 'services/apis'
 import { useForm } from 'react-hook-form'
 import {
