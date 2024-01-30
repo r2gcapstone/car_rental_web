@@ -20,9 +20,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { updateVehicleField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
-import Swal from 'sweetalert2'
 import { VehicleInfoModal } from './vehicleInfoModal'
 import { UserInfoModal } from './userInfoModal'
 import { MessageModal } from './MessageModal'
