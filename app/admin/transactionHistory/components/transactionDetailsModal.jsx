@@ -188,7 +188,7 @@ export function TransactionDetailsModal({ docId, isOpen, isClose }) {
                 <Flex
                   marginTop={1}
                   justifyContent={'space-between'}
-                  key={item.key}
+                  key={item.id}
                 >
                   <Text fontWeight={'bold'}>{item.label} :</Text>
                   <Text w={'50%'}>
