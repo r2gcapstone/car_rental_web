@@ -20,11 +20,9 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { updateVehicleField } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
-import Swal from 'sweetalert2'
-import { VehicleInfoModal } from './PaymentInfoModal'
-import { UserInfoModal } from './ReceiptImg'
+import { PaymentInfoModal } from './PaymentInfoModal'
+import { ReceiptImg } from './ReceiptImg'
 import { MessageModal } from './MessageModal'
 
 const columnHelper = createColumnHelper()
@@ -244,13 +242,13 @@ export const VehicleDeclinedTable = ({
         currentPage={currentPage}
       />
 
-      <VehicleInfoModal
+      <PaymentInfoModal
         docId={targetId}
         isOpen={isModal1Open}
         isClose={setIsModal1Open}
       />
 
-      <UserInfoModal
+      <ReceiptImg
         docId={targetId}
         isOpen={isModal2Open}
         isClose={setIsModal2Open}

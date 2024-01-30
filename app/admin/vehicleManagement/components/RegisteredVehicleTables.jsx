@@ -60,6 +60,7 @@ export const RegisteredVehicleTable = ({
   }
 
   const handleArchiveBtn = async (row) => {
+    console.log(row.original)
     try {
       const Archive = row.original.isHidden
 
@@ -156,11 +157,9 @@ export const RegisteredVehicleTable = ({
         cell: ({ row }) => (
           <Text
             fontWeight={'bold'}
-            color={
-              row.original.status === 'ongoing' ? 'green.300' : 'whiteAlpha.100'
-            }
+            color={row.original.isRented ? 'green.300' : 'white'}
           >
-            {row.original.status === 'ongoing' ? 'Booked' : 'Not Booked'}
+            {row.original.isRented ? 'Booked' : 'Not Booked'}
           </Text>
         ),
         sortDescFirst: true
@@ -170,8 +169,6 @@ export const RegisteredVehicleTable = ({
         cell: ({ row }) => <ArchiveBtn row={row} />,
         sortDescFirst: true
       })
-
-      // Add other columns as needed...
     ],
     []
   )

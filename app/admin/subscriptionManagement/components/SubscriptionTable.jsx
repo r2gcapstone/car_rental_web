@@ -20,7 +20,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { updateSubscriptionField } from 'services/apis'
+import { approveSubscriptionRequest } from 'services/apis'
 import { Pagination, LazySpinner } from 'components'
 import Swal from 'sweetalert2'
 import { PaymentInfoModal } from './PaymentInfoModal'
@@ -67,7 +67,7 @@ export const SubscriptionTable = ({
       <Button
         size={'lg'}
         mr={2}
-        onClick={() => handleApprove(row.original.id, row.original.docId)}
+        onClick={() => handleApprove(row.original.id, row.original.carId)}
         backgroundColor='blue'
         opacity={0.8}
         transition='0.2s'
@@ -204,7 +204,7 @@ export const SubscriptionTable = ({
       })
 
       if (confirmed.isConfirmed) {
-        await updateSubscriptionField('status', 'approved', docId, carId)
+        await approveSubscriptionRequest('status', 'approved', docId, carId)
         setFilteredSub((prevUsers) =>
           prevUsers.filter((user) => user.id !== docId)
         )

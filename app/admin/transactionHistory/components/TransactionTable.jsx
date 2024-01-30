@@ -21,7 +21,6 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { updateSubscriptionField } from 'services/apis'
 import { ViewIcon, Pagination, LazySpinner } from 'components'
 import Swal from 'sweetalert2'
 import formatFirebaseTimestamp from 'helpers/formatFirebaseTimestamp'

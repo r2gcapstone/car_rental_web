@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Flex, Icon, Text, Box, Stack } from '@chakra-ui/react'
 import { InfoIcon, InputField, SearchIcon } from 'components'
-import { useFetchAll2 } from 'lib'
+import { getVehicleDatas } from 'services/apis'
 import { useForm } from 'react-hook-form'
 import {
   DeclinedVehicleModal,
@@ -22,7 +22,7 @@ export const VehicleDashboard = () => {
     currentPage,
     numbers,
     refetchData
-  } = useFetchAll2('cars', registeredMode ? 'ongoing' : 'pending')
+  } = getVehicleDatas('cars', registeredMode ? 'approved' : 'pending')
 
   const { handleSubmit, register, watch } = useForm()
   const [searchedData, setSearchedData] = useState()
