@@ -35,6 +35,7 @@ interface UserDataTypes {
   nextPage: () => void
   numbers: number[]
   currentPage: number
+  refetchData: () => void
 }
 
 const columnHelper = createColumnHelper<AccountTableTypes>()

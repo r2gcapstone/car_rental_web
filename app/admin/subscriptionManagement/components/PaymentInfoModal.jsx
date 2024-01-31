@@ -8,13 +8,10 @@ import {
   Flex,
   ModalCloseButton,
   Text,
-  Button,
-  Box,
   Image,
   Center
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { ImagePreviewer } from './ImagePreview'
 import { ImageModal } from './ImageViewModal'
 import { getUserData } from 'services/apis/account/users'
 import formatDate from 'utils/formatDate'
