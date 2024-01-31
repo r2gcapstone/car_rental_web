@@ -11,7 +11,7 @@ import {
   Center
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { ImageViewModal } from './ImageViewModal'
+import { imageViewModal } from './imageViewModal'
 import { getUserData } from 'services/apis/account/users'
 import formatDate from 'utils/formatDate'
 
@@ -121,7 +121,7 @@ export function UserInfoModal({ docId, isOpen, isClose }) {
           {/* <ModalFooter></ModalFooter> */}
         </ModalContent>
       </Modal>
-      <ImageViewModal imageUrl={imageUrl} onOpen={onOpen} onClose={setOnOpen} />
+      <imageViewModal imageUrl={imageUrl} onOpen={onOpen} onClose={setOnOpen} />
     </>
   )
 }

@@ -14,7 +14,7 @@ import {
 import { getVehicleData } from 'services/apis'
 import { useEffect, useState } from 'react'
 import { ImagePreviewer } from './ImagePreview'
-import { ImageViewModal } from './ImageViewModal'
+import { imageViewModal } from './imageViewModal'
 
 export function VehicleInfoModal({ docId, isOpen, isClose }) {
   const [data, setData] = useState({})
@@ -195,7 +195,7 @@ export function VehicleInfoModal({ docId, isOpen, isClose }) {
           <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
-      <ImageViewModal imageUrl={imageUrl} onOpen={onOpen} onClose={setOnOpen} />
+      <imageViewModal imageUrl={imageUrl} onOpen={onOpen} onClose={setOnOpen} />
     </>
   )
 }
