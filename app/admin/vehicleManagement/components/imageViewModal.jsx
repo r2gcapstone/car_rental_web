@@ -10,7 +10,7 @@ import {
   ModalHeader
 } from '@chakra-ui/react'
 
-export const ImageViewModal = ({ imageUrl, onOpen, onClose }) => {
+export const imageViewModal = ({ imageUrl, onOpen, onClose }) => {
   const handleOnclose = () => {
     onClose((prev) => !prev)
   }
